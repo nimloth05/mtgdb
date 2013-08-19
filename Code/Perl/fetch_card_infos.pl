@@ -26,6 +26,8 @@ my $edition;
 my $rarity;
 my $cardimage;
 my $condition;
+my $artist;
+my $cardnumber;
 #pattern to extract desired info
 my $pattern_typeline = '<p>(.*),\s\n\s*([0-9A-Z]{1,})\s\(([0-9]{1,})\)\n.*<\/p>';
 my $pattern_typeline_creature = '<p>(.*)\s—\s(.*)\s(\d{1,2}|\*)\/(\d{1,2}|\*),\s\n\s*([0-9A-Z]{1,})\s\(([0-9]{1,})\)\n.*<\/p>';
@@ -34,6 +36,7 @@ my $pattern_ctext = '<p class="ctext"><b>(.*)<\/b><\/p>';
 my $pattern_flavortext = '<p><i>(.*)<\/i><\/p>';
 my $pattern_edition_rarity = '';
 my $pattern_scan_url = '\"(http:\/\/magiccards\.info\/scan.*)\"';
+my $pattern_cardnum_artist = '#(\d{1,3})\s\((.*)\)';
 
 
 my $file = $filename; 
