@@ -7,6 +7,12 @@
     <groupId>mtgdb</groupId>
     <artifactId>ui</artifactId>
     <version>1.0-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+    	<groupId>com.h2database</groupId>
+    	<artifactId>h2</artifactId>
+    	<version>1.3.173</version>
+    </dependency>
+  </dependencies>
 
-    
 </project>
