@@ -1,4 +1,4 @@
-package org.mtgdb.launche;
+package org.mtgdb.launcher;
 
 /**
  * @author Sandro Orlando
