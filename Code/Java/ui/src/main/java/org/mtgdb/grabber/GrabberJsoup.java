@@ -4,7 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
+import org.mtgdb.model.CardDescription;
 
 import java.io.IOException;
 
@@ -20,32 +20,10 @@ public final class GrabberJsoup {
     this.lang = lang;
   }
 
-  public static void grabAll(final String lang) {
-    final GrabberJsoup grabberText = new GrabberJsoup(lang);
-    Thread thread = new Thread(new Runnable() {
-      public void run() {
-        try {
-          grabberText.grabAllEditions(lang, new IProgressMonitor() {
-            @Override
-            public void setMessage(final String message) {
-            }
-
-            @Override
-            public void step(final int step) {
-            }
-          });
-        } catch (IOException e) {
-
-        }
-      }
-    }, "grabAllEditions");
-    thread.start();
-  }
-
-  public void grabAllEditions(final String language, IProgressMonitor monitor) throws IOException {
+  public void grabAllEditions(final IGrabberListener monitor) throws IOException {
     final String sitemap = "http://magiccards.info/sitemap.html";
     Document doc = Jsoup.connect(sitemap).get();
-    Elements table = doc.select(":containsOwn(" + language + ") + table");
+    Elements table = doc.select(":containsOwn(" + lang + ") + table");
     Elements lists = table.select("tr > td > ul");
     for (Element list : lists) {
       Elements items = list.getAllElements();
@@ -53,20 +31,21 @@ public final class GrabberJsoup {
       editions.addAll(items.select("small"));
 
       for (Element edition : editions) {
-        if (edition.tagName() == "small") {
-          final String edShort = edition.text();
-        } else {
-          final String edStr = edition.text();
+        System.out.println(edition.tagName());
+        if (edition.tagName().equals("a")) {
+          final String edStr = edition.nextElementSibling().text();
           final String edUrl = edition.attr("href");
-          grabEdition(urlPrefix + edUrl, monitor);
+          grabEdition(urlPrefix + edUrl, edStr, monitor);
+          System.out.println("Edition grabbed");
+
+          break;
         }
-
       }
+      break;
     }
-
   }
 
-  public void grabEdition(final String editionUrl, final IProgressMonitor monitor) throws IOException {
+  public void grabEdition(final String editionUrl, final String editionShort, final IGrabberListener monitor) throws IOException {
     Document doc = Jsoup.connect(editionUrl).get();
     Elements tables = doc.select("table .even");
     tables.addAll(doc.select("table .odd"));
@@ -78,14 +57,13 @@ public final class GrabberJsoup {
       //System.out.println("\n\nurl: "+urlPrefix+td.get(1).child(0).attr("href")+"\nEdition: "+doc.title()+"\nRarity: "+td.get(4).text()+ "\nName: " +td.get(1).text());
       final String title = doc.title();
       final String text = td.get(1).text();
-      monitor.setMessage("Grabbing card: " + text);
-      monitor.step(++counter);
-      grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), title, td.get(4).text(), text);
+      CardDescription cardDescription = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), editionShort, td.get(4).text(), text);
+      monitor.grabbed(cardDescription);
     }
 //    System.out.println(tables);
   }
 
-  private void grabCard(final String cardUrl, final String edition, final String rarity, final String name) throws IOException {
+  private CardDescription grabCard(final String cardUrl, final String edition, final String rarity, final String name) throws IOException {
 
     // final java.util.regex.Pattern patternEditionRarity = java.util.regex.Pattern.compile("");
 
@@ -113,7 +91,7 @@ public final class GrabberJsoup {
 
     //System.out.println("=========================================================");
     //System.out.println(card.toString());
-
+    return card;
   }
 
   private void extractTypeLine(org.mtgdb.model.CardDescription card, final String html) {
@@ -149,9 +127,9 @@ public final class GrabberJsoup {
   }
 
   private void extractCardText(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternCardText = java.util.regex.Pattern.compile("<p class=\"ctext\"><b>(.*)</b></p>");
+    final java.util.regex.Pattern patternCardText = java.util.regex.Pattern.compile("<p class=\"ctext\"><b>(.+?)</b></p>");
     java.util.regex.Matcher m = patternCardText.matcher(html);
-    if (m.matches()) {
+    if (m.find()) {
       card.setCardText(m.group(1));
     }
   }
@@ -159,7 +137,7 @@ public final class GrabberJsoup {
   private void extractFlavourText(org.mtgdb.model.CardDescription card, final String html) {
     final java.util.regex.Pattern patternFlavorText = java.util.regex.Pattern.compile("<p><i>(.*)</i></p>");
     java.util.regex.Matcher m = patternFlavorText.matcher(html);
-    if (m.matches()) {
+    if (m.find()) {
       card.setFlavorText(m.group(1));
     }
   }
@@ -173,11 +151,11 @@ public final class GrabberJsoup {
   }
 
   private void extractNrArtist(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternCardnumArtist = java.util.regex.Pattern.compile("#(\\d{1,3})\\s\\((.*)\\)");
+    final java.util.regex.Pattern patternCardnumArtist = java.util.regex.Pattern.compile("<b>#(\\d{1,3})\\s\\((.*)\\)</b>");
     java.util.regex.Matcher m = patternCardnumArtist.matcher(html);
-    if (m.matches()) {
+    if (m.find()) {
       card.setNumber(m.group(1));
-      card.setArtist(m.group(2));
+//      card.setArtist(m.group(2));
     }
   }
 }

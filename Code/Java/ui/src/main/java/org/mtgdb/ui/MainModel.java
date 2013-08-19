@@ -1,8 +1,11 @@
 package org.mtgdb.ui;
 
+import org.mtgdb.db.DatabaseAccess;
 import org.mtgdb.db.DatabaseConnection;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.grabber.GrabberJsoup;
+import org.mtgdb.grabber.IGrabberListener;
+import org.mtgdb.model.CardDescription;
 import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
 import org.mtgdb.ui.util.frame.progress.IProgressRunnable;
 import org.mtgdb.ui.util.frame.progress.ProgressDialog;
@@ -11,6 +14,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Sandro Orlando
@@ -18,9 +23,11 @@ import java.awt.event.ActionEvent;
 public final class MainModel {
 
   private Action grabberAction = new GrabberAction();
+  private final DatabaseAccess dbAccess;
 
   public MainModel() {
     IDatabaseConnection connection = DatabaseConnection.create();
+    dbAccess = new DatabaseAccess(connection);
   }
 
   public Action getGrabberAction() {
@@ -31,7 +38,7 @@ public final class MainModel {
     return new DefaultTableModel();
   }
 
-  private static class GrabberAction extends AbstractAction {
+  private class GrabberAction extends AbstractAction {
 
     public GrabberAction() {
       super();
@@ -41,15 +48,31 @@ public final class MainModel {
     @Override
     public void actionPerformed(final ActionEvent e) {
       ProgressDialog dialog = ProgressDialog.create(new IProgressRunnable() {
+
+        private volatile List<CardDescription> allCards = new LinkedList<CardDescription>();
+
         @Override
         public void done() {
+          dbAccess.saveAllCardDescription(allCards);
+          System.out.println("isEDT " + SwingUtilities.isEventDispatchThread());
         }
 
         @Override
         public void run(final IProgressMonitor monitor) throws Exception {
           monitor.setMessage("Grabbing DB...");
           GrabberJsoup grabberJsoup = new GrabberJsoup("English");
-          grabberJsoup.grabAllEditions("English", monitor);
+          grabberJsoup.grabAllEditions(new IGrabberListener() {
+
+            int counter = 0;
+
+            @Override
+            public void grabbed(final CardDescription description) {
+              allCards.add(description);
+              monitor.setMessage("Grabbed card " + description.getName());
+              monitor.step(counter++);
+            }
+
+          });
         }
       });
       dialog.setMin(0);

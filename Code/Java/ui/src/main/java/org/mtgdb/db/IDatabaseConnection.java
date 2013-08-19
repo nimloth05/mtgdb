@@ -5,4 +5,5 @@ package org.mtgdb.db;
  */
 public interface IDatabaseConnection {
 
+  void executeSql(String s);
 }
