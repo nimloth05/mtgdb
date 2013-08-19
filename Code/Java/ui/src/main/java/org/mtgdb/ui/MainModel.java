@@ -42,9 +42,8 @@ public final class MainModel {
         @Override
         public void run(final IProgressMonitor monitor) throws Exception {
           monitor.setMessage("Grabbing DB...");
-          final String url = "http://magiccards.info/m14/en.html";
-          GrabberJsoup grabberJsoup = new GrabberJsoup(url);
-          grabberJsoup.grabEdition(url, monitor);
+          GrabberJsoup grabberJsoup = new GrabberJsoup("English");
+          grabberJsoup.grabAllEditions("English", monitor);
         }
       });
       dialog.setMin(0);

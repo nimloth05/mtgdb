@@ -7,25 +7,27 @@ import org.jsoup.select.Elements;
 import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sandro Orlando
  */
 public final class GrabberJsoup {
 
-  private final String url;
   private final String urlPrefix = "http://magiccards.info/";
+  private final String lang;
 
-  public GrabberJsoup(final String url) {
-    this.url = url;
+  public GrabberJsoup(final String lang) {
+    this.lang = lang;
   }
 
-  public static void grabAll(final String url) {
-    final GrabberJsoup grabberText = new GrabberJsoup(url);
+  public static void grabAll(final String lang) {
+    final GrabberJsoup grabberText = new GrabberJsoup(lang);
     Thread thread = new Thread(new Runnable() {
       public void run() {
         try {
-          grabberText.grabEdition(url, new IProgressMonitor() {
+          grabberText.grabAllEditions(lang, new IProgressMonitor() {
             @Override
             public void setMessage(final String message) {
             }
@@ -42,7 +44,21 @@ public final class GrabberJsoup {
     thread.start();
   }
 
-  private void grabAllEditions() throws IOException {
+  public void grabAllEditions(final String language, IProgressMonitor monitor) throws IOException {
+    final String sitemap = "http://magiccards.info/sitemap.html";
+    Document doc = Jsoup.connect(sitemap).get();
+    Elements table = doc.select(":containsOwn("+language+") + table");
+    Elements lists = table.select("tr > td > ul");
+    List<Elements> expansions = new ArrayList<Elements>();
+    for (Element list : lists) {
+      Elements items = list.getAllElements();
+      Elements editions = items.select("a");
+      for (Element edition : editions) {
+        final String edStr = edition.text();
+        final String edUrl = edition.attr("href");
+        grabEdition(urlPrefix+edUrl,monitor);
+      }
+    }
 
   }
 
@@ -54,7 +70,7 @@ public final class GrabberJsoup {
     int counter = -1;
     for (Element row : tables) {
       final Elements td = row.select("td");
-     // System.out.println("Card: " + td.get(0).text() + " " + td.get(1).text() + " url: " + td.get(1).child(0).attr("href"));
+      // System.out.println("Card: " + td.get(0).text() + " " + td.get(1).text() + " url: " + td.get(1).child(0).attr("href"));
       //System.out.println("\n\nurl: "+urlPrefix+td.get(1).child(0).attr("href")+"\nEdition: "+doc.title()+"\nRarity: "+td.get(4).text()+ "\nName: " +td.get(1).text());
       final String title = doc.title();
       final String text = td.get(1).text();
@@ -91,8 +107,8 @@ public final class GrabberJsoup {
     card.setRarity(rarity);
     card.setName(name);
 
-    System.out.println("=========================================================");
-    System.out.println(card.toString());
+    //System.out.println("=========================================================");
+    //System.out.println(card.toString());
 
   }
 
