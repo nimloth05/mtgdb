@@ -7,8 +7,6 @@ import org.jsoup.select.Elements;
 import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Sandro Orlando
@@ -47,16 +45,22 @@ public final class GrabberJsoup {
   public void grabAllEditions(final String language, IProgressMonitor monitor) throws IOException {
     final String sitemap = "http://magiccards.info/sitemap.html";
     Document doc = Jsoup.connect(sitemap).get();
-    Elements table = doc.select(":containsOwn("+language+") + table");
+    Elements table = doc.select(":containsOwn(" + language + ") + table");
     Elements lists = table.select("tr > td > ul");
-    List<Elements> expansions = new ArrayList<Elements>();
     for (Element list : lists) {
       Elements items = list.getAllElements();
       Elements editions = items.select("a");
+      editions.addAll(items.select("small"));
+
       for (Element edition : editions) {
-        final String edStr = edition.text();
-        final String edUrl = edition.attr("href");
-        grabEdition(urlPrefix+edUrl,monitor);
+        if (edition.tagName() == "small") {
+          final String edShort = edition.text();
+        } else {
+          final String edStr = edition.text();
+          final String edUrl = edition.attr("href");
+          grabEdition(urlPrefix + edUrl, monitor);
+        }
+
       }
     }
 
