@@ -42,7 +42,7 @@ public final class MainWindow {
   }
 
   public void show() {
-    frame = FrameFactory.createCenteredFrame("MTG AdministratioN", 640, 480);
+    frame = FrameFactory.createCenteredFrame("MTG Administration", 640, 480);
     FrameFactory.setMainFrame(frame);
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.getContentPane().setLayout(new BorderLayout());

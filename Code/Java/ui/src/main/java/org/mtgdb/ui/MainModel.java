@@ -1,5 +1,7 @@
 package org.mtgdb.ui;
 
+import org.mtgdb.db.DatabaseConnection;
+import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.grabber.GrabberJsoup;
 import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
 import org.mtgdb.ui.util.frame.progress.IProgressRunnable;
@@ -16,6 +18,10 @@ import java.awt.event.ActionEvent;
 public final class MainModel {
 
   private Action grabberAction = new GrabberAction();
+
+  public MainModel() {
+    IDatabaseConnection connection = DatabaseConnection.create();
+  }
 
   public Action getGrabberAction() {
     return grabberAction;
