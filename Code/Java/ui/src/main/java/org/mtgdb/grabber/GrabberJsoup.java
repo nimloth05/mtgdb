@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public final class GrabberJsoup {
 
-private final String url;
+  private final String url;
 
   public GrabberJsoup(final String url) {
     this.url = url;
@@ -21,14 +21,14 @@ private final String url;
   public static void grabAll(final String url) {
     final GrabberJsoup grabberText = new GrabberJsoup(url);
     Thread thread = new Thread(new Runnable() {
-          public void run() {
-            try {
-              grabberText.grab();
-            } catch (IOException e) {
+      public void run() {
+        try {
+          grabberText.grab();
+        } catch (IOException e) {
 
-            }
-          }
-        }, "grabberText");
+        }
+      }
+    }, "grabberText");
     thread.start();
   }
 
@@ -42,6 +42,4 @@ private final String url;
     System.out.println(tables);
   }
 
-  private void handleContent(final StringBuilder builder) {
-
-  }}
+}
