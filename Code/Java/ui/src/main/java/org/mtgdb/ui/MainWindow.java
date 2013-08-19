@@ -1,5 +1,6 @@
 package org.mtgdb.ui;
 
+import net.miginfocom.swing.MigLayout;
 import org.mtgdb.ui.util.frame.FrameFactory;
 
 import javax.swing.*;
@@ -25,6 +26,12 @@ public final class MainWindow {
 
   private void createContentArea() {
     JPanel panel = new JPanel();
+    panel.setLayout(new MigLayout());
+    panel.add(new JLabel("Your Library:"));
+    final JTable table = new JTable();
+    table.setModel(model.getLibraryModel());
+    panel.add(table);
+    frame.getContentPane().add(panel, BorderLayout.CENTER);
   }
 
   private void createToolbar() {
@@ -36,6 +43,8 @@ public final class MainWindow {
 
   public void show() {
     frame = FrameFactory.createCenteredFrame("MTG AdministratioN", 640, 480);
+    FrameFactory.setMainFrame(frame);
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.getContentPane().setLayout(new BorderLayout());
     createToolbar();
     createContentArea();

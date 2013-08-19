@@ -6,6 +6,8 @@ import org.mtgdb.ui.util.frame.progress.IProgressRunnable;
 import org.mtgdb.ui.util.frame.progress.ProgressDialog;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 
 /**
@@ -18,6 +20,11 @@ public final class MainModel {
   public Action getGrabberAction() {
     return grabberAction;
   }
+
+  public TableModel getLibraryModel() {
+    return new DefaultTableModel();
+  }
+
   private static class GrabberAction extends AbstractAction {
 
     public GrabberAction() {
@@ -35,8 +42,9 @@ public final class MainModel {
         @Override
         public void run(final IProgressMonitor monitor) throws Exception {
           monitor.setMessage("Grabbing DB...");
-          GrabberJsoup grabberJsoup = new GrabberJsoup("http://magiccards.info/m14/en.html");
-          grabberJsoup.grab(monitor);
+          final String url = "http://magiccards.info/m14/en.html";
+          GrabberJsoup grabberJsoup = new GrabberJsoup(url);
+          grabberJsoup.grabEdition(url, monitor);
         }
       });
       dialog.setMin(0);

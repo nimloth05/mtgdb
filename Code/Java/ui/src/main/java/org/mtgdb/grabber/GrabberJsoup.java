@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
 
 import java.io.IOException;
 
@@ -24,7 +25,15 @@ public final class GrabberJsoup {
     Thread thread = new Thread(new Runnable() {
       public void run() {
         try {
-          grabberText.grabEdition(url);
+          grabberText.grabEdition(url, new IProgressMonitor() {
+            @Override
+            public void setMessage(final String message) {
+            }
+
+            @Override
+            public void step(final int step) {
+            }
+          });
         } catch (IOException e) {
 
         }
@@ -37,18 +46,21 @@ public final class GrabberJsoup {
 
   }
 
-  private void grabEdition(final String editionUrl) throws IOException {
-
+  public void grabEdition(final String editionUrl, final IProgressMonitor monitor) throws IOException {
     Document doc = Jsoup.connect(editionUrl).get();
     Elements tables = doc.select("table .even");
     tables.addAll(doc.select("table .odd"));
 
+    int counter = -1;
     for (Element row : tables) {
       final Elements td = row.select("td");
      // System.out.println("Card: " + td.get(0).text() + " " + td.get(1).text() + " url: " + td.get(1).child(0).attr("href"));
-
       //System.out.println("\n\nurl: "+urlPrefix+td.get(1).child(0).attr("href")+"\nEdition: "+doc.title()+"\nRarity: "+td.get(4).text()+ "\nName: " +td.get(1).text());
-      grabCard(""+urlPrefix+td.get(1).child(0).attr("href"),doc.title(),td.get(4).text(),td.get(1).text());
+      final String title = doc.title();
+      final String text = td.get(1).text();
+      monitor.setMessage("Grabbing card: " + text);
+      monitor.step(++counter);
+      grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), title, td.get(4).text(), text);
     }
 //    System.out.println(tables);
   }
@@ -85,7 +97,7 @@ public final class GrabberJsoup {
   }
 
   private void extractTypeLine(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternTypeline = java.util.regex.Pattern.compile("<p>(.*),\\s\\n\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)\\n.*</p>");
+    final java.util.regex.Pattern patternTypeline = java.util.regex.Pattern.compile(".*<p>(.*),\\s\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\).*</p>.*");
     java.util.regex.Matcher m = patternTypeline.matcher(html);
     if (m.matches()) {
       card.setType(m.group(1));
