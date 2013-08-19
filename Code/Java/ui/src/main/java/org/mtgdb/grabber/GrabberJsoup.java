@@ -37,8 +37,9 @@ private final String url;
     Elements tables = doc.select("table .even");
     for (Element row : tables) {
       final Elements td = row.select("td");
-      System.out.println("Card: " + td.get(0).text() + " " + td.get(1).text());
+      System.out.println("Card: " + td.get(0).text() + " " + td.get(1).text() + " url: " + td.get(1).child(0).tagName("href"));
     }
+    System.out.println(tables);
   }
 
   private void handleContent(final StringBuilder builder) {
