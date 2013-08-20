@@ -83,6 +83,7 @@ public final class GrabberJsoup {
     extractTypeLine(card, document);
     extractTypeLineOther(card, document);
     extractTypeLineCreature(card, document);
+    extractTypeLinePlaneswalker(card,document);
     extractCardText(card, document);
     extractFlavourText(card, document);
     extractImageURL(card, html);
@@ -133,6 +134,19 @@ public final class GrabberJsoup {
       card.setConvManaCost(Integer.parseInt(m.group(6)));
     }
   }
+  private void extractTypeLinePlaneswalker(org.mtgdb.model.CardDescription card, final Document document) {
+    Elements typeline = document.select("table > tbody > tr span + p");
+    String type = typeline.text();
+    final java.util.regex.Pattern patternTypelinePlaneswalker = java.util.regex.Pattern.compile("(.*)\\s—\\s(.*)\\s\\([a-zA-z]+:\\s(\\d{1,2})\\),\\s([0-9A-Z]+)\\s\\(([0-9]+)\\)");
+    java.util.regex.Matcher m = patternTypelinePlaneswalker.matcher(type);
+    if (m.matches()) {
+      card.setType(m.group(1));
+      card.setSubType(m.group(2));
+      card.setLoyalty(Integer.parseInt(m.group(3)));
+      card.setManaCost(m.group(4));
+      card.setConvManaCost(Integer.parseInt(m.group(5)));
+    }
+  }
 
   private void extractCardText(org.mtgdb.model.CardDescription card, final Document document) {
 //    final java.util.regex.Pattern patternCardText = java.util.regex.Pattern.compile("<p class=\"ctext\"><b>(.+?)</b></p>");
@@ -161,11 +175,11 @@ public final class GrabberJsoup {
   }
 
   private void extractNrArtist(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternCardnumArtist = java.util.regex.Pattern.compile("<b>#(\\d{1,3}[a-z]?)\\s\\((.*)\\)</b>");
+    final java.util.regex.Pattern patternCardnumArtist = java.util.regex.Pattern.compile("<b>#(\\d{1,3}[a-z]?)\\s\\(([a-z A-Z]+)\\)</b>");
     java.util.regex.Matcher m = patternCardnumArtist.matcher(html);
     if (m.find()) {
       card.setNumber(m.group(1));
-//      card.setArtist(m.group(2));
+      card.setArtist(m.group(2));
     }
   }
 }
