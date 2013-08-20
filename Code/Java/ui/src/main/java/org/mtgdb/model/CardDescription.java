@@ -18,6 +18,7 @@ public final class CardDescription {
   private String edition;
   private String rarity;
   private String name;
+  private int loyalty;
 
   public String getImageURL() {
     return imageURL;
@@ -149,5 +150,9 @@ public final class CardDescription {
       ", rarity='" + rarity + '\'' +
       ", name='" + name + '\'' +
       '}';
+  }
+
+  public void setLoyalty(int loyalty) {
+    this.loyalty = loyalty;
   }
 }

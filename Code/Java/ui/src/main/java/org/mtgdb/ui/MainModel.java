@@ -29,6 +29,9 @@ public final class MainModel {
     IDatabaseConnection connection = DatabaseConnection.create();
     dbAccess = new DatabaseAccess(connection);
   }
+  public void closeDB(){
+    dbAccess.closeDB();
+  }
 
   public Action getGrabberAction() {
     return grabberAction;
