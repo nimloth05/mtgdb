@@ -92,8 +92,6 @@ public final class GrabberJsoup {
     card.setRarity(rarity);
     card.setName(name);
 
-    //System.out.println("=========================================================");
-    //System.out.println(card.toString());
     return card;
   }
 
@@ -149,20 +147,10 @@ public final class GrabberJsoup {
   }
 
   private void extractCardText(org.mtgdb.model.CardDescription card, final Document document) {
-//    final java.util.regex.Pattern patternCardText = java.util.regex.Pattern.compile("<p class=\"ctext\"><b>(.+?)</b></p>");
-//    java.util.regex.Matcher m = patternCardText.matcher(html);
-//    if (m.find()) {
-//      card.setCardText(m.group(1));
-//    }
     card.setCardText(document.select("p.ctext").first().text());
   }
 
   private void extractFlavourText(org.mtgdb.model.CardDescription card, final Document document) {
-//    final java.util.regex.Pattern patternFlavorText = java.util.regex.Pattern.compile("<p><i>(.*)</i></p>");
-//    java.util.regex.Matcher m = patternFlavorText.matcher("asdf");
-//    if (m.find()) {
-//      card.setFlavorText(m.group(1));
-//    }
     card.setFlavorText(document.select("table > tbody > tr span + p + p + p > i").text());
   }
 
