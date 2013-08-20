@@ -47,26 +47,26 @@ public final class DatabaseAccess {
     builder.append("insert into \"CardDescription\" values ");
     for (CardDescription cardDescription : allCards) {
       builder.append(Constants.LEFT_PARENTHESIS)
-      .append("'" +  cardDescription.getEdition() + "'")
-      .append(Constants.COMMA + "'" + cardDescription.getType() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getSubType() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getManaCost() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getConvManaCost() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getPower() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getHp() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getImageURL() + "'")
-      .append(Constants.COMMA +"'" +  escape(cardDescription.getCardText()) + "'")
-      .append(Constants.COMMA +"'" +  escape(cardDescription.getFlavorText()) + "'")
-      .append(Constants.COMMA + "'" + cardDescription.getNumber() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getArtist() + "'")
-      .append(Constants.COMMA + "'" + "0" + "'")
-      .append(Constants.COMMA + "'" + escape(cardDescription.getName()) + "'")
-      .append(Constants.COMMA +"'" +   "'")
-      .append(Constants.RIGHT_PARENTHESIS);
+        .append("'" + cardDescription.getEdition() + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getNumber() + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getType() + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getSubType() + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getManaCost() + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getConvManaCost() + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getPower() + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getHp() + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getImageURL() + "'")
+        .append(Constants.COMMA + "'" + escape(cardDescription.getCardText()) + "'")
+        .append(Constants.COMMA + "'" + escape(cardDescription.getFlavorText()) + "'")
+        .append(Constants.COMMA + "'" + cardDescription.getArtist() + "'")
+        .append(Constants.COMMA + "'" + "0" + "'")
+        .append(Constants.COMMA + "'" + escape(cardDescription.getName()) + "'")
+        .append(Constants.COMMA + "'" + "'")
+        .append(Constants.RIGHT_PARENTHESIS);
 
       builder.append(Constants.COMMA);
     }
-    builder.deleteCharAt(builder.length()-1);
+    builder.deleteCharAt(builder.length() - 1);
 
     System.out.println("sql: \n" + builder.toString());
     connection.executeSql(builder.toString());

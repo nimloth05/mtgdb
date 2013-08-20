@@ -9,6 +9,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -34,7 +35,7 @@ public final class DatabaseConnection implements IDatabaseConnection {
     try {
       Class.forName("org.h2.Driver");
       connection = DriverManager.getConnection("jdbc:h2:" + path.toAbsolutePath().toFile());
-      if (path.toFile().exists()) {
+      if (isSchemaComplete()) {
         openExistingDB();
       } else {
         createDB();
@@ -44,6 +45,21 @@ public final class DatabaseConnection implements IDatabaseConnection {
       throw new RuntimeException(e);
     } catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  private boolean isSchemaComplete() {
+    try {
+      final Statement statement = connection.createStatement();
+      final ResultSet execute = statement.executeQuery("SELECT  * FROM INFORMATION_SCHEMA.TABLES WHERE  (TABLE_NAME= 'Edition' OR TABLE_NAME = 'CardDescription' OR TABLE_NAME = 'PhysicalCard' OR TABLE_NAME = 'Container') ");
+      execute.last();
+      boolean result = execute.getRow() == 4;
+      execute.close();
+      statement.close();
+      return result;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
     }
   }
 
@@ -80,12 +96,12 @@ public final class DatabaseConnection implements IDatabaseConnection {
   }
 
   @Override
-  public void closeDB(){
+  public void closeDB() {
     try {
       connection.commit();
       connection.close();
     } catch (SQLException e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      Assert.log(e);
     }
   }
 }
