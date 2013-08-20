@@ -84,7 +84,7 @@ public final class GrabberJsoup {
     extractTypeLineOther(card, document);
     extractTypeLineCreature(card, document);
     extractCardText(card, document);
-    extractFlavourText(card, html);
+    extractFlavourText(card, document);
     extractImageURL(card, html);
     extractNrArtist(card, html);
     card.setEdition(edition);
@@ -143,12 +143,13 @@ public final class GrabberJsoup {
     card.setCardText(document.select("p.ctext").first().text());
   }
 
-  private void extractFlavourText(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternFlavorText = java.util.regex.Pattern.compile("<p><i>(.*)</i></p>");
-    java.util.regex.Matcher m = patternFlavorText.matcher(html);
-    if (m.find()) {
-      card.setFlavorText(m.group(1));
-    }
+  private void extractFlavourText(org.mtgdb.model.CardDescription card, final Document document) {
+//    final java.util.regex.Pattern patternFlavorText = java.util.regex.Pattern.compile("<p><i>(.*)</i></p>");
+//    java.util.regex.Matcher m = patternFlavorText.matcher("asdf");
+//    if (m.find()) {
+//      card.setFlavorText(m.group(1));
+//    }
+    card.setFlavorText(document.select("table > tbody > tr span + p + p + p > i").text());
   }
 
   private void extractImageURL(org.mtgdb.model.CardDescription card, final String html) {

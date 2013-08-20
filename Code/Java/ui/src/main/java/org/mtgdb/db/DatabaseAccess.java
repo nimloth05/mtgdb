@@ -75,4 +75,8 @@ public final class DatabaseAccess {
   private String escape(String value) {
     return EscapeUtils.escapeSQL(value);
   }
+
+  public void closeDB() {
+    connection.closeDB();
+  }
 }

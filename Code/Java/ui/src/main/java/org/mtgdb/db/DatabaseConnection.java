@@ -78,4 +78,14 @@ public final class DatabaseConnection implements IDatabaseConnection {
       Assert.log(e);
     }
   }
+
+  @Override
+  public void closeDB(){
+    try {
+      connection.commit();
+      connection.close();
+    } catch (SQLException e) {
+      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+    }
+  }
 }
