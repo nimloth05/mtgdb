@@ -3,6 +3,7 @@ package org.mtgdb.db;
 import org.mtgdb.model.CardDescription;
 import org.mtgdb.model.ILibraryCard;
 import org.mtgdb.util.Constants;
+import org.mtgdb.util.EscapeUtils;
 
 import java.util.List;
 
@@ -47,25 +48,31 @@ public final class DatabaseAccess {
     for (CardDescription cardDescription : allCards) {
       builder.append(Constants.LEFT_PARENTHESIS)
       .append("'" +  cardDescription.getEdition() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getType() + "'")
+      .append(Constants.COMMA + "'" + cardDescription.getType() + "'")
       .append(Constants.COMMA +"'" +  cardDescription.getSubType() + "'")
       .append(Constants.COMMA +"'" +  cardDescription.getManaCost() + "'")
       .append(Constants.COMMA +"'" +  cardDescription.getConvManaCost() + "'")
       .append(Constants.COMMA +"'" +  cardDescription.getPower() + "'")
       .append(Constants.COMMA +"'" +  cardDescription.getHp() + "'")
       .append(Constants.COMMA +"'" +  cardDescription.getImageURL() + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getCardText().replace("\"", "") + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getFlavorText().replace("\"", "") + "'")
-      .append(Constants.COMMA + "'" + "0" + "'")
+      .append(Constants.COMMA +"'" +  escape(cardDescription.getCardText()) + "'")
+      .append(Constants.COMMA +"'" +  escape(cardDescription.getFlavorText()) + "'")
+      .append(Constants.COMMA + "'" + cardDescription.getNumber() + "'")
       .append(Constants.COMMA +"'" +  cardDescription.getArtist() + "'")
       .append(Constants.COMMA + "'" + "0" + "'")
-      .append(Constants.COMMA +"'" +  cardDescription.getName() + "'")
+      .append(Constants.COMMA + "'" + escape(cardDescription.getName()) + "'")
       .append(Constants.COMMA +"'" +   "'")
       .append(Constants.RIGHT_PARENTHESIS);
-      System.out.println(cardDescription);
+
+      builder.append(Constants.COMMA);
     }
+    builder.deleteCharAt(builder.length()-1);
 
     System.out.println("sql: \n" + builder.toString());
     connection.executeSql(builder.toString());
+  }
+
+  private String escape(String value) {
+    return EscapeUtils.escapeSQL(value);
   }
 }

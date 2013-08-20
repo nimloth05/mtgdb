@@ -68,6 +68,13 @@ public final class MainModel {
             @Override
             public void grabbed(final CardDescription description) {
               allCards.add(description);
+//              SwingUtilities.invokeLater(new Runnable() {
+//                @Override
+//                public void run() {
+//                  System.out.println("saving card " + description);
+//                  dbAccess.saveAllCardDescription(Arrays.asList(description));
+//                }
+//              });
               monitor.setMessage("Grabbed card " + description.getName());
               monitor.step(counter++);
             }

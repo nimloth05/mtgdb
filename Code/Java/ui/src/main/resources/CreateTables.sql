@@ -25,7 +25,7 @@ CREATE TABLE PUBLIC."CardDescription"
   "imageURL" VARCHAR NOT NULL DEFAULT '',
   "cardText" VARCHAR NOT NULL ,
   "flavorText" VARCHAR NOT NULL DEFAULT '',
-  "cardNumber" INT NOT NULL DEFAULT 0,
+  "cardNumber" VARCHAR NOT NULL DEFAULT '',
   "artist" VARCHAR NOT NULL DEFAULT '',
   "rarity" INT NOT NULL DEFAULT 0,
   "name" VARCHAR NOT NULL,

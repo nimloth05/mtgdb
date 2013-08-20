@@ -153,7 +153,7 @@ public final class GrabberJsoup {
   }
 
   private void extractNrArtist(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternCardnumArtist = java.util.regex.Pattern.compile("<b>#(\\d{1,3})\\s\\((.*)\\)</b>");
+    final java.util.regex.Pattern patternCardnumArtist = java.util.regex.Pattern.compile("<b>#(\\d{1,3}[a-z]?)\\s\\((.*)\\)</b>");
     java.util.regex.Matcher m = patternCardnumArtist.matcher(html);
     if (m.find()) {
       card.setNumber(m.group(1));
