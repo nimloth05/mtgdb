@@ -79,9 +79,10 @@ public final class GrabberJsoup {
     org.mtgdb.model.CardDescription card = new org.mtgdb.model.CardDescription();
     Document document = Jsoup.parse(html);
 
-    extractTypeLine(card, html);
-    extractTypeLineOther(card, html);
-    extractTypeLineCreature(card, html);
+
+    extractTypeLine(card, document);
+    extractTypeLineOther(card, document);
+    extractTypeLineCreature(card, document);
     extractCardText(card, document);
     extractFlavourText(card, html);
     extractImageURL(card, html);
@@ -95,9 +96,11 @@ public final class GrabberJsoup {
     return card;
   }
 
-  private void extractTypeLine(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternTypeline = java.util.regex.Pattern.compile(".*<p>(.*),\\s\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\).*</p>.*");
-    java.util.regex.Matcher m = patternTypeline.matcher(html);
+  private void extractTypeLine(org.mtgdb.model.CardDescription card, final Document document) {
+    Elements typeline = document.select("table > tbody > tr span + p");
+    String type = typeline.text();
+    final java.util.regex.Pattern patternTypeline = java.util.regex.Pattern.compile("(.*),\\s\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
+    java.util.regex.Matcher m = patternTypeline.matcher(type);
     if (m.matches()) {
       card.setType(m.group(1));
       card.setManaCost(m.group(2));
@@ -105,18 +108,22 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractTypeLineOther(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternTypelineOther = java.util.regex.Pattern.compile("<p>(.*)\\s—\\s(.*)\\n.*");
-    java.util.regex.Matcher m = patternTypelineOther.matcher(html);
+  private void extractTypeLineOther(org.mtgdb.model.CardDescription card, final Document document) {
+    Elements typeline = document.select("table > tbody > tr span + p");
+    String type = typeline.text();
+    final java.util.regex.Pattern patternTypelineOther = java.util.regex.Pattern.compile("(.*)\\s—\\s(.*)");
+    java.util.regex.Matcher m = patternTypelineOther.matcher(type);
     if (m.matches()) {
       card.setType(m.group(1));
       card.setSubType(m.group(2));
     }
   }
 
-  private void extractTypeLineCreature(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternTypelineCreature = java.util.regex.Pattern.compile("<p>(.*)\\s—\\s(.*)\\s(\\d{1,2}|\\*)/(\\d{1,2}|\\*),\\s\\n\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)\\n.*</p>");
-    java.util.regex.Matcher m = patternTypelineCreature.matcher(html);
+  private void extractTypeLineCreature(org.mtgdb.model.CardDescription card, final Document document) {
+    Elements typeline = document.select("table > tbody > tr span + p");
+    String type = typeline.text();
+    final java.util.regex.Pattern patternTypelineCreature = java.util.regex.Pattern.compile("(.*)\\s—\\s(.*)\\s(\\d{1,2}|\\*)/(\\d{1,2}|\\*),\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
+    java.util.regex.Matcher m = patternTypelineCreature.matcher(type);
     if (m.matches()) {
       card.setType(m.group(1));
       card.setSubType(m.group(2));
