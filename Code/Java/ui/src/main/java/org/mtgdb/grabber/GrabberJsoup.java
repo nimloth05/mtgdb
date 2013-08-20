@@ -6,10 +6,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.mtgdb.model.CardDescription;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URL;
+import java.util.regex.Pattern;
 
 /**
  * @author Sandro Orlando
+ * @author Michael Sacher
  */
 public final class GrabberJsoup {
 
@@ -50,25 +54,17 @@ public final class GrabberJsoup {
     Elements tables = doc.select("table .even");
     tables.addAll(doc.select("table .odd"));
 
-    int counter = -1;
     for (Element row : tables) {
       final Elements td = row.select("td");
-      // System.out.println("Card: " + td.get(0).text() + " " + td.get(1).text() + " url: " + td.get(1).child(0).attr("href"));
-      //System.out.println("\n\nurl: "+urlPrefix+td.get(1).child(0).attr("href")+"\nEdition: "+doc.title()+"\nRarity: "+td.get(4).text()+ "\nName: " +td.get(1).text());
-      final String title = doc.title();
       final String text = td.get(1).text();
       CardDescription cardDescription = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), editionShort, td.get(4).text(), text);
       monitor.grabbed(cardDescription);
     }
-//    System.out.println(tables);
   }
 
   private CardDescription grabCard(final String cardUrl, final String edition, final String rarity, final String name) throws IOException {
-
-    // final java.util.regex.Pattern patternEditionRarity = java.util.regex.Pattern.compile("");
-
-    java.net.URL urlObject = new java.net.URL(cardUrl);
-    final java.io.BufferedReader bufferedReader = new java.io.BufferedReader(new java.io.InputStreamReader(urlObject.openConnection().getInputStream(), "utf8"));
+    URL urlObject = new URL(cardUrl);
+    final BufferedReader bufferedReader = new BufferedReader(new java.io.InputStreamReader(urlObject.openConnection().getInputStream(), "utf8"), 8100);
     String line;
     StringBuilder builder = new StringBuilder();
     while ((line = bufferedReader.readLine()) != null) {
@@ -76,7 +72,7 @@ public final class GrabberJsoup {
     }
 
     final String html = builder.toString();
-    org.mtgdb.model.CardDescription card = new org.mtgdb.model.CardDescription();
+    CardDescription card = new CardDescription();
     Document document = Jsoup.parse(html);
 
 
@@ -91,15 +87,13 @@ public final class GrabberJsoup {
     card.setRarity(rarity);
     card.setName(name);
 
-    //System.out.println("=========================================================");
-    //System.out.println(card.toString());
     return card;
   }
 
-  private void extractTypeLine(org.mtgdb.model.CardDescription card, final Document document) {
+  private void extractTypeLine(CardDescription card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
-    final java.util.regex.Pattern patternTypeline = java.util.regex.Pattern.compile("(.*),\\s\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
+    final Pattern patternTypeline = Pattern.compile("(.*),\\s\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
     java.util.regex.Matcher m = patternTypeline.matcher(type);
     if (m.matches()) {
       card.setType(m.group(1));
@@ -108,10 +102,10 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractTypeLineOther(org.mtgdb.model.CardDescription card, final Document document) {
+  private void extractTypeLineOther(CardDescription card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
-    final java.util.regex.Pattern patternTypelineOther = java.util.regex.Pattern.compile("(.*)\\s—\\s(.*)");
+    final Pattern patternTypelineOther = Pattern.compile("(.*)\\s—\\s(.*)");
     java.util.regex.Matcher m = patternTypelineOther.matcher(type);
     if (m.matches()) {
       card.setType(m.group(1));
@@ -119,10 +113,10 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractTypeLineCreature(org.mtgdb.model.CardDescription card, final Document document) {
+  private void extractTypeLineCreature(CardDescription card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
-    final java.util.regex.Pattern patternTypelineCreature = java.util.regex.Pattern.compile("(.*)\\s—\\s(.*)\\s(\\d{1,2}|\\*)/(\\d{1,2}|\\*),\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
+    final Pattern patternTypelineCreature = Pattern.compile("(.*)\\s—\\s(.*)\\s(\\d{1,2}|\\*)/(\\d{1,2}|\\*),\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
     java.util.regex.Matcher m = patternTypelineCreature.matcher(type);
     if (m.matches()) {
       card.setType(m.group(1));
@@ -134,33 +128,28 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractCardText(org.mtgdb.model.CardDescription card, final Document document) {
-//    final java.util.regex.Pattern patternCardText = java.util.regex.Pattern.compile("<p class=\"ctext\"><b>(.+?)</b></p>");
-//    java.util.regex.Matcher m = patternCardText.matcher(html);
-//    if (m.find()) {
-//      card.setCardText(m.group(1));
-//    }
+  private void extractCardText(CardDescription card, final Document document) {
     card.setCardText(document.select("p.ctext").first().text());
   }
 
-  private void extractFlavourText(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternFlavorText = java.util.regex.Pattern.compile("<p><i>(.*)</i></p>");
+  private void extractFlavourText(CardDescription card, final String html) {
+    final Pattern patternFlavorText = Pattern.compile("<p><i>(.*)</i></p>");
     java.util.regex.Matcher m = patternFlavorText.matcher(html);
     if (m.find()) {
       card.setFlavorText(m.group(1));
     }
   }
 
-  private void extractImageURL(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternScanUrl = java.util.regex.Pattern.compile("\"(http://magiccards\\.info/scan.*)\"");
+  private void extractImageURL(CardDescription card, final String html) {
+    final Pattern patternScanUrl = Pattern.compile("\"(http://magiccards\\.info/scan.*)\"");
     java.util.regex.Matcher m = patternScanUrl.matcher(html);
     if (m.matches()) {
       card.setImageURL(m.group(1));
     }
   }
 
-  private void extractNrArtist(org.mtgdb.model.CardDescription card, final String html) {
-    final java.util.regex.Pattern patternCardnumArtist = java.util.regex.Pattern.compile("<b>#(\\d{1,3}[a-z]?)\\s\\((.*)\\)</b>");
+  private void extractNrArtist(CardDescription card, final String html) {
+    final Pattern patternCardnumArtist = Pattern.compile("<b>#(\\d{1,3}[a-z]?)\\s\\((.*)\\)</b>");
     java.util.regex.Matcher m = patternCardnumArtist.matcher(html);
     if (m.find()) {
       card.setNumber(m.group(1));

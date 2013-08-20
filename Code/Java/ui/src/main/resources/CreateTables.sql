@@ -18,7 +18,7 @@ CREATE TABLE PUBLIC."CardDescription"
   "edition" VARCHAR NOT NULL ,
    "type" varchar NOT NULL,
   "subType" varchar NOT NULL ,
-  "manaConst" VARCHAR NOT NULL ,
+  "manaCost" VARCHAR NOT NULL ,
   "convManaConst" INT NOT NULL ,
   "power" INT NOT NULL DEFAULT 0,
   "toughness" INT NOT NULL DEFAULT 0,
