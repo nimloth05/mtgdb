@@ -8,26 +8,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 
 public final class FrameUtil {
-  
+
   public static void close(JDialog frame) {
     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
-  
+
   public static void close(final JFrame frame) {
     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
   }
 
   /**
    * Connects the given button with the escape key. The escape key will simulate a click on the button.
+   *
    * @param cancelButton
    */
   public static void connectEscapeWithButton(final JButton cancelButton) {
     connectEscapeWithButton(cancelButton, new AbstractAction() {
-      
+
       public void actionPerformed(ActionEvent e) {
         ButtonUtil.click(cancelButton.getModel());
       }
-   });
+    });
   }
 
   public static void connectEscapeWithButton(final JButton cancelButton, Action cancelKeyAction) {
@@ -43,19 +44,20 @@ public final class FrameUtil {
   }
 
   public static Window getFrameByTitle(String string) {
-    for(Window window: Window.getWindows()) {
+    for (Window window : Window.getWindows()) {
       if (window instanceof Dialog) {
         Dialog dialog = (Dialog) window;
         if (dialog.getTitle().equalsIgnoreCase(string)) return dialog;
       }
       if (window instanceof Frame) {
-        Frame frame = (Frame)window;
+        Frame frame = (Frame) window;
         if (frame.getTitle().equals(string)) return frame;
       }
     }
     return null;
   }
 
-  private FrameUtil() {}
+  private FrameUtil() {
+  }
 
 }

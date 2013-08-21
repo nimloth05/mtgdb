@@ -13,7 +13,8 @@ import java.net.URL;
  */
 public final class ImageLoader {
 
-  private ImageLoader() {}
+  private ImageLoader() {
+  }
 
   public static Icon loadAsIcon(final String iconName) {
     return new ImageIcon(load(iconName));
@@ -24,8 +25,7 @@ public final class ImageLoader {
     BufferedImage image;
     try {
       image = ImageIO.read(url);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       image = ImageUtil.createErrorImage(16, 16);
     }
 

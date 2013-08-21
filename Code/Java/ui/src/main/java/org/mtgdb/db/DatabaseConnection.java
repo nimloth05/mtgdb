@@ -51,9 +51,9 @@ public final class DatabaseConnection implements IDatabaseConnection {
   private boolean isSchemaComplete() {
     try {
       final Statement statement = connection.createStatement();
-      final ResultSet execute = statement.executeQuery("SELECT  * FROM INFORMATION_SCHEMA.TABLES WHERE  (TABLE_NAME= 'Edition' OR TABLE_NAME = 'CardDescription' OR TABLE_NAME = 'PhysicalCard' OR TABLE_NAME = 'Container') ");
+      final ResultSet execute = statement.executeQuery("SELECT  * FROM INFORMATION_SCHEMA.TABLES WHERE  (TABLE_NAME= 'Edition' OR TABLE_NAME = 'CardDescription' OR TABLE_NAME = 'PhysicalCard' OR TABLE_NAME = 'Container' OR TABLE_NAME = 'Deck' OR TABLE_NAME = 'CardDescriptionXDeck') ");
       execute.last();
-      boolean result = execute.getRow() == 4;
+      boolean result = execute.getRow() == 6;
       execute.close();
       statement.close();
       return result;

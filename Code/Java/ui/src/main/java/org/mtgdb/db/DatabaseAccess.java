@@ -1,6 +1,7 @@
 package org.mtgdb.db;
 
 import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.Container;
 import org.mtgdb.model.ILibraryCard;
 import org.mtgdb.util.Constants;
 import org.mtgdb.util.EscapeUtils;
@@ -78,5 +79,16 @@ public final class DatabaseAccess {
 
   public void closeDB() {
     connection.closeDB();
+  }
+
+  public void saveContainer(final Container container) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("insert into \"Container\" ")
+      .append("(NAME, DESCRIPTION) values (")
+      .append("'" + escape(container.getName()) + "'")
+      .append(Constants.COMMA + "'" + escape(container.getDescription()) + "'")
+      .append(Constants.RIGHT_PARENTHESIS);
+    System.out.println("sql: \n" + builder.toString());
+    connection.executeSql(builder.toString());
   }
 }

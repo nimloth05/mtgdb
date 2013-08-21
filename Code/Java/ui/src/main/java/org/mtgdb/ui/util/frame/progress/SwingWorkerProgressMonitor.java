@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.util.List;
 
 public class SwingWorkerProgressMonitor extends SwingWorker<Void, Object> implements IProgressMonitor {
-  
+
   private final IProgressRunnable runnable;
   private final IProgressListener listener;
 
@@ -12,7 +12,7 @@ public class SwingWorkerProgressMonitor extends SwingWorker<Void, Object> implem
     this.runnable = runnable;
     this.listener = listener;
   }
-  
+
   @Override
   public void setMessage(String message) {
     publish(message);
@@ -38,5 +38,5 @@ public class SwingWorkerProgressMonitor extends SwingWorker<Void, Object> implem
   protected void process(List<Object> chunks) {
     listener.process(chunks);
   }
-  
+
 }

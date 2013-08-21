@@ -47,7 +47,9 @@ public abstract class AbstractDialog {
   }
 
   protected abstract JPanel createContent();
+
   protected abstract Action getOkAction();
+
   protected abstract Action getEscapeAction();
 
   public String getTitle() {

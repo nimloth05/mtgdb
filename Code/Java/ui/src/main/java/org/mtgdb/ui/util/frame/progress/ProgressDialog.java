@@ -15,7 +15,7 @@ import java.util.List;
  */
 public final class ProgressDialog {
 
-  private static final int WIDTH  = 300;
+  private static final int WIDTH = 300;
   private static final int HEIGHT = 100;
   private JDialog dialog;
   private JProgressBar progressBar;
@@ -75,8 +75,7 @@ public final class ProgressDialog {
       public void run(IProgressMonitor monitor) throws Exception {
         try {
           runnable.run(monitor);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           Assert.log(e);
           throw new RuntimeException(e);
         }
@@ -89,7 +88,7 @@ public final class ProgressDialog {
 
       @Override
       public void process(List<Object> chunks) {
-        for(Object object: chunks) {
+        for (Object object : chunks) {
           if (object instanceof Integer) {
             Integer value = (Integer) object;
             progressBar.setValue(value.intValue());
@@ -118,5 +117,5 @@ public final class ProgressDialog {
 
     dialog.getContentPane().add(progressBar);
   }
-  
+
 }

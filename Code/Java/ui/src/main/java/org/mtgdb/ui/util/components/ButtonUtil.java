@@ -13,7 +13,8 @@ import java.awt.event.ActionEvent;
  */
 public final class ButtonUtil {
 
-  private ButtonUtil() {}
+  private ButtonUtil() {
+  }
 
   public static void click(ButtonModel model) {
     model.setArmed(true);

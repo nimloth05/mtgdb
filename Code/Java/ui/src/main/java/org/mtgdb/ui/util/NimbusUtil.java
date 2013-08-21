@@ -7,7 +7,8 @@ import javax.swing.*;
  */
 public final class NimbusUtil {
 
-  private NimbusUtil() {}
+  private NimbusUtil() {
+  }
 
   public static void setNimbus() {
     try {

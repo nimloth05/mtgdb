@@ -40,6 +40,7 @@ public final class MainWindow {
     JToolBar toolBar = new JToolBar();
     toolBar.setFloatable(false);
     toolBar.add(model.getGrabberAction());
+    toolBar.add(model.getAddContainerAction());
     frame.getContentPane().add(toolBar, BorderLayout.NORTH);
   }
 
