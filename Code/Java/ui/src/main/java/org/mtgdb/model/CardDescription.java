@@ -20,6 +20,14 @@ public final class CardDescription {
   private String name;
   private int loyalty;
 
+  public int getLoyalty() {
+    return loyalty;
+  }
+
+  public void setLoyalty(int loyalty) {
+    this.loyalty = loyalty;
+  }
+
   public String getImageURL() {
     return imageURL;
   }
@@ -92,44 +100,44 @@ public final class CardDescription {
     this.flavorText = flavorText;
   }
 
-  public void setNumber(String number) {
-    this.number = number;
-  }
-
   public String getNumber() {
     return number;
   }
 
-  public void setArtist(String artist) {
-    this.artist = artist;
+  public void setNumber(String number) {
+    this.number = number;
   }
 
   public String getArtist() {
     return artist;
   }
 
-  public void setEdition(String edition) {
-    this.edition = edition;
+  public void setArtist(String artist) {
+    this.artist = artist;
   }
 
   public String getEdition() {
     return edition;
   }
 
-  public void setRarity(String rarity) {
-    this.rarity = rarity;
+  public void setEdition(String edition) {
+    this.edition = edition;
   }
 
   public String getRarity() {
     return rarity;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setRarity(String rarity) {
+    this.rarity = rarity;
   }
 
   public String getName() {
     return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Override
@@ -150,9 +158,5 @@ public final class CardDescription {
       ", rarity='" + rarity + '\'' +
       ", name='" + name + '\'' +
       '}';
-  }
-
-  public void setLoyalty(int loyalty) {
-    this.loyalty = loyalty;
   }
 }

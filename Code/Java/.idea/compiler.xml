@@ -27,6 +27,9 @@
         <module name="ui" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ui" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 

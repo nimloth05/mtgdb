@@ -29,9 +29,10 @@ public final class MainWindow {
   private void createContentArea() {
     JPanel panel = new JPanel();
     panel.setLayout(new MigLayout());
-    panel.add(new JLabel("Your Library:"));
+    panel.add(new JLabel("Your Library:"),"wrap");
     final JTable table = new JTable();
     table.setModel(model.getLibraryModel());
+    panel.add(table.getTableHeader(),"wrap");
     panel.add(table);
     frame.getContentPane().add(panel, BorderLayout.CENTER);
   }

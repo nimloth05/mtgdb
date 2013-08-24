@@ -21,7 +21,6 @@ import org.mtgdb.ui.util.frame.progress.ProgressDialog;
 import org.mtgdb.ui.util.models.DocumentHelper;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
@@ -53,7 +52,7 @@ public final class MainModel {
   }
 
   public TableModel getLibraryModel() {
-    return new DefaultTableModel();
+    return new MockTableModel();
   }
 
   public Action getAddContainerAction() {
