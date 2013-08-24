@@ -150,7 +150,7 @@ public final class GrabberJsoup {
   }
 
   private void extractImageURL(CardDescription card, final String html) {
-    final Pattern patternScanUrl = Pattern.compile("\"(http://magiccards\\.info/scan.*)\"");
+    final Pattern patternScanUrl = Pattern.compile(".*(http://magiccards\\.info/scan.*jpg).*");
     Matcher m = patternScanUrl.matcher(html);
     if (m.matches()) {
       card.setImageURL(m.group(1));

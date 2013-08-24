@@ -31,9 +31,10 @@ public final class MainWindow {
     panel.setLayout(new MigLayout());
     panel.add(new JLabel("Your Library:"),"wrap");
     final JTable table = new JTable();
+    final JScrollPane pane = new JScrollPane(table);
     table.setModel(model.getLibraryModel());
     panel.add(table.getTableHeader(),"wrap");
-    panel.add(table);
+    panel.add(pane,"width :100%:");
     frame.getContentPane().add(panel, BorderLayout.CENTER);
   }
 

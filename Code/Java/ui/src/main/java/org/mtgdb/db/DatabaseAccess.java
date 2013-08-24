@@ -1,11 +1,16 @@
 package org.mtgdb.db;
 
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.CardDescription;
 import org.mtgdb.model.Container;
 import org.mtgdb.model.ILibraryCard;
 import org.mtgdb.util.Constants;
 import org.mtgdb.util.EscapeUtils;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -38,9 +43,54 @@ public final class DatabaseAccess {
 //    connection.execute()
   }
 
-  public ILibraryCard getAllLibraryCards() {
-//    connection.executeQuery("");
+  public Collection<ILibraryCard> getAllLibraryCards() {
+
     return null;
+  }
+
+  public ArrayList<MagicCard> getAllCards() {
+    ArrayList<MagicCard> cards = new ArrayList<MagicCard>();
+    try {
+      ResultSet rs = connection.executeQuery("SELECT * FROM \"CardDescription\";");
+      while (rs.next()) {
+        String edition = rs.getString("REF_EDITION");
+        String cardName = rs.getString("name");
+        String cardType = rs.getString("type");
+        String cardSubtype = rs.getString("subType");
+        int convertedManaCost = rs.getInt("convManaConst");
+        String manaCost = rs.getString("manaCost");
+        int power = rs.getInt("power");
+        int toughness = rs.getInt("toughness");
+        String imgUrl = rs.getString("imageURL");
+        String cardText = rs.getString("cardText");
+        String flavorText = rs.getString("flavorText");
+        String artist = rs.getString("artist");
+        int rarity = rs.getInt("rarity");
+        String cardId = rs.getString("cardId");
+        String cardNum = rs.getString("cardNumber");
+        cards.add(new MagicCard(
+          edition,
+          cardNum,
+          cardType,
+          cardSubtype,
+          manaCost,
+          convertedManaCost,
+          power,
+          toughness,
+          imgUrl,
+          cardText,
+          flavorText,
+          artist,
+          rarity,
+          cardName,
+          cardId
+        ));
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+    }
+    return cards;
   }
 
   public void saveAllCardDescription(final List<CardDescription> allCards) {
@@ -91,4 +141,5 @@ public final class DatabaseAccess {
     System.out.println("sql: \n" + builder.toString());
     connection.executeSql(builder.toString());
   }
+
 }

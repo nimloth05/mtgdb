@@ -52,7 +52,7 @@ public final class MainModel {
   }
 
   public TableModel getLibraryModel() {
-    return new MockTableModel();
+    return new MockTableModel(dbAccess);
   }
 
   public Action getAddContainerAction() {
