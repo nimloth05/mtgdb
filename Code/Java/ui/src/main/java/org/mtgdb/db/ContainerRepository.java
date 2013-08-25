@@ -1,7 +1,9 @@
 package org.mtgdb.db;
 
+import org.mtgdb.db.sql.Column;
+import org.mtgdb.db.sql.SQLGenerator;
+import org.mtgdb.db.sql.Value;
 import org.mtgdb.model.Container;
-import org.mtgdb.util.Constants;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,15 +13,18 @@ import java.sql.SQLException;
  */
 public final class ContainerRepository extends AbstractRepository implements IRepository {
 
+  private static final Column[] columns = new Column[] {
+    new Column("NAME"),
+    new Column("DESCRIPTION")
+  };
+
   public ContainerRepository() {
   }
 
   public void save(final ITransaction transaction, final Container container) {
-    StringBuilder builder = new StringBuilder();
-    builder.append("insert into \"Container\" ")
-      .append("(NAME, DESCRIPTION) values (").append("'").append(escape(container.getName())).append("'").append(Constants.COMMA + "'").append(escape(container.getDescription())).append("'")
-      .append(Constants.RIGHT_PARENTHESIS);
-    final ResultSet insert = transaction.insert(builder.toString());
+    Value[][] row = new Value[][] {{new Value(container.getName()), new Value(container.getDescription())}};
+    final String sql = SQLGenerator.insertInto("Container", columns, row);
+    final ResultSet insert = transaction.insert(sql);
     try {
       while(insert.next()) {
         int id = insert.getInt(1);

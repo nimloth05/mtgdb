@@ -8,7 +8,7 @@ public final class SQLGenerator {
   private SQLGenerator() {
   }
 
-  public static String insertInto(String table, Column... columns) {
+  public static String insertInto(String table, Column[] columns, Value[][] rows) {
     StringBuilder builder = new StringBuilder();
     builder
       .append("insert into \"")
@@ -20,17 +20,22 @@ public final class SQLGenerator {
         .append(colum.getName())
         .append("\",");
     }
-    builder.deleteCharAt(builder.length() -1);
+    builder.deleteCharAt(builder.length() - 1);
     builder.append(")");
 
     builder.append(" values (");
-    for (Column column : columns) {
-      builder
-        .append(column.getValue())
-        .append(",");
+    for (Value[] row : rows) {
+      for (Value value : row) {
+        builder
+          .append(value.getValue())
+          .append(",");
+      }
+      builder.deleteCharAt(builder.length() - 1);
+      builder.append(")");
+      builder.append(",(");
     }
-    builder.deleteCharAt(builder.length()-1);
-    builder.append(")");
+    builder.deleteCharAt(builder.length() - 2);
+    builder.deleteCharAt(builder.length() - 1);
     return builder.toString();
   }
 
