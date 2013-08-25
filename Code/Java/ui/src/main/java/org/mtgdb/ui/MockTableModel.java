@@ -15,21 +15,19 @@ public class MockTableModel implements TableModel {
   private final List<CardDescription> cards;
   private MagicCardRepository repository;
   private ColumnDescription[] columnDescriptions = new ColumnDescription[]{
-    new ColumnDescription("ref_edition", String.class),
-    new ColumnDescription("Card Number", String.class),
+    new ColumnDescription("Edition", String.class),
+    new ColumnDescription("Name", String.class),
     new ColumnDescription("Type", String.class),
     new ColumnDescription("Sub Type", String.class),
+    new ColumnDescription("Rarity", String.class),
     new ColumnDescription("Mana Cost", String.class),
     new ColumnDescription("Converted Mana Cost", int.class),
     new ColumnDescription("power", int.class),
     new ColumnDescription("toughness", int.class),
-    new ColumnDescription("imageURL", String.class),
     new ColumnDescription("Text", String.class),
     new ColumnDescription("Flavor", String.class),
     new ColumnDescription("Artist", String.class),
-    new ColumnDescription("Rarity", String.class),
-    new ColumnDescription("Name", String.class),
-    new ColumnDescription("ID", String.class),
+    new ColumnDescription("Card Number", String.class),
 
   };
 
@@ -60,6 +58,21 @@ public class MockTableModel implements TableModel {
 
   public Object getValueAt(int rowIndex, int columnIndex) {
     final CardDescription cardDescription = cards.get(rowIndex);
+    switch (columnIndex) {
+      case 0: return cardDescription.getEdition();
+      case 1: return cardDescription.getName();
+      case 2: return cardDescription.getType();
+      case 3: return cardDescription.getSubType();
+      case 4: return cardDescription.getRarity();
+      case 5: return cardDescription.getManaCost();
+      case 6: return cardDescription.getConvManaCost();
+      case 7: return cardDescription.getPower();
+      case 8: return cardDescription.getToughness();
+      case 9: return cardDescription.getCardText();
+      case 10: return cardDescription.getFlavorText();
+      case 11: return cardDescription.getArtist();
+      case 12: return cardDescription.getNumber();
+    }
     return cardDescription.getCardId();
   }
 
