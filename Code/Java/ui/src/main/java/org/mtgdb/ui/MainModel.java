@@ -1,13 +1,18 @@
 package org.mtgdb.ui;
 
+import com.google.inject.Inject;
 import org.jdesktop.swingx.VerticalLayout;
-import org.mtgdb.db.DatabaseAccess;
-import org.mtgdb.db.DatabaseConnection;
+import org.mtgdb.db.ContainerRepository;
 import org.mtgdb.db.IDatabaseConnection;
+import org.mtgdb.db.IRepositoryProvider;
+import org.mtgdb.db.ITransaction;
+import org.mtgdb.db.ITransactionRunnable;
+import org.mtgdb.db.MagicCardRepository;
 import org.mtgdb.grabber.GrabberJsoup;
 import org.mtgdb.grabber.IGrabberListener;
 import org.mtgdb.model.CardDescription;
 import org.mtgdb.model.Container;
+import org.mtgdb.model.Edition;
 import org.mtgdb.ui.util.dialog.properties.IPropertyModelContext;
 import org.mtgdb.ui.util.dialog.properties.PropertyFactory;
 import org.mtgdb.ui.util.dialog.properties.PropertyGroup;
@@ -34,17 +39,20 @@ import java.util.List;
  */
 public final class MainModel {
 
-  private final DatabaseAccess dbAccess;
+  private final IDatabaseConnection connection;
+  private final IRepositoryProvider provider;
   private Action grabberAction = new GrabberAction();
   private Action addContainerAction = new AddContainerAction();
 
-  public MainModel() {
-    IDatabaseConnection connection = DatabaseConnection.create();
-    dbAccess = new DatabaseAccess(connection);
+  @Inject
+  public MainModel(final IDatabaseConnection connection, final IRepositoryProvider provider) {
+    this.connection = connection;
+    this.provider = provider;
+    connection.openDB();
   }
 
   public void closeDB() {
-    dbAccess.closeDB();
+    connection.closeDB();
   }
 
   public Action getGrabberAction() {
@@ -52,7 +60,7 @@ public final class MainModel {
   }
 
   public TableModel getLibraryModel() {
-    return new MockTableModel(dbAccess);
+    return new MockTableModel(provider.<MagicCardRepository>getRepository(CardDescription.class));
   }
 
   public Action getAddContainerAction() {
@@ -87,13 +95,23 @@ public final class MainModel {
         @Override
         public void actionPerformed(final ActionEvent e) {
           pane.ok();
-          dbAccess.saveContainer(container);
+          saveContainer();
           FrameUtil.close(dialog);
         }
       });
       dialog.getContentPane().add(okButton);
 
       dialog.setVisible(true);
+    }
+
+    private void saveContainer() {
+      connection.execute(new ITransactionRunnable() {
+        @Override
+        public void run(final ITransaction transaction) throws Exception {
+          ContainerRepository repo = provider.getRepository(Container.class);
+          repo.save(transaction, container);
+        }
+      });
     }
 
     private IStringModelBody createDescriptionBody() {
@@ -140,8 +158,17 @@ public final class MainModel {
 
         @Override
         public void done() {
-          dbAccess.saveAllCardDescription(allCards);
-          System.out.println("isEDT " + SwingUtilities.isEventDispatchThread());
+          saveCards();
+        }
+
+        private void saveCards() {
+          connection.execute(new ITransactionRunnable() {
+            @Override
+            public void run(final ITransaction transaction) throws Exception {
+              MagicCardRepository repo = provider.getRepository(CardDescription.class);
+              repo.saveAll(transaction, allCards);
+            }
+          });
         }
 
         @Override
@@ -151,6 +178,15 @@ public final class MainModel {
           grabberJsoup.grabAllEditions(new IGrabberListener() {
 
             int counter = 0;
+
+            @Override
+            public void beginEdition(final Edition edition) {
+//              saveEdition(edition);
+            }
+
+            private void saveEdition(final Edition edition) {
+//              EditionRepository repo = provider.getRepository(Edition.class);
+            }
 
             @Override
             public void grabbed(final CardDescription description) {
@@ -164,6 +200,11 @@ public final class MainModel {
 //              });
               monitor.setMessage("Grabbed card " + description.getName());
               monitor.step(counter++);
+            }
+
+            @Override
+            public void endEdition() {
+              //To change body of implemented methods use File | Settings | File Templates.
             }
 
           });

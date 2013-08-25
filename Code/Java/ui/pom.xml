@@ -45,6 +45,11 @@
       <artifactId>swingx</artifactId>
       <version>1.6.1</version>
     </dependency>
+    <dependency>
+    	<groupId>com.google.inject</groupId>
+    	<artifactId>guice</artifactId>
+    	<version>3.0</version>
+    </dependency>
   </dependencies>
       <build>
     <plugins>
@@ -53,8 +58,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.5.1</version>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
     </plugins>

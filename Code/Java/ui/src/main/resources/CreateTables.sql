@@ -13,27 +13,27 @@ CREATE TABLE PUBLIC."Edition"
 ALTER TABLE PUBLIC."Edition" ADD CONSTRAINT "unique_editionId" UNIQUE ("editionId");
 
 //Create CardDescription
-CREATE TABLE PUBLIC."CardDescription"
+CREATE TABLE PUBLIC."MagicCard"
 (
-  "REF_EDITION"   VARCHAR NOT NULL,
-  "cardNumber"    VARCHAR NOT NULL DEFAULT '',
-  "type"          VARCHAR NOT NULL,
-  "subType"       VARCHAR NOT NULL,
-  "manaCost"      VARCHAR NOT NULL,
-  "convManaConst" INT     NOT NULL,
-  "power"         INT     NOT NULL DEFAULT 0,
-  "toughness"     INT     NOT NULL DEFAULT 0,
-  "imageURL"      VARCHAR NOT NULL DEFAULT '',
-  "cardText"      VARCHAR NOT NULL,
-  "flavorText"    VARCHAR NOT NULL DEFAULT '',
-  "artist"        VARCHAR NOT NULL DEFAULT '',
-  "rarity"        INT     NOT NULL DEFAULT 0,
-  "name"          VARCHAR NOT NULL,
-  "cardId"        VARCHAR NOT NULL AS concat("REF_EDITION", '_', "cardNumber"),
+  "REF_EDITION"  VARCHAR NOT NULL,
+  "cardNumber"   VARCHAR NOT NULL DEFAULT '',
+  "type"         VARCHAR NOT NULL,
+  "subType"      VARCHAR NOT NULL,
+  "manaCost"     VARCHAR NOT NULL,
+  "convManaCost" INT     NOT NULL,
+  "power"        INT     NOT NULL DEFAULT 0,
+  "toughness"    INT     NOT NULL DEFAULT 0,
+  "imageURL"     VARCHAR NOT NULL DEFAULT '',
+  "cardText"     VARCHAR NOT NULL,
+  "flavorText"   VARCHAR NOT NULL DEFAULT '',
+  "artist"       VARCHAR NOT NULL DEFAULT '',
+  "rarity"       INT     NOT NULL DEFAULT 0,
+  "name"         VARCHAR NOT NULL,
+  "cardId"       VARCHAR NOT NULL AS concat("REF_EDITION", '_', "cardNumber"),
   PRIMARY KEY ("cardId")
 );
-ALTER TABLE "CardDescription" ADD CONSTRAINT "unique_cardId" UNIQUE ("cardId");
-CREATE INDEX cardDescIdx ON "CardDescription" ("cardId");
+ALTER TABLE "MagicCard" ADD CONSTRAINT "unique_cardId" UNIQUE ("cardId");
+CREATE INDEX cardDescIdx ON "MagicCard" ("cardId");
 
 CREATE TABLE PUBLIC."PhysicalCard"
 (

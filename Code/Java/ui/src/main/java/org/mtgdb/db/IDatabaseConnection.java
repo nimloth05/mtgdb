@@ -8,9 +8,13 @@ import java.sql.SQLException;
  */
 public interface IDatabaseConnection {
 
+  void openDB();
+
   void executeSql(String s);
 
   void closeDB();
 
   ResultSet executeQuery(String s) throws SQLException;
+
+  void execute(ITransactionRunnable runnable);
 }

@@ -1,6 +1,7 @@
 package org.mtgdb.ui;
 
 import net.miginfocom.swing.MigLayout;
+import org.mtgdb.services.ServiceManager;
 import org.mtgdb.ui.util.frame.FrameFactory;
 
 import javax.imageio.ImageIO;
@@ -25,7 +26,7 @@ public final class MainWindow {
   }
 
   public static void createAndShow() {
-    MainWindow window = new MainWindow(new MainModel());
+    MainWindow window = new MainWindow(ServiceManager.instance.get(MainModel.class));
     window.show();
   }
 

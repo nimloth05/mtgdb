@@ -9,16 +9,26 @@ public final class CardDescription {
   private String manaCost;
   private int convManaCost;
   private int power;
-  private int hp;
+  private int toughness;
   private String imageURL;
   private String cardText;
   private String flavorText;
   private String number;
   private String artist;
   private String edition;
-  private String rarity;
+  private Rarity rarity;
   private String name;
   private int loyalty;
+
+  public String getCardId() {
+    return cardId;
+  }
+
+  public void setCardId(final String cardId) {
+    this.cardId = cardId;
+  }
+
+  private String cardId;
 
   public int getLoyalty() {
     return loyalty;
@@ -36,12 +46,12 @@ public final class CardDescription {
     this.imageURL = imageURL;
   }
 
-  public int getHp() {
-    return hp;
+  public int getToughness() {
+    return toughness;
   }
 
-  public void setHp(int hp) {
-    this.hp = hp;
+  public void setToughness(int hp) {
+    this.toughness = hp;
   }
 
   public int getPower() {
@@ -124,11 +134,11 @@ public final class CardDescription {
     this.edition = edition;
   }
 
-  public String getRarity() {
+  public Rarity getRarity() {
     return rarity;
   }
 
-  public void setRarity(String rarity) {
+  public void setRarity(Rarity rarity) {
     this.rarity = rarity;
   }
 
@@ -149,7 +159,7 @@ public final class CardDescription {
       ", manaCost='" + manaCost + '\'' +
       ", convManaCost=" + convManaCost +
       ", power=" + power +
-      ", hp=" + hp +
+      ", hp=" + toughness +
       ", imageURL='" + imageURL + '\'' +
       ", cardText='" + cardText + '\'' +
       ", flavorText='" + flavorText + '\'' +

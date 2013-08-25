@@ -24,4 +24,17 @@ public final class Container {
   public void setDescription(final String description) {
     this.description = description;
   }
+
+  @Override
+  public String toString() {
+    return "Container{" +
+      "id=" + id +
+      ", name='" + name + '\'' +
+      ", description='" + description + '\'' +
+      '}';
+  }
+
+  public void setId(final int id) {
+    this.id = id;
+  }
 }

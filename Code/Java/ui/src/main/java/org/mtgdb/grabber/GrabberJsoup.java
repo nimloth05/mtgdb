@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.Rarity;
 
 import java.io.IOException;
 import java.net.URL;
@@ -84,7 +85,7 @@ public final class GrabberJsoup {
     extractImageURL(card, html);
     extractNrArtist(card, document);
     card.setEdition(edition);
-    card.setRarity(rarity);
+    card.setRarity(Rarity.parse(rarity));
     card.setName(name);
 
     return card;
@@ -122,7 +123,7 @@ public final class GrabberJsoup {
       card.setType(m.group(1));
       card.setSubType(m.group(2));
       card.setPower(Integer.parseInt(m.group(3)));
-      card.setHp(Integer.parseInt(m.group(4)));
+      card.setToughness(Integer.parseInt(m.group(4)));
       card.setManaCost(m.group(5));
       card.setConvManaCost(Integer.parseInt(m.group(6)));
     }
