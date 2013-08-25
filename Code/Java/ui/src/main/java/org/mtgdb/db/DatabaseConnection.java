@@ -98,7 +98,8 @@ public final class DatabaseConnection implements IDatabaseConnection {
 
   @Override
   public void execute(final ITransactionRunnable runnable) {
-    if (currentTransaction != null) throw new IllegalStateException("nested transaction are not possible at the moment, please comeback later");
+    if (currentTransaction != null)
+      throw new IllegalStateException("nested transaction are not possible at the moment, please comeback later");
     try {
       if (currentTransaction == null) {
         currentTransaction = new Transaction();
@@ -136,6 +137,16 @@ public final class DatabaseConnection implements IDatabaseConnection {
         final PreparedStatement preparedStatement = connection.prepareStatement(s, Statement.RETURN_GENERATED_KEYS);
         preparedStatement.executeUpdate();
         return preparedStatement.getGeneratedKeys();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public void execute(final String s) {
+      try {
+        final Statement preparedStatement = connection.createStatement();
+        preparedStatement.execute(s);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

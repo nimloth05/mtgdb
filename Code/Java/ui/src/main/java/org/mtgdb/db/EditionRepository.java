@@ -25,4 +25,8 @@ public final class EditionRepository extends AbstractRepository {
     transaction.insert(sql);
   }
 
+  public void deleteAll(final ITransaction transaction) {
+    transaction.execute("truncate table \"" + DBConstants.EDITION_TABLE + "\"");
+  }
+
 }

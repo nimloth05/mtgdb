@@ -70,6 +70,10 @@ public final class MagicCardRepository extends AbstractRepository implements IRe
     transaction.insert(sql);
   }
 
+  public void deleteAll(final ITransaction transaction) {
+    transaction.execute("truncate table \"" + DBConstants.MAGIC_CARD_TABLE + "\"");
+  }
+
   public List<CardDescription> getAllCards() {
     List<CardDescription> cards = new ArrayList<>();
     try {

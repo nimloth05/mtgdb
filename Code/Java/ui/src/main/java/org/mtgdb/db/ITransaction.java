@@ -13,4 +13,6 @@ public interface ITransaction {
    * @return generated primary keys
    */
   ResultSet insert(String s);
+
+  void execute(String s);
 }

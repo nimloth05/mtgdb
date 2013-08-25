@@ -153,6 +153,17 @@ public final class MainModel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
+      connection.execute(new ITransactionRunnable() {
+
+        @Override
+        public void run(final ITransaction transaction) throws Exception {
+          MagicCardRepository magicCardRepository = provider.getRepository(CardDescription.class);
+          magicCardRepository.deleteAll(transaction);
+          EditionRepository editionRepository = provider.getRepository(Edition.class);
+          editionRepository.deleteAll(transaction);
+        }
+      });
+
       ProgressDialog dialog = ProgressDialog.create(new IProgressRunnable() {
 
         private volatile List<CardDescription> allCards = new LinkedList<CardDescription>();
