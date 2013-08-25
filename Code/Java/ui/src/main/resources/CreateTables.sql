@@ -7,7 +7,6 @@ CREATE TABLE PUBLIC."Edition"
   "editionId"  VARCHAR NOT NULL,
   "name"       VARCHAR NULL,
   "numOfCards" INT     NULL,
-  "lang"       VARCHAR NULL,
   PRIMARY KEY ("editionId")
 );
 ALTER TABLE PUBLIC."Edition" ADD CONSTRAINT "unique_editionId" UNIQUE ("editionId");

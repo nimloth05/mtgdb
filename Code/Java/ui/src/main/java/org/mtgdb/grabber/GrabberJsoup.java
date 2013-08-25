@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.Edition;
 import org.mtgdb.model.Rarity;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public final class GrabberJsoup {
     this.lang = lang;
   }
 
-  public void grabAllEditions(final IGrabberListener monitor) throws IOException {
+  public void grabAllEditions(final IGrabberListener listener) throws IOException {
     final String sitemap = "http://magiccards.info/sitemap.html";
     Document doc = Jsoup.connect(sitemap).get();
     Elements table = doc.select(":containsOwn(" + lang + ") + table");
@@ -39,7 +40,7 @@ public final class GrabberJsoup {
         if (edition.tagName().equals("a")) {
           final String edStr = edition.nextElementSibling().text();
           final String edUrl = edition.attr("href");
-          grabEdition(urlPrefix + edUrl, edStr, monitor);
+          grabEdition(urlPrefix + edUrl, edStr, listener);
           System.out.println("Edition grabbed");
 
           break;
@@ -49,16 +50,29 @@ public final class GrabberJsoup {
     }
   }
 
-  public void grabEdition(final String editionUrl, final String editionShort, final IGrabberListener monitor) throws IOException {
+  public void grabEdition(final String editionUrl, final String editionShort, final IGrabberListener listener) throws IOException {
+    final Edition edition = new Edition();
     Document doc = Jsoup.connect(editionUrl).get();
-    Elements tables = doc.select("table .even");
-    tables.addAll(doc.select("table .odd"));
+    Elements even = doc.select("table .even");
+    Elements odd = doc.select("table .odd");
 
+    edition.setEdition(doc.title());
+    edition.setEditionId(editionShort);
+    edition.setNumberOfCards(even.size());
+    listener.beginEdition(edition);
+
+    grapEditionCards(editionShort, listener, even);
+    grapEditionCards(editionShort, listener, odd);
+
+    listener.endEdition();
+  }
+
+  private void grapEditionCards(final String editionShort, final IGrabberListener listener, final Elements tables) throws IOException {
     for (Element row : tables) {
       final Elements td = row.select("td");
       final String text = td.get(1).text();
       CardDescription cardDescription = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), editionShort, td.get(4).text(), text);
-      monitor.grabbed(cardDescription);
+      listener.grabbed(cardDescription);
     }
   }
 

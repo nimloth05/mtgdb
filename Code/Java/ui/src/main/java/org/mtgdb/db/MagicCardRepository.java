@@ -1,5 +1,8 @@
 package org.mtgdb.db;
 
+import org.mtgdb.db.sql.Column;
+import org.mtgdb.db.sql.SQLGenerator;
+import org.mtgdb.db.sql.Value;
 import org.mtgdb.model.CardDescription;
 import org.mtgdb.model.Rarity;
 import org.mtgdb.util.Constants;
@@ -16,7 +19,23 @@ import java.util.List;
  */
 public final class MagicCardRepository extends AbstractRepository implements IRepository {
 
-
+  private static final Column[] columns = new Column[]{
+    new Column("REF_EDITION"),
+    new Column("cardNumber"),
+    new Column("type"),
+    new Column("subType"),
+    new Column("manaCost"),
+    new Column("convManaCost"),
+    new Column("power"),
+    new Column("toughness"),
+    new Column("imageURL"),
+    new Column("cardText"),
+    new Column("flavorText"),
+    new Column("artist"),
+    new Column("rarity"),
+    new Column("name"),
+    new Column("cardId")
+  };
   private final IDatabaseConnection connection;
 
   public MagicCardRepository(final IDatabaseConnection connection) {
@@ -24,33 +43,31 @@ public final class MagicCardRepository extends AbstractRepository implements IRe
   }
 
   public void saveAll(final ITransaction transaction, final Collection<CardDescription> cards) {
-    StringBuilder builder = new StringBuilder();
-    builder.append("insert into \"" + DBConstants.MAGIC_CARD_TABLE + "\" values ");
-    for (CardDescription cardDescription : cards) {
-      builder.append(Constants.LEFT_PARENTHESIS)
-        .append("'" + cardDescription.getEdition() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getNumber() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getType() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getSubType() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getManaCost() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getConvManaCost() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getPower() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getToughness() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getImageURL() + "'")
-        .append(Constants.COMMA + "'" + escape(cardDescription.getCardText()) + "'")
-        .append(Constants.COMMA + "'" + escape(cardDescription.getFlavorText()) + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getArtist() + "'")
-        .append(Constants.COMMA + "'" + cardDescription.getRarity().ordinal() + "'")
-        .append(Constants.COMMA + "'" + escape(cardDescription.getName()) + "'")
-        .append(Constants.COMMA + "'" + "'")
-        .append(Constants.RIGHT_PARENTHESIS);
-
-      cardDescription.setCardId(cardDescription.getEdition()+Constants.UNDERSCORE+cardDescription.getNumber());
-
-      builder.append(Constants.COMMA);
+    Value[][] rows = new Value[cards.size()][];
+    int index = 0;
+    for (CardDescription card : cards) {
+      Value[] row = new Value[]{
+        new Value(card.getEdition()),
+        new Value(card.getNumber()),
+        new Value(card.getType()),
+        new Value(card.getSubType()),
+        new Value(card.getManaCost()),
+        new Value(card.getConvManaCost()),
+        new Value(card.getPower()),
+        new Value(card.getToughness()),
+        new Value(card.getImageURL()),
+        new Value(card.getCardText()),
+        new Value(card.getFlavorText()),
+        new Value(card.getArtist()),
+        new Value(card.getRarity().ordinal()),
+        new Value(card.getName()),
+        new Value("")
+      };
+      rows[index++] = row;
+      card.setCardId(card.getEdition() + Constants.UNDERSCORE + card.getNumber());
     }
-    builder.deleteCharAt(builder.length() - 1);
-    transaction.insert(builder.toString());
+    final String sql = SQLGenerator.insertInto(DBConstants.MAGIC_CARD_TABLE, columns, rows);
+    transaction.insert(sql);
   }
 
   public List<CardDescription> getAllCards() {

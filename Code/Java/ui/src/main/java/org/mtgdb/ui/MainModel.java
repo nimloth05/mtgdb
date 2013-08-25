@@ -3,6 +3,7 @@ package org.mtgdb.ui;
 import com.google.inject.Inject;
 import org.jdesktop.swingx.VerticalLayout;
 import org.mtgdb.db.ContainerRepository;
+import org.mtgdb.db.EditionRepository;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.IRepositoryProvider;
 import org.mtgdb.db.ITransaction;
@@ -181,11 +182,17 @@ public final class MainModel {
 
             @Override
             public void beginEdition(final Edition edition) {
-//              saveEdition(edition);
+              saveEdition(edition);
             }
 
             private void saveEdition(final Edition edition) {
-//              EditionRepository repo = provider.getRepository(Edition.class);
+              connection.execute(new ITransactionRunnable() {
+                @Override
+                public void run(final ITransaction transaction) throws Exception {
+                  EditionRepository repo = provider.getRepository(Edition.class);
+                  repo.save(transaction, edition);
+                }
+              });
             }
 
             @Override
