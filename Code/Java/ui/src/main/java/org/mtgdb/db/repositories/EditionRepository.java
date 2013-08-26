@@ -1,5 +1,7 @@
-package org.mtgdb.db;
+package org.mtgdb.db.repositories;
 
+import org.mtgdb.db.DBConstants;
+import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.sql.Column;
 import org.mtgdb.db.sql.SQLGenerator;
 import org.mtgdb.db.sql.Value;

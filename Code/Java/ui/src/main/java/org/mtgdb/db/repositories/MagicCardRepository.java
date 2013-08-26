@@ -1,6 +1,9 @@
-package org.mtgdb.db;
+package org.mtgdb.db.repositories;
 
 import com.google.inject.Inject;
+import org.mtgdb.db.DBConstants;
+import org.mtgdb.db.IDatabaseConnection;
+import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.sql.Column;
 import org.mtgdb.db.sql.SQLGenerator;
 import org.mtgdb.db.sql.Value;

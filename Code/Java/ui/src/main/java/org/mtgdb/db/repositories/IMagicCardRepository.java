@@ -1,5 +1,6 @@
-package org.mtgdb.db;
+package org.mtgdb.db.repositories;
 
+import org.mtgdb.db.ITransaction;
 import org.mtgdb.model.CardDescription;
 
 import java.util.Collection;
