@@ -1,7 +1,7 @@
 package org.mtgdb.db.repository;
 
 import org.mtgdb.db.ITransaction;
-import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.MagicCard;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.List;
  */
 public interface IMagicCardRepository extends IRepository {
 
-  void saveAll(ITransaction transaction, Collection<CardDescription> cards);
+  void saveAll(ITransaction transaction, Collection<MagicCard> cards);
 
   void deleteAll(ITransaction transaction);
 
-  List<CardDescription> getAllCards();
+  List<MagicCard> getAllCards();
 }

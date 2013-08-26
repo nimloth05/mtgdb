@@ -7,7 +7,7 @@ import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.sql.Column;
 import org.mtgdb.db.sql.SQLGenerator;
 import org.mtgdb.db.sql.Value;
-import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
 import org.mtgdb.util.Constants;
 import org.mtgdb.util.assertion.Assert;
@@ -48,10 +48,10 @@ public final class MagicCardRepository extends AbstractRepository implements IMa
   }
 
   @Override
-  public void saveAll(final ITransaction transaction, final Collection<CardDescription> cards) {
+  public void saveAll(final ITransaction transaction, final Collection<MagicCard> cards) {
     Value[][] rows = new Value[cards.size()][];
     int index = 0;
-    for (CardDescription card : cards) {
+    for (MagicCard card : cards) {
       Value[] row = new Value[]{
         new Value(card.getEdition()),
         new Value(card.getNumber()),
@@ -82,8 +82,8 @@ public final class MagicCardRepository extends AbstractRepository implements IMa
   }
 
   @Override
-  public List<CardDescription> getAllCards() {
-    List<CardDescription> cards = new ArrayList<>();
+  public List<MagicCard> getAllCards() {
+    List<MagicCard> cards = new ArrayList<>();
     try {
       ResultSet rs = connection.executeQuery("SELECT * FROM \"" + DBConstants.MAGIC_CARD_TABLE + "\";");
       while (rs.next()) {
@@ -102,7 +102,7 @@ public final class MagicCardRepository extends AbstractRepository implements IMa
         int rarity = rs.getInt("rarity");
         String cardId = rs.getString("cardId");
         String cardNum = rs.getString("cardNumber");
-        CardDescription description = new CardDescription();
+        MagicCard description = new MagicCard();
         cards.add(description);
         description.setEdition(edition);
         description.setNumber(cardNum);

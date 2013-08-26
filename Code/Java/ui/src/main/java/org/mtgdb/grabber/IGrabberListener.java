@@ -1,6 +1,6 @@
 package org.mtgdb.grabber;
 
-import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Edition;
 
 /**
@@ -10,7 +10,7 @@ public interface IGrabberListener {
 
   void beginEdition(final Edition edition);
 
-  void grabbed(final CardDescription description);
+  void grabbed(final MagicCard description);
 
   void endEdition();
 

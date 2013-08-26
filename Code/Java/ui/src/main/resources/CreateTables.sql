@@ -11,7 +11,7 @@ CREATE TABLE PUBLIC."Edition"
 );
 ALTER TABLE PUBLIC."Edition" ADD CONSTRAINT "unique_editionId" UNIQUE ("editionId");
 
-//Create CardDescription
+//Create MagicCard
 CREATE TABLE PUBLIC."MagicCard"
 (
   "REF_EDITION"  VARCHAR NOT NULL,

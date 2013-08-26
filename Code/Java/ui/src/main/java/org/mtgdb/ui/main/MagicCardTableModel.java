@@ -2,7 +2,7 @@ package org.mtgdb.ui.main;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.repository.MagicCardRepository;
-import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.MagicCard;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -11,10 +11,9 @@ import java.util.List;
 /**
  * @author Michael Sacher
  */
-public class MockTableModel implements TableModel {
+public class MagicCardTableModel implements TableModel {
 
-  private final List<CardDescription> cards;
-  private MagicCardRepository repository;
+  private final List<MagicCard> cards;
   private ColumnDescription[] columnDescriptions = new ColumnDescription[]{
     new ColumnDescription("Edition", String.class),
     new ColumnDescription("Name", String.class),
@@ -33,8 +32,7 @@ public class MockTableModel implements TableModel {
   };
 
   @Inject
-  public MockTableModel(MagicCardRepository repository) {
-    this.repository = repository;
+  public MagicCardTableModel(MagicCardRepository repository) {
     cards = repository.getAllCards();
   }
 
@@ -59,23 +57,23 @@ public class MockTableModel implements TableModel {
   }
 
   public Object getValueAt(int rowIndex, int columnIndex) {
-    final CardDescription cardDescription = cards.get(rowIndex);
+    final MagicCard magicCard = cards.get(rowIndex);
     switch (columnIndex) {
-      case 0: return cardDescription.getEdition();
-      case 1: return cardDescription.getName();
-      case 2: return cardDescription.getType();
-      case 3: return cardDescription.getSubType();
-      case 4: return cardDescription.getRarity();
-      case 5: return cardDescription.getManaCost();
-      case 6: return cardDescription.getConvManaCost();
-      case 7: return cardDescription.getPower();
-      case 8: return cardDescription.getToughness();
-      case 9: return cardDescription.getCardText();
-      case 10: return cardDescription.getFlavorText();
-      case 11: return cardDescription.getArtist();
-      case 12: return cardDescription.getNumber();
+      case 0: return magicCard.getEdition();
+      case 1: return magicCard.getName();
+      case 2: return magicCard.getType();
+      case 3: return magicCard.getSubType();
+      case 4: return magicCard.getRarity();
+      case 5: return magicCard.getManaCost();
+      case 6: return magicCard.getConvManaCost();
+      case 7: return magicCard.getPower();
+      case 8: return magicCard.getToughness();
+      case 9: return magicCard.getCardText();
+      case 10: return magicCard.getFlavorText();
+      case 11: return magicCard.getArtist();
+      case 12: return magicCard.getNumber();
     }
-    return cardDescription.getCardId();
+    return magicCard.getCardId();
   }
 
   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
@@ -87,7 +85,7 @@ public class MockTableModel implements TableModel {
   public void removeTableModelListener(TableModelListener l) {
   }
 
-  public CardDescription getCard(final int index) {
+  public MagicCard getCard(final int index) {
     return cards.get(index);
   }
 

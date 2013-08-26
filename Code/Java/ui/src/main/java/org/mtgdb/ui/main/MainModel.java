@@ -2,7 +2,7 @@ package org.mtgdb.ui.main;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.services.ServiceManager;
 import org.mtgdb.ui.main.action.AddContainerAction;
 import org.mtgdb.ui.main.action.GrabberAction;
@@ -26,17 +26,17 @@ public final class MainModel {
   private AddContainerAction addContainerAction;
   private DefaultLabelModel scanLabelModel = new DefaultLabelModel();
   private DefaultListSelectionModel tableSelectionModel = new DefaultListSelectionModel();
-  private MockTableModel mockTableModel;
+  private MagicCardTableModel magicCardTableModel;
 
   @Inject
   public MainModel(final IDatabaseConnection connection) {
     this.connection = connection;
     connection.openDB();
-    mockTableModel = ServiceManager.get(MockTableModel.class);
+    magicCardTableModel = ServiceManager.get(MagicCardTableModel.class);
     tableSelectionModel.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(final ListSelectionEvent e) {
-        CardDescription selectedCard = mockTableModel.getCard(tableSelectionModel.getLeadSelectionIndex());
+        MagicCard selectedCard = magicCardTableModel.getCard(tableSelectionModel.getLeadSelectionIndex());
         Icon scan = ImageLoader.loadAsIcon(selectedCard.getImageURL());
         scanLabelModel.setIcon(scan);
       }
@@ -62,7 +62,7 @@ public final class MainModel {
   }
 
   public TableModel getLibraryModel() {
-    return mockTableModel;
+    return magicCardTableModel;
   }
 
   public Action getAddContainerAction() {

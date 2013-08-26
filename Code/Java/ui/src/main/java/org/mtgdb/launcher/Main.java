@@ -1,7 +1,7 @@
 package org.mtgdb.launcher;
 
 import org.mtgdb.grabber.GrabberJsoup;
-import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.grabber.IGrabberListener;
 import org.mtgdb.model.Edition;
 
@@ -20,7 +20,7 @@ public final class Main {
       }
 
       @Override
-      public void grabbed(final CardDescription description) {
+      public void grabbed(final MagicCard description) {
 
       }
 

@@ -4,7 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Edition;
 import org.mtgdb.model.Rarity;
 
@@ -67,12 +67,12 @@ public final class GrabberJsoup {
     for (Element row : tables) {
       final Elements td = row.select("td");
       final String text = td.get(1).text();
-      CardDescription cardDescription = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), editionShort, td.get(4).text(), text);
-      listener.grabbed(cardDescription);
+      MagicCard magicCard = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), editionShort, td.get(4).text(), text);
+      listener.grabbed(magicCard);
     }
   }
 
-  private CardDescription grabCard(final String cardUrl, final String edition, final String rarity, final String name) throws IOException {
+  private MagicCard grabCard(final String cardUrl, final String edition, final String rarity, final String name) throws IOException {
     URL urlObject = new URL(cardUrl);
     final java.io.BufferedReader bufferedReader = new java.io.BufferedReader(new java.io.InputStreamReader(urlObject.openConnection().getInputStream(), "utf8"));
     String line;
@@ -82,7 +82,7 @@ public final class GrabberJsoup {
     }
 
     final String html = builder.toString();
-    CardDescription card = new CardDescription();
+    MagicCard card = new MagicCard();
     Document document = Jsoup.parse(html);
 
 
@@ -101,7 +101,7 @@ public final class GrabberJsoup {
     return card;
   }
 
-  private void extractTypeLine(CardDescription card, final Document document) {
+  private void extractTypeLine(MagicCard card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
     final Pattern patternTypeline = Pattern.compile("(.*),\\s\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
@@ -113,7 +113,7 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractTypeLineOther(CardDescription card, final Document document) {
+  private void extractTypeLineOther(MagicCard card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
     final Pattern patternTypelineOther = Pattern.compile("(.*)\\s—\\s(.*)");
@@ -124,7 +124,7 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractTypeLineCreature(CardDescription card, final Document document) {
+  private void extractTypeLineCreature(MagicCard card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
     final Pattern patternTypelineCreature = Pattern.compile("(.*)\\s—\\s(.*)\\s(\\d{1,2}|\\*)/(\\d{1,2}|\\*),\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
@@ -138,7 +138,7 @@ public final class GrabberJsoup {
       card.setConvManaCost(Integer.parseInt(m.group(6)));
     }
   }
-  private void extractTypeLinePlaneswalker(CardDescription card, final Document document) {
+  private void extractTypeLinePlaneswalker(MagicCard card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
     final Pattern patternTypelinePlaneswalker = Pattern.compile("(.*)\\s—\\s(.*)\\s\\([a-zA-z]+:\\s(\\d{1,2})\\),\\s([0-9A-Z]+)\\s\\(([0-9]+)\\)");
@@ -152,15 +152,15 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractCardText(CardDescription card, final Document document) {
+  private void extractCardText(MagicCard card, final Document document) {
     card.setCardText(document.select("p.ctext").first().text());
   }
 
-  private void extractFlavourText(CardDescription card, final Document document) {
+  private void extractFlavourText(MagicCard card, final Document document) {
     card.setFlavorText(document.select("table > tbody > tr span + p + p + p > i").text());
   }
 
-  private void extractImageURL(CardDescription card, final String html) {
+  private void extractImageURL(MagicCard card, final String html) {
     final Pattern patternScanUrl = Pattern.compile(".*(http://magiccards\\.info/scan.*jpg).*");
     Matcher m = patternScanUrl.matcher(html);
     if (m.matches()) {
@@ -168,7 +168,7 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractNrArtist(CardDescription card, final Document document) {
+  private void extractNrArtist(MagicCard card, final Document document) {
     final String text = document.select("html body table tbody tr td small b").text();
     final Pattern patternCardnumArtist = Pattern.compile("#(\\d{1,3}[a-z]?)\\s\\((.+?)\\)");
     Matcher m = patternCardnumArtist.matcher(text);
