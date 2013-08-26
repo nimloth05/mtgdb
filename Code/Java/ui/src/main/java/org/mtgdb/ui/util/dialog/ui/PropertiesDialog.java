@@ -53,6 +53,7 @@ public final class PropertiesDialog extends AbstractDialog {
 
       @Override
       public void actionPerformed(final ActionEvent e) {
+        fGroup.cancel();
         FrameUtil.close(fDialog);
       }
     };

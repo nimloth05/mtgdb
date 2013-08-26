@@ -21,10 +21,9 @@ public final class ImageLoader {
   }
 
   public static BufferedImage load(final String name) {
-    URL url = ImageLoader.class.getResource(name);
     BufferedImage image;
     try {
-      image = ImageIO.read(url);
+      image = ImageIO.read(new URL(name));
     } catch (Exception e) {
       image = ImageUtil.createErrorImage(16, 16);
     }

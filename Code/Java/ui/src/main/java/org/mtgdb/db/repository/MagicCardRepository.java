@@ -1,9 +1,14 @@
-package org.mtgdb.db;
+package org.mtgdb.db.repository;
 
+import com.google.inject.Inject;
+import org.mtgdb.db.DBConstants;
+import org.mtgdb.db.IDatabaseConnection;
+import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.sql.Column;
 import org.mtgdb.db.sql.SQLGenerator;
 import org.mtgdb.db.sql.Value;
-import org.mtgdb.model.CardDescription;
+import org.mtgdb.model.IMagicCard;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
 import org.mtgdb.util.Constants;
 import org.mtgdb.util.assertion.Assert;
@@ -17,7 +22,7 @@ import java.util.List;
 /**
  * @author Sandro Orlando
  */
-public final class MagicCardRepository extends AbstractRepository implements IRepository {
+public final class MagicCardRepository extends AbstractRepository implements IMagicCardRepository {
 
   private static final Column[] columns = new Column[]{
     new Column("REF_EDITION"),
@@ -38,25 +43,27 @@ public final class MagicCardRepository extends AbstractRepository implements IRe
   };
   private final IDatabaseConnection connection;
 
+  @Inject
   public MagicCardRepository(final IDatabaseConnection connection) {
     this.connection = connection;
   }
 
-  public void saveAll(final ITransaction transaction, final Collection<CardDescription> cards) {
+  @Override
+  public void saveAll(final ITransaction transaction, final Collection<IMagicCard> cards) {
     Value[][] rows = new Value[cards.size()][];
     int index = 0;
-    for (CardDescription card : cards) {
+    for (IMagicCard card : cards) {
       Value[] row = new Value[]{
         new Value(card.getEdition()),
         new Value(card.getNumber()),
         new Value(card.getType()),
         new Value(card.getSubType()),
         new Value(card.getManaCost()),
-        new Value(card.getConvManaCost()),
+        new Value(card.getConvertedManaCost()),
         new Value(card.getPower()),
         new Value(card.getToughness()),
         new Value(card.getImageURL()),
-        new Value(card.getCardText()),
+        new Value(card.getText()),
         new Value(card.getFlavorText()),
         new Value(card.getArtist()),
         new Value(card.getRarity().ordinal()),
@@ -64,18 +71,20 @@ public final class MagicCardRepository extends AbstractRepository implements IRe
         new Value("")
       };
       rows[index++] = row;
-      card.setCardId(card.getEdition() + Constants.UNDERSCORE + card.getNumber());
+      ((MagicCard)card).setCardId(card.getEdition() + Constants.UNDERSCORE + card.getNumber());
     }
     final String sql = SQLGenerator.insertInto(DBConstants.MAGIC_CARD_TABLE, columns, rows);
     transaction.insert(sql);
   }
 
+  @Override
   public void deleteAll(final ITransaction transaction) {
     transaction.execute("truncate table \"" + DBConstants.MAGIC_CARD_TABLE + "\"");
   }
 
-  public List<CardDescription> getAllCards() {
-    List<CardDescription> cards = new ArrayList<>();
+  @Override
+  public List<IMagicCard> getAllCards() {
+    List<IMagicCard> cards = new ArrayList<>();
     try {
       ResultSet rs = connection.executeQuery("SELECT * FROM \"" + DBConstants.MAGIC_CARD_TABLE + "\";");
       while (rs.next()) {
@@ -94,14 +103,14 @@ public final class MagicCardRepository extends AbstractRepository implements IRe
         int rarity = rs.getInt("rarity");
         String cardId = rs.getString("cardId");
         String cardNum = rs.getString("cardNumber");
-        CardDescription description = new CardDescription();
+        MagicCard description = new MagicCard();
         cards.add(description);
         description.setEdition(edition);
         description.setNumber(cardNum);
         description.setType(cardType);
         description.setSubType(cardSubtype);
         description.setManaCost(manaCost);
-        description.setConvManaCost(convertedManaCost);
+        description.setConvertedManaCost(convertedManaCost);
         description.setPower(power);
         description.setToughness(toughness);
         description.setImageURL(imgUrl);

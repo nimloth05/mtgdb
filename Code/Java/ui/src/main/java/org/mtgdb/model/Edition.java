@@ -32,4 +32,13 @@ public final class Edition {
   public void setEdition(final String edition) {
     this.edition = edition;
   }
+
+  @Override
+  public String toString() {
+    return "Edition{" +
+      "edition='" + edition + '\'' +
+      ", editionId='" + editionId + '\'' +
+      ", numberOfCards=" + numberOfCards +
+      '}';
+  }
 }

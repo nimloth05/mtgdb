@@ -1,5 +1,6 @@
-package org.mtgdb.db;
+package org.mtgdb.db.repository;
 
+import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.sql.Column;
 import org.mtgdb.db.sql.SQLGenerator;
 import org.mtgdb.db.sql.Value;
@@ -7,11 +8,12 @@ import org.mtgdb.model.Container;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * @author Sandro Orlando
  */
-public final class ContainerRepository extends AbstractRepository implements IRepository {
+public final class ContainerRepository extends AbstractRepository implements IContainerRepository {
 
   private static final Column[] columns = new Column[] {
     new Column("NAME"),
@@ -21,6 +23,7 @@ public final class ContainerRepository extends AbstractRepository implements IRe
   public ContainerRepository() {
   }
 
+  @Override
   public void save(final ITransaction transaction, final Container container) {
     Value[][] row = new Value[][] {{new Value(container.getName()), new Value(container.getDescription())}};
     final String sql = SQLGenerator.insertInto("Container", columns, row);
@@ -33,5 +36,9 @@ public final class ContainerRepository extends AbstractRepository implements IRe
     } catch (SQLException e) {
       throw new RuntimeException("Could not read id", e);
     }
+  }
+
+  public Collection<Container> getAllContainers() {
+    return null;  //To change body of created methods use File | Settings | File Templates.
   }
 }

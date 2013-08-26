@@ -12,7 +12,7 @@ import java.util.TimeZone;
 /**
  * <code>DateSpinner</code> is a spinner that is specialized in displaying or editing a a date or time.
  * <p/>
- * To change the value, you can use {@link #setValue(Object)} and pass in a Date. To get the
+ * To change the value, you can use {@link #setValue(Object)} and pass in a Date. To doGet the
  * Date, using {@link #getValue()}.
  *
  * stolen from: http://stackoverflow.com/questions/3519764/time-spinner-overwritemode-java

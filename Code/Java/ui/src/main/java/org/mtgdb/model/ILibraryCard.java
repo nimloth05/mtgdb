@@ -3,12 +3,7 @@ package org.mtgdb.model;
 /**
  * @author Sandro Orlando
  */
-public interface ILibraryCard {
+public interface ILibraryCard extends IMagicCard, IPhysicalCard{
 
-  String getName();
-
-  String getCost();
-
-  String getContainer();
 
 }
