@@ -2,12 +2,12 @@ package org.mtgdb.ui;
 
 import com.google.inject.Inject;
 import org.jdesktop.swingx.VerticalLayout;
-import org.mtgdb.db.repositories.ContainerRepository;
-import org.mtgdb.db.repositories.EditionRepository;
+import org.mtgdb.db.repository.ContainerRepository;
+import org.mtgdb.db.repository.EditionRepository;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.ITransactionRunnable;
-import org.mtgdb.db.repositories.MagicCardRepository;
+import org.mtgdb.db.repository.MagicCardRepository;
 import org.mtgdb.grabber.GrabberJsoup;
 import org.mtgdb.grabber.IGrabberListener;
 import org.mtgdb.model.CardDescription;

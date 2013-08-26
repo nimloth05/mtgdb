@@ -1,7 +1,7 @@
 package org.mtgdb.ui;
 
 import com.google.inject.Inject;
-import org.mtgdb.db.repositories.MagicCardRepository;
+import org.mtgdb.db.repository.MagicCardRepository;
 import org.mtgdb.model.CardDescription;
 
 import javax.swing.event.TableModelListener;

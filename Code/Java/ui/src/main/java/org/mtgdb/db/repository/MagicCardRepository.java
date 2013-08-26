@@ -1,4 +1,4 @@
-package org.mtgdb.db.repositories;
+package org.mtgdb.db.repository;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.DBConstants;

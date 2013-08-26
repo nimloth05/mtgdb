@@ -1,4 +1,4 @@
-package org.mtgdb.db.repositories;
+package org.mtgdb.db.repository;
 
 /**
  * @author Sandro Orlando

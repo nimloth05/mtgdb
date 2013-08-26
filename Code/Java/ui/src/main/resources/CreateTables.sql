@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS "Edition";
-DROP TABLE IF EXISTS "CardDescription";
+DROP TABLE IF EXISTS "MagicCard";
 //Create Edition:
 
 CREATE TABLE PUBLIC."Edition"

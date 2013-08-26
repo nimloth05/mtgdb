@@ -1,4 +1,4 @@
-package org.mtgdb.db.repositories;
+package org.mtgdb.db.repository;
 
 import org.mtgdb.db.DBConstants;
 import org.mtgdb.db.ITransaction;
