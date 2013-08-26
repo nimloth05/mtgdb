@@ -1,5 +1,6 @@
 package org.mtgdb.db;
 
+import com.google.inject.Inject;
 import org.mtgdb.db.sql.Column;
 import org.mtgdb.db.sql.SQLGenerator;
 import org.mtgdb.db.sql.Value;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * @author Sandro Orlando
  */
-public final class MagicCardRepository extends AbstractRepository implements IRepository {
+public final class MagicCardRepository extends AbstractRepository implements IMagicCardRepository {
 
   private static final Column[] columns = new Column[]{
     new Column("REF_EDITION"),
@@ -38,10 +39,12 @@ public final class MagicCardRepository extends AbstractRepository implements IRe
   };
   private final IDatabaseConnection connection;
 
+  @Inject
   public MagicCardRepository(final IDatabaseConnection connection) {
     this.connection = connection;
   }
 
+  @Override
   public void saveAll(final ITransaction transaction, final Collection<CardDescription> cards) {
     Value[][] rows = new Value[cards.size()][];
     int index = 0;
@@ -70,10 +73,12 @@ public final class MagicCardRepository extends AbstractRepository implements IRe
     transaction.insert(sql);
   }
 
+  @Override
   public void deleteAll(final ITransaction transaction) {
     transaction.execute("truncate table \"" + DBConstants.MAGIC_CARD_TABLE + "\"");
   }
 
+  @Override
   public List<CardDescription> getAllCards() {
     List<CardDescription> cards = new ArrayList<>();
     try {

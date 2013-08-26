@@ -8,7 +8,7 @@ import org.mtgdb.model.Edition;
 /**
  * @author Sandro Orlando
  */
-public final class EditionRepository extends AbstractRepository {
+public final class EditionRepository extends AbstractRepository implements IEditionRepository {
 
   private static final Column[] columns = new Column[]{
     new Column(DBConstants.EDITION_ID),
@@ -16,6 +16,7 @@ public final class EditionRepository extends AbstractRepository {
     new Column(DBConstants.EDITION_NUMBER_OF_CARDS)
   };
 
+  @Override
   public void save(final ITransaction transaction, final Edition edition) {
     final String sql = SQLGenerator.insertInto(DBConstants.EDITION_TABLE, columns,
       new Value[][]{{
@@ -25,6 +26,7 @@ public final class EditionRepository extends AbstractRepository {
     transaction.insert(sql);
   }
 
+  @Override
   public void deleteAll(final ITransaction transaction) {
     transaction.execute("truncate table \"" + DBConstants.EDITION_TABLE + "\"");
   }

@@ -11,7 +11,7 @@ import java.sql.SQLException;
 /**
  * @author Sandro Orlando
  */
-public final class ContainerRepository extends AbstractRepository implements IRepository {
+public final class ContainerRepository extends AbstractRepository implements IContainerRepository {
 
   private static final Column[] columns = new Column[] {
     new Column("NAME"),
@@ -21,6 +21,7 @@ public final class ContainerRepository extends AbstractRepository implements IRe
   public ContainerRepository() {
   }
 
+  @Override
   public void save(final ITransaction transaction, final Container container) {
     Value[][] row = new Value[][] {{new Value(container.getName()), new Value(container.getDescription())}};
     final String sql = SQLGenerator.insertInto("Container", columns, row);

@@ -5,7 +5,6 @@ import org.jdesktop.swingx.VerticalLayout;
 import org.mtgdb.db.ContainerRepository;
 import org.mtgdb.db.EditionRepository;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.IRepositoryProvider;
 import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.ITransactionRunnable;
 import org.mtgdb.db.MagicCardRepository;
@@ -14,6 +13,9 @@ import org.mtgdb.grabber.IGrabberListener;
 import org.mtgdb.model.CardDescription;
 import org.mtgdb.model.Container;
 import org.mtgdb.model.Edition;
+import org.mtgdb.services.ServiceManager;
+import org.mtgdb.ui.util.ImageLoader;
+import org.mtgdb.ui.util.components.label.DefaultLabelModel;
 import org.mtgdb.ui.util.dialog.properties.IPropertyModelContext;
 import org.mtgdb.ui.util.dialog.properties.PropertyFactory;
 import org.mtgdb.ui.util.dialog.properties.PropertyGroup;
@@ -27,6 +29,8 @@ import org.mtgdb.ui.util.frame.progress.ProgressDialog;
 import org.mtgdb.ui.util.models.DocumentHelper;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
@@ -41,15 +45,37 @@ import java.util.List;
 public final class MainModel {
 
   private final IDatabaseConnection connection;
-  private final IRepositoryProvider provider;
-  private Action grabberAction = new GrabberAction();
-  private Action addContainerAction = new AddContainerAction();
+  @Inject
+  private GrabberAction grabberAction;
+  @Inject
+  private AddContainerAction addContainerAction;
+  private DefaultLabelModel scanLabelModel = new DefaultLabelModel();
+  private DefaultListSelectionModel tableSelectionModel = new DefaultListSelectionModel();
+  private MockTableModel mockTableModel;
 
   @Inject
-  public MainModel(final IDatabaseConnection connection, final IRepositoryProvider provider) {
+  public MainModel(final IDatabaseConnection connection) {
     this.connection = connection;
-    this.provider = provider;
     connection.openDB();
+    mockTableModel = ServiceManager.get(MockTableModel.class);
+    tableSelectionModel.addListSelectionListener(new ListSelectionListener() {
+      @Override
+      public void valueChanged(final ListSelectionEvent e) {
+        CardDescription selectedCard = mockTableModel.getCard(tableSelectionModel.getLeadSelectionIndex());
+        Icon scan = ImageLoader.loadAsIcon(selectedCard.getImageURL());
+        scanLabelModel.setIcon(scan);
+      }
+    });
+    tableSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    tableSelectionModel.setSelectionInterval(0, 0);
+  }
+
+  public DefaultLabelModel getScanLabelModel() {
+    return scanLabelModel;
+  }
+
+  public ListSelectionModel getTableSelectionModel() {
+    return tableSelectionModel;
   }
 
   public void closeDB() {
@@ -61,19 +87,24 @@ public final class MainModel {
   }
 
   public TableModel getLibraryModel() {
-    return new MockTableModel(provider.<MagicCardRepository>getRepository(CardDescription.class));
+    return mockTableModel;
   }
 
   public Action getAddContainerAction() {
     return addContainerAction;
   }
 
-  private class AddContainerAction extends AbstractAction {
+  private static class AddContainerAction extends AbstractAction {
 
+    private final IDatabaseConnection connection;
+    private final ContainerRepository containerRepository;
     private Container container = new Container();
 
-    public AddContainerAction() {
+    @Inject
+    public AddContainerAction(final IDatabaseConnection connection, final ContainerRepository containerRepository) {
       super();
+      this.connection = connection;
+      this.containerRepository = containerRepository;
       putValue(Action.NAME, "Add Container");
     }
 
@@ -109,8 +140,7 @@ public final class MainModel {
       connection.execute(new ITransactionRunnable() {
         @Override
         public void run(final ITransaction transaction) throws Exception {
-          ContainerRepository repo = provider.getRepository(Container.class);
-          repo.save(transaction, container);
+          containerRepository.save(transaction, container);
         }
       });
     }
@@ -144,10 +174,18 @@ public final class MainModel {
     }
   }
 
-  private class GrabberAction extends AbstractAction {
+  private static class GrabberAction extends AbstractAction {
 
-    public GrabberAction() {
+    private final IDatabaseConnection connection;
+    private final MagicCardRepository magicCardRepository;
+    private final EditionRepository editionRepository;
+
+    @Inject
+    public GrabberAction(final IDatabaseConnection connection, final MagicCardRepository magicCardRepository, final EditionRepository editionRepository) {
       super();
+      this.connection = connection;
+      this.magicCardRepository = magicCardRepository;
+      this.editionRepository = editionRepository;
       putValue(Action.NAME, "Grabb DB");
     }
 
@@ -157,9 +195,7 @@ public final class MainModel {
 
         @Override
         public void run(final ITransaction transaction) throws Exception {
-          MagicCardRepository magicCardRepository = provider.getRepository(CardDescription.class);
           magicCardRepository.deleteAll(transaction);
-          EditionRepository editionRepository = provider.getRepository(Edition.class);
           editionRepository.deleteAll(transaction);
         }
       });
@@ -177,8 +213,7 @@ public final class MainModel {
           connection.execute(new ITransactionRunnable() {
             @Override
             public void run(final ITransaction transaction) throws Exception {
-              MagicCardRepository repo = provider.getRepository(CardDescription.class);
-              repo.saveAll(transaction, allCards);
+              magicCardRepository.saveAll(transaction, allCards);
             }
           });
         }
@@ -197,11 +232,11 @@ public final class MainModel {
             }
 
             private void saveEdition(final Edition edition) {
+              System.out.println("grabbing edition " + edition);
               connection.execute(new ITransactionRunnable() {
                 @Override
                 public void run(final ITransaction transaction) throws Exception {
-                  EditionRepository repo = provider.getRepository(Edition.class);
-                  repo.save(transaction, edition);
+                  editionRepository.save(transaction, edition);
                 }
               });
             }
@@ -222,7 +257,7 @@ public final class MainModel {
 
             @Override
             public void endEdition() {
-              //To change body of implemented methods use File | Settings | File Templates.
+
             }
 
           });

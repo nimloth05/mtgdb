@@ -2,15 +2,13 @@ package org.mtgdb.ui;
 
 import net.miginfocom.swing.MigLayout;
 import org.mtgdb.services.ServiceManager;
+import org.mtgdb.ui.util.components.label.LabelModelAdapter;
 import org.mtgdb.ui.util.frame.FrameFactory;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.net.URL;
 
 /**
  * @author Sandro Orlando
@@ -26,33 +24,33 @@ public final class MainWindow {
   }
 
   public static void createAndShow() {
-    MainWindow window = new MainWindow(ServiceManager.instance.get(MainModel.class));
+    MainWindow window = new MainWindow(ServiceManager.get(MainModel.class));
     window.show();
   }
 
   private void createContentArea() {
     JPanel panel = new JPanel();
-    panel.setLayout(new MigLayout());
-    panel.add(new JLabel("Your Library:"), "wrap");
-    final JTable table = new JTable();
-    final JScrollPane pane = new JScrollPane(table);
-    table.setModel(model.getLibraryModel());
-    final JLabel imgLbl = createImageLabel("http://magiccards.info/scans/en/pr/133.jpg");
+    panel.setLayout(new MigLayout(""));
 
-    panel.add(imgLbl, "spany 2");
-    panel.add(table.getTableHeader(), "wrap");
-    panel.add(pane, "width :100%:");
+    panel.add(new JLabel("Your Library:"), "wrap");
+
+    final JTable table = new JTable();
+    table.setModel(model.getLibraryModel());
+    table.setSelectionModel(model.getTableSelectionModel());
+    final JScrollPane pane = new JScrollPane(table);
+    panel.add(pane, "grow, push");
+
+    final JLabel cardImageLabel = createImageLabel();
+    cardImageLabel.setAlignmentY(JLabel.TOP);
+    panel.add(cardImageLabel, "w 320!, aligny top, h 450!");
+
     frame.getContentPane().add(panel, BorderLayout.CENTER);
   }
 
-  private JLabel createImageLabel(String urlString) {
-    Image scan = null;
-    try {
-      URL url = new URL(urlString);
-      scan = ImageIO.read(url);
-    } catch (IOException e) {
-    }
-    return new JLabel(new ImageIcon(scan));
+  private JLabel createImageLabel() {
+    final JLabel label = new JLabel();
+    LabelModelAdapter.connect(label, model.getScanLabelModel());
+    return label;
   }
 
   private void createToolbar() {
@@ -64,7 +62,7 @@ public final class MainWindow {
   }
 
   public void show() {
-    frame = FrameFactory.createCenteredFrame("MTG Administration", 800, 600);
+    frame = FrameFactory.createCenteredFrame("MTG Administration", 1000, 700);
     FrameFactory.setMainFrame(frame);
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {

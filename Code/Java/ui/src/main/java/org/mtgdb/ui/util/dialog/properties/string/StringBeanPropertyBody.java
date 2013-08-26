@@ -25,7 +25,7 @@ public final class StringBeanPropertyBody implements IStringModelBody {
   @Override
   public Document initialize(final IPropertyModelContext context) {
     Document document = new PlainDocument();
-    final String value = callGetter(fModel, "get" + fName).toString();
+    final String value = callGetter(fModel, "doGet" + fName).toString();
     DocumentHelper.setText(document, value);
     return document;
   }

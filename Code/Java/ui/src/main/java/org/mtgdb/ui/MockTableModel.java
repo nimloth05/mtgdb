@@ -1,5 +1,6 @@
 package org.mtgdb.ui;
 
+import com.google.inject.Inject;
 import org.mtgdb.db.MagicCardRepository;
 import org.mtgdb.model.CardDescription;
 
@@ -31,6 +32,7 @@ public class MockTableModel implements TableModel {
 
   };
 
+  @Inject
   public MockTableModel(MagicCardRepository repository) {
     this.repository = repository;
     cards = repository.getAllCards();
@@ -83,6 +85,10 @@ public class MockTableModel implements TableModel {
   }
 
   public void removeTableModelListener(TableModelListener l) {
+  }
+
+  public CardDescription getCard(final int index) {
+    return cards.get(index);
   }
 
   private static class ColumnDescription {

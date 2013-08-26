@@ -41,12 +41,8 @@ public final class GrabberJsoup {
           final String edStr = edition.nextElementSibling().text();
           final String edUrl = edition.attr("href");
           grabEdition(urlPrefix + edUrl, edStr, listener);
-          System.out.println("Edition grabbed");
-
-          break;
         }
       }
-      break;
     }
   }
 
