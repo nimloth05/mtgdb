@@ -8,7 +8,7 @@ import org.mtgdb.db.repository.EditionRepository;
 import org.mtgdb.db.repository.MagicCardRepository;
 import org.mtgdb.grabber.GrabberJsoup;
 import org.mtgdb.grabber.IGrabberListener;
-import org.mtgdb.model.MagicCard;
+import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.Edition;
 import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
 import org.mtgdb.ui.util.frame.progress.IProgressRunnable;
@@ -51,7 +51,7 @@ public class GrabberAction extends AbstractAction {
 
     ProgressDialog dialog = ProgressDialog.create(new IProgressRunnable() {
 
-      private volatile List<MagicCard> allCards = new LinkedList<>();
+      private volatile List<IMagicCard> allCards = new LinkedList<>();
 
       @Override
       public void done() {
@@ -86,7 +86,7 @@ public class GrabberAction extends AbstractAction {
           }
 
           @Override
-          public void grabbed(final MagicCard description) {
+          public void grabbed(final IMagicCard description) {
             allCards.add(description);
 //              SwingUtilities.invokeLater(new Runnable() {
 //                @Override

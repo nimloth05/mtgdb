@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Edition;
 import org.mtgdb.model.Rarity;
@@ -67,12 +68,12 @@ public final class GrabberJsoup {
     for (Element row : tables) {
       final Elements td = row.select("td");
       final String text = td.get(1).text();
-      MagicCard magicCard = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), editionShort, td.get(4).text(), text);
-      listener.grabbed(magicCard);
+      IMagicCard IMagicCard = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), editionShort, td.get(4).text(), text);
+      listener.grabbed(IMagicCard);
     }
   }
 
-  private MagicCard grabCard(final String cardUrl, final String edition, final String rarity, final String name) throws IOException {
+  private IMagicCard grabCard(final String cardUrl, final String edition, final String rarity, final String name) throws IOException {
     URL urlObject = new URL(cardUrl);
     final java.io.BufferedReader bufferedReader = new java.io.BufferedReader(new java.io.InputStreamReader(urlObject.openConnection().getInputStream(), "utf8"));
     String line;
@@ -109,7 +110,7 @@ public final class GrabberJsoup {
     if (m.matches()) {
       card.setType(m.group(1));
       card.setManaCost(m.group(2));
-      card.setConvManaCost(Integer.parseInt(m.group(3)));
+      card.setConvertedManaCost(Integer.parseInt(m.group(3)));
     }
   }
 
@@ -135,7 +136,7 @@ public final class GrabberJsoup {
       card.setPower(Integer.parseInt(m.group(3)));
       card.setToughness(Integer.parseInt(m.group(4)));
       card.setManaCost(m.group(5));
-      card.setConvManaCost(Integer.parseInt(m.group(6)));
+      card.setConvertedManaCost(Integer.parseInt(m.group(6)));
     }
   }
   private void extractTypeLinePlaneswalker(MagicCard card, final Document document) {
@@ -148,7 +149,7 @@ public final class GrabberJsoup {
       card.setSubType(m.group(2));
       card.setLoyalty(Integer.parseInt(m.group(3)));
       card.setManaCost(m.group(4));
-      card.setConvManaCost(Integer.parseInt(m.group(5)));
+      card.setConvertedManaCost(Integer.parseInt(m.group(5)));
     }
   }
 

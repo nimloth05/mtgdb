@@ -3,11 +3,12 @@ package org.mtgdb.model;
 /**
  * @author Sandro Orlando
  */
-public final class MagicCard {
+public final class MagicCard implements IMagicCard {
+
   private String type;
   private String subType;
   private String manaCost;
-  private int convManaCost;
+  private int convertedManaCost;
   private int power;
   private int toughness;
   private String imageURL;
@@ -20,7 +21,8 @@ public final class MagicCard {
   private String name;
   private int loyalty;
 
-  public String getCardId() {
+  @Override
+  public String getId() {
     return cardId;
   }
 
@@ -30,6 +32,7 @@ public final class MagicCard {
 
   private String cardId;
 
+  @Override
   public int getLoyalty() {
     return loyalty;
   }
@@ -38,6 +41,7 @@ public final class MagicCard {
     this.loyalty = loyalty;
   }
 
+  @Override
   public String getImageURL() {
     return imageURL;
   }
@@ -46,6 +50,7 @@ public final class MagicCard {
     this.imageURL = imageURL;
   }
 
+  @Override
   public int getToughness() {
     return toughness;
   }
@@ -54,6 +59,7 @@ public final class MagicCard {
     this.toughness = hp;
   }
 
+  @Override
   public int getPower() {
     return power;
   }
@@ -62,14 +68,16 @@ public final class MagicCard {
     this.power = power;
   }
 
-  public int getConvManaCost() {
-    return convManaCost;
+  @Override
+  public int getConvertedManaCost() {
+    return convertedManaCost;
   }
 
-  public void setConvManaCost(int convManaCost) {
-    this.convManaCost = convManaCost;
+  public void setConvertedManaCost(int convertedManaCost) {
+    this.convertedManaCost = convertedManaCost;
   }
 
+  @Override
   public String getManaCost() {
     return manaCost;
   }
@@ -78,6 +86,7 @@ public final class MagicCard {
     this.manaCost = manaCost;
   }
 
+  @Override
   public String getSubType() {
     return subType;
   }
@@ -86,6 +95,7 @@ public final class MagicCard {
     this.subType = subType;
   }
 
+  @Override
   public String getType() {
     return type;
   }
@@ -94,7 +104,8 @@ public final class MagicCard {
     this.type = type;
   }
 
-  public String getCardText() {
+  @Override
+  public String getText() {
     return cardText;
   }
 
@@ -102,6 +113,7 @@ public final class MagicCard {
     this.cardText = cardText;
   }
 
+  @Override
   public String getFlavorText() {
     return flavorText;
   }
@@ -110,6 +122,7 @@ public final class MagicCard {
     this.flavorText = flavorText;
   }
 
+  @Override
   public String getNumber() {
     return number;
   }
@@ -118,6 +131,7 @@ public final class MagicCard {
     this.number = number;
   }
 
+  @Override
   public String getArtist() {
     return artist;
   }
@@ -126,6 +140,7 @@ public final class MagicCard {
     this.artist = artist;
   }
 
+  @Override
   public String getEdition() {
     return edition;
   }
@@ -134,6 +149,7 @@ public final class MagicCard {
     this.edition = edition;
   }
 
+  @Override
   public Rarity getRarity() {
     return rarity;
   }
@@ -142,6 +158,7 @@ public final class MagicCard {
     this.rarity = rarity;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -157,7 +174,7 @@ public final class MagicCard {
       ", type='" + type + '\'' +
       ", subType='" + subType + '\'' +
       ", manaCost='" + manaCost + '\'' +
-      ", convManaCost=" + convManaCost +
+      ", convManaCost=" + convertedManaCost +
       ", power=" + power +
       ", hp=" + toughness +
       ", imageURL='" + imageURL + '\'' +

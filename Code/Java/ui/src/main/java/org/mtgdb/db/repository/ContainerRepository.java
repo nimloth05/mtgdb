@@ -8,6 +8,7 @@ import org.mtgdb.model.Container;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * @author Sandro Orlando
@@ -35,5 +36,9 @@ public final class ContainerRepository extends AbstractRepository implements ICo
     } catch (SQLException e) {
       throw new RuntimeException("Could not read id", e);
     }
+  }
+
+  public Collection<Container> getAllContainers() {
+    return null;  //To change body of created methods use File | Settings | File Templates.
   }
 }

@@ -2,7 +2,7 @@ package org.mtgdb.ui.main;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.repository.MagicCardRepository;
-import org.mtgdb.model.MagicCard;
+import org.mtgdb.model.IMagicCard;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class MagicCardTableModel implements TableModel {
 
-  private final List<MagicCard> cards;
+  private final List<IMagicCard> cards;
   private ColumnDescription[] columnDescriptions = new ColumnDescription[]{
     new ColumnDescription("Edition", String.class),
     new ColumnDescription("Name", String.class),
@@ -57,23 +57,23 @@ public class MagicCardTableModel implements TableModel {
   }
 
   public Object getValueAt(int rowIndex, int columnIndex) {
-    final MagicCard magicCard = cards.get(rowIndex);
+    final IMagicCard IMagicCard = cards.get(rowIndex);
     switch (columnIndex) {
-      case 0: return magicCard.getEdition();
-      case 1: return magicCard.getName();
-      case 2: return magicCard.getType();
-      case 3: return magicCard.getSubType();
-      case 4: return magicCard.getRarity();
-      case 5: return magicCard.getManaCost();
-      case 6: return magicCard.getConvManaCost();
-      case 7: return magicCard.getPower();
-      case 8: return magicCard.getToughness();
-      case 9: return magicCard.getCardText();
-      case 10: return magicCard.getFlavorText();
-      case 11: return magicCard.getArtist();
-      case 12: return magicCard.getNumber();
+      case 0: return IMagicCard.getEdition();
+      case 1: return IMagicCard.getName();
+      case 2: return IMagicCard.getType();
+      case 3: return IMagicCard.getSubType();
+      case 4: return IMagicCard.getRarity();
+      case 5: return IMagicCard.getManaCost();
+      case 6: return IMagicCard.getConvertedManaCost();
+      case 7: return IMagicCard.getPower();
+      case 8: return IMagicCard.getToughness();
+      case 9: return IMagicCard.getText();
+      case 10: return IMagicCard.getFlavorText();
+      case 11: return IMagicCard.getArtist();
+      case 12: return IMagicCard.getNumber();
     }
-    return magicCard.getCardId();
+    return IMagicCard.getId();
   }
 
   public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
@@ -85,7 +85,7 @@ public class MagicCardTableModel implements TableModel {
   public void removeTableModelListener(TableModelListener l) {
   }
 
-  public MagicCard getCard(final int index) {
+  public IMagicCard getCard(final int index) {
     return cards.get(index);
   }
 

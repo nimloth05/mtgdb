@@ -2,7 +2,7 @@ package org.mtgdb.ui.main;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.model.MagicCard;
+import org.mtgdb.model.IMagicCard;
 import org.mtgdb.services.ServiceManager;
 import org.mtgdb.ui.main.action.AddContainerAction;
 import org.mtgdb.ui.main.action.GrabberAction;
@@ -36,7 +36,7 @@ public final class MainModel {
     tableSelectionModel.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(final ListSelectionEvent e) {
-        MagicCard selectedCard = magicCardTableModel.getCard(tableSelectionModel.getLeadSelectionIndex());
+        IMagicCard selectedCard = magicCardTableModel.getCard(tableSelectionModel.getLeadSelectionIndex());
         Icon scan = ImageLoader.loadAsIcon(selectedCard.getImageURL());
         scanLabelModel.setIcon(scan);
       }

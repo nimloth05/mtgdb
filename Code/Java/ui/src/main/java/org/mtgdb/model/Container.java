@@ -37,4 +37,8 @@ public final class Container {
   public void setId(final int id) {
     this.id = id;
   }
+
+  public int getId() {
+    return id;
+  }
 }

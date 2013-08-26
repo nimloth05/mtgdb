@@ -7,6 +7,8 @@ import org.mtgdb.db.sql.SQLGenerator;
 import org.mtgdb.db.sql.Value;
 import org.mtgdb.model.Edition;
 
+import java.util.Collection;
+
 /**
  * @author Sandro Orlando
  */
@@ -33,4 +35,7 @@ public final class EditionRepository extends AbstractRepository implements IEdit
     transaction.execute("truncate table \"" + DBConstants.EDITION_TABLE + "\"");
   }
 
+  public Collection<Edition> getAllEditions() {
+    return null;  //To change body of created methods use File | Settings | File Templates.
+  }
 }

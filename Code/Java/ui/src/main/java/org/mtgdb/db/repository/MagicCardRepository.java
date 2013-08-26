@@ -7,6 +7,7 @@ import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.sql.Column;
 import org.mtgdb.db.sql.SQLGenerator;
 import org.mtgdb.db.sql.Value;
+import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
 import org.mtgdb.util.Constants;
@@ -48,21 +49,21 @@ public final class MagicCardRepository extends AbstractRepository implements IMa
   }
 
   @Override
-  public void saveAll(final ITransaction transaction, final Collection<MagicCard> cards) {
+  public void saveAll(final ITransaction transaction, final Collection<IMagicCard> cards) {
     Value[][] rows = new Value[cards.size()][];
     int index = 0;
-    for (MagicCard card : cards) {
+    for (IMagicCard card : cards) {
       Value[] row = new Value[]{
         new Value(card.getEdition()),
         new Value(card.getNumber()),
         new Value(card.getType()),
         new Value(card.getSubType()),
         new Value(card.getManaCost()),
-        new Value(card.getConvManaCost()),
+        new Value(card.getConvertedManaCost()),
         new Value(card.getPower()),
         new Value(card.getToughness()),
         new Value(card.getImageURL()),
-        new Value(card.getCardText()),
+        new Value(card.getText()),
         new Value(card.getFlavorText()),
         new Value(card.getArtist()),
         new Value(card.getRarity().ordinal()),
@@ -70,7 +71,7 @@ public final class MagicCardRepository extends AbstractRepository implements IMa
         new Value("")
       };
       rows[index++] = row;
-      card.setCardId(card.getEdition() + Constants.UNDERSCORE + card.getNumber());
+      ((MagicCard)card).setCardId(card.getEdition() + Constants.UNDERSCORE + card.getNumber());
     }
     final String sql = SQLGenerator.insertInto(DBConstants.MAGIC_CARD_TABLE, columns, rows);
     transaction.insert(sql);
@@ -82,8 +83,8 @@ public final class MagicCardRepository extends AbstractRepository implements IMa
   }
 
   @Override
-  public List<MagicCard> getAllCards() {
-    List<MagicCard> cards = new ArrayList<>();
+  public List<IMagicCard> getAllCards() {
+    List<IMagicCard> cards = new ArrayList<>();
     try {
       ResultSet rs = connection.executeQuery("SELECT * FROM \"" + DBConstants.MAGIC_CARD_TABLE + "\";");
       while (rs.next()) {
@@ -109,7 +110,7 @@ public final class MagicCardRepository extends AbstractRepository implements IMa
         description.setType(cardType);
         description.setSubType(cardSubtype);
         description.setManaCost(manaCost);
-        description.setConvManaCost(convertedManaCost);
+        description.setConvertedManaCost(convertedManaCost);
         description.setPower(power);
         description.setToughness(toughness);
         description.setImageURL(imgUrl);
