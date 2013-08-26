@@ -1,4 +1,4 @@
-package org.mtgdb.ui;
+package org.mtgdb.ui.main;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.repository.MagicCardRepository;

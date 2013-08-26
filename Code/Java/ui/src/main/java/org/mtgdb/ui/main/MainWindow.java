@@ -1,4 +1,4 @@
-package org.mtgdb.ui;
+package org.mtgdb.ui.main;
 
 import net.miginfocom.swing.MigLayout;
 import org.mtgdb.services.ServiceManager;

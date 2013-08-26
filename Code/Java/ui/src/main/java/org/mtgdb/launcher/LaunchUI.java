@@ -1,6 +1,6 @@
 package org.mtgdb.launcher;
 
-import org.mtgdb.ui.MainWindow;
+import org.mtgdb.ui.main.MainWindow;
 import org.mtgdb.ui.util.NimbusUtil;
 
 import javax.swing.*;
