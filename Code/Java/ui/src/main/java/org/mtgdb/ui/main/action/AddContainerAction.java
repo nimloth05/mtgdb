@@ -29,7 +29,7 @@ public class AddContainerAction extends AbstractAction {
 
   private final IDatabaseConnection connection;
   private final ContainerRepository containerRepository;
-  private Container container = new Container();
+  private final Container container = new Container();
 
   @Inject
   public AddContainerAction(final IDatabaseConnection connection, final ContainerRepository containerRepository) {

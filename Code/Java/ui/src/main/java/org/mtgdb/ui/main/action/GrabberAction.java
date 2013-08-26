@@ -13,6 +13,7 @@ import org.mtgdb.model.Edition;
 import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
 import org.mtgdb.ui.util.frame.progress.IProgressRunnable;
 import org.mtgdb.ui.util.frame.progress.ProgressDialog;
+import org.mtgdb.util.assertion.Assert;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -20,8 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
-* @author Sandro Orlando
-*/
+ * @author Sandro Orlando
+ */
 public class GrabberAction extends AbstractAction {
 
   private final IDatabaseConnection connection;
@@ -50,20 +51,10 @@ public class GrabberAction extends AbstractAction {
 
     ProgressDialog dialog = ProgressDialog.create(new IProgressRunnable() {
 
-      private volatile List<CardDescription> allCards = new LinkedList<CardDescription>();
+      private volatile List<CardDescription> allCards = new LinkedList<>();
 
       @Override
       public void done() {
-        saveCards();
-      }
-
-      private void saveCards() {
-        connection.execute(new ITransactionRunnable() {
-          @Override
-          public void run(final ITransaction transaction) throws Exception {
-            magicCardRepository.saveAll(transaction, allCards);
-          }
-        });
       }
 
       @Override
@@ -80,11 +71,16 @@ public class GrabberAction extends AbstractAction {
           }
 
           private void saveEdition(final Edition edition) {
-            System.out.println("grabbing edition " + edition);
-            connection.execute(new ITransactionRunnable() {
+            SwingUtilities.invokeLater(new Runnable() {
               @Override
-              public void run(final ITransaction transaction) throws Exception {
-                editionRepository.save(transaction, edition);
+              public void run() {
+                Assert.log("Edition grabbed: " + edition);
+                connection.execute(new ITransactionRunnable() {
+                  @Override
+                  public void run(final ITransaction transaction) throws Exception {
+                    editionRepository.save(transaction, edition);
+                  }
+                });
               }
             });
           }
@@ -105,7 +101,17 @@ public class GrabberAction extends AbstractAction {
 
           @Override
           public void endEdition() {
-
+            SwingUtilities.invokeLater(new Runnable() {
+              @Override
+              public void run() {
+                connection.execute(new ITransactionRunnable() {
+                  @Override
+                  public void run(final ITransaction transaction) throws Exception {
+                    magicCardRepository.saveAll(transaction, allCards);
+                  }
+                });
+              }
+            });
           }
 
         });

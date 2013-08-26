@@ -1,5 +1,7 @@
 package org.mtgdb.db.sql;
 
+import org.apache.commons.lang.StringUtils;
+import org.mtgdb.util.Constants;
 import org.mtgdb.util.EscapeUtils;
 
 /**
@@ -14,7 +16,7 @@ public final class Value {
   }
 
   public Value(final String value) {
-    this.value = "'" + escape(value) + "'";
+    this.value = "'" + StringUtils.defaultIfEmpty(escape(value), Constants.EMPTY) + "'";
   }
 
   public static String escape(final String value) {

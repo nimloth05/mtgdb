@@ -54,7 +54,7 @@ public final class GrabberJsoup {
 
     edition.setEdition(doc.title());
     edition.setEditionId(editionShort);
-    edition.setNumberOfCards(even.size());
+    edition.setNumberOfCards(even.size() + odd.size());
     listener.beginEdition(edition);
 
     grapEditionCards(editionShort, listener, even);
