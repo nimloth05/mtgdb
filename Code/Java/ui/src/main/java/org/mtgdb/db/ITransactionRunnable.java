@@ -6,6 +6,6 @@ package org.mtgdb.db;
 public interface ITransactionRunnable {
 
 
-  public void run(final ITransaction transaction) throws Exception;
+  public void run(final ITransactionToken transaction) throws Exception;
 
 }

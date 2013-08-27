@@ -1,14 +1,25 @@
 package org.mtgdb.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
 /**
  * @author Sandro Orlando
  */
+@Entity
 public final class PhysicalCard implements IPhysicalCard {
 
+  @Id
   private int id;
-  private String cardId;
-  private int containerId;
+  @ManyToOne
+  private MagicCard card;
+  @ManyToOne
+  private Container container;
+  @Column
   private CardCondition condition;
+  @Column
   private String language;
 
   public int getId() {
@@ -20,21 +31,21 @@ public final class PhysicalCard implements IPhysicalCard {
   }
 
   @Override
-  public String getCardId() {
-    return cardId;
+  public MagicCard getCard() {
+    return card;
   }
 
-  public void setCardId(final String cardId) {
-    this.cardId = cardId;
+  public void setCard(final MagicCard card) {
+    this.card = card;
   }
 
   @Override
-  public int getContainerId() {
-    return containerId;
+  public Container getContainer() {
+    return container;
   }
 
-  public void setContainerId(final int containerId) {
-    this.containerId = containerId;
+  public void setContainer(final Container container) {
+    this.container = container;
   }
 
   @Override

@@ -31,7 +31,7 @@ public interface IMagicCard {
 
   String getArtist();
 
-  String getEdition();
+  Edition getEdition();
 
   Rarity getRarity();
 

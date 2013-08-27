@@ -1,25 +1,54 @@
 package org.mtgdb.model;
 
+import org.mtgdb.util.Constants;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
 /**
  * @author Sandro Orlando
  */
+@Entity
 public final class MagicCard implements IMagicCard {
 
+  @Id
+  private String cardId;
+  @Column
   private String type;
+  @Column
   private String subType;
+  @Column
   private String manaCost;
+  @Column
   private int convertedManaCost;
+  @Column
   private int power;
+  @Column
   private int toughness;
+  @Column
   private String imageURL;
+  @Column(length =  5000)
   private String cardText;
+  @Column(length =  5000)
   private String flavorText;
+  @Column
   private String number;
+  @Column
   private String artist;
-  private String edition;
+  @ManyToOne
+  private Edition edition;
+  @Column
   private Rarity rarity;
+  @Column
   private String name;
+  @Column
   private int loyalty;
+
+  public static String constructId(final Edition edition, final String cardNumber) {
+    return edition.getId() + Constants.UNDERSCORE + cardNumber;
+  }
 
   @Override
   public String getId() {
@@ -29,8 +58,6 @@ public final class MagicCard implements IMagicCard {
   public void setCardId(final String cardId) {
     this.cardId = cardId;
   }
-
-  private String cardId;
 
   @Override
   public int getLoyalty() {
@@ -141,11 +168,11 @@ public final class MagicCard implements IMagicCard {
   }
 
   @Override
-  public String getEdition() {
+  public Edition getEdition() {
     return edition;
   }
 
-  public void setEdition(String edition) {
+  public void setEdition(Edition edition) {
     this.edition = edition;
   }
 
@@ -185,5 +212,9 @@ public final class MagicCard implements IMagicCard {
       ", rarity='" + rarity + '\'' +
       ", name='" + name + '\'' +
       '}';
+  }
+
+  public void setId() {
+    cardId = constructId(edition, number);
   }
 }

@@ -2,14 +2,14 @@ package org.mtgdb.ui.main.action;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.ITransactionRunnable;
-import org.mtgdb.db.repository.EditionRepository;
-import org.mtgdb.db.repository.MagicCardRepository;
+import org.mtgdb.db.ITransactionToken;
+import org.mtgdb.db.repository.IEditionRepository;
+import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.grabber.GrabberJsoup;
 import org.mtgdb.grabber.IGrabberListener;
-import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.Edition;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.ui.util.frame.progress.IProgressMonitor;
 import org.mtgdb.ui.util.frame.progress.IProgressRunnable;
 import org.mtgdb.ui.util.frame.progress.ProgressDialog;
@@ -26,11 +26,11 @@ import java.util.List;
 public class GrabberAction extends AbstractAction {
 
   private final IDatabaseConnection connection;
-  private final MagicCardRepository magicCardRepository;
-  private final EditionRepository editionRepository;
+  private final IMagicCardRepository magicCardRepository;
+  private final IEditionRepository editionRepository;
 
   @Inject
-  public GrabberAction(final IDatabaseConnection connection, final MagicCardRepository magicCardRepository, final EditionRepository editionRepository) {
+  public GrabberAction(final IDatabaseConnection connection, final IMagicCardRepository magicCardRepository, final IEditionRepository editionRepository) {
     super();
     this.connection = connection;
     this.magicCardRepository = magicCardRepository;
@@ -43,7 +43,7 @@ public class GrabberAction extends AbstractAction {
     connection.execute(new ITransactionRunnable() {
 
       @Override
-      public void run(final ITransaction transaction) throws Exception {
+      public void run(final ITransactionToken transaction) throws Exception {
         magicCardRepository.deleteAll(transaction);
         editionRepository.deleteAll(transaction);
       }
@@ -51,7 +51,7 @@ public class GrabberAction extends AbstractAction {
 
     ProgressDialog dialog = ProgressDialog.create(new IProgressRunnable() {
 
-      private volatile List<IMagicCard> allCards = new LinkedList<>();
+      private volatile List<MagicCard> allCards = new LinkedList<>();
 
       @Override
       public void done() {
@@ -77,7 +77,7 @@ public class GrabberAction extends AbstractAction {
                 Assert.log("Edition grabbed: " + edition);
                 connection.execute(new ITransactionRunnable() {
                   @Override
-                  public void run(final ITransaction transaction) throws Exception {
+                  public void run(final ITransactionToken transaction) throws Exception {
                     editionRepository.save(transaction, edition);
                   }
                 });
@@ -86,7 +86,7 @@ public class GrabberAction extends AbstractAction {
           }
 
           @Override
-          public void grabbed(final IMagicCard description) {
+          public void grabbed(final MagicCard description) {
             allCards.add(description);
 //              SwingUtilities.invokeLater(new Runnable() {
 //                @Override
@@ -106,7 +106,7 @@ public class GrabberAction extends AbstractAction {
               public void run() {
                 connection.execute(new ITransactionRunnable() {
                   @Override
-                  public void run(final ITransaction transaction) throws Exception {
+                  public void run(final ITransactionToken transaction) throws Exception {
                     magicCardRepository.saveAll(transaction, allCards);
                   }
                 });

@@ -2,10 +2,11 @@ package org.mtgdb.ui.main.action;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.ITransaction;
 import org.mtgdb.db.ITransactionRunnable;
+import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.db.repository.ContainerRepository;
 import org.mtgdb.db.repository.EditionRepository;
+import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.db.repository.PhysicalCardRepository;
 import org.mtgdb.model.CardCondition;
 import org.mtgdb.model.Container;
@@ -20,7 +21,6 @@ import org.mtgdb.ui.util.dialog.properties.string.IStringModelBody;
 import org.mtgdb.ui.util.dialog.ui.PropertiesDialog;
 import org.mtgdb.ui.util.frame.FrameFactory;
 import org.mtgdb.ui.util.models.DocumentHelper;
-import org.mtgdb.util.Constants;
 
 import javax.swing.*;
 import javax.swing.text.Document;
@@ -47,14 +47,16 @@ public final class AddPhysicalCardAction extends AbstractAction{
   private final PhysicalCardRepository physicalCardRepository;
   private final IDatabaseConnection connection;
   private final ContainerRepository containerRepository;
+  private final IMagicCardRepository magicCardRepository;
 
   @Inject
-  public AddPhysicalCardAction(final EditionRepository editionRepository, final PhysicalCardRepository physicalCardRepository, final IDatabaseConnection connection, final ContainerRepository containerRepository) {
+  public AddPhysicalCardAction(final EditionRepository editionRepository, final PhysicalCardRepository physicalCardRepository, final IDatabaseConnection connection, final ContainerRepository containerRepository, final IMagicCardRepository magicCardRepository) {
     super();
     this.editionRepository = editionRepository;
     this.physicalCardRepository = physicalCardRepository;
     this.connection = connection;
     this.containerRepository = containerRepository;
+    this.magicCardRepository = magicCardRepository;
     putValue(Action.NAME, "Add Card");
   }
 
@@ -95,7 +97,7 @@ public final class AddPhysicalCardAction extends AbstractAction{
       @Override
       public ListModel initialize(final IPropertyModelContext context) {
         DefaultListModel<Container> containerModel = new DefaultListModel<>();
-        Collection<Container> containers = containerRepository.getAllContainers();
+        Collection<Container> containers = containerRepository.getAll();
         for (Container container : containers) {
           containerModel.addElement(container);
         }
@@ -150,11 +152,11 @@ public final class AddPhysicalCardAction extends AbstractAction{
       public void run() {
         connection.execute(new ITransactionRunnable() {
           @Override
-          public void run(final ITransaction transaction) throws Exception {
+          public void run(final ITransactionToken transaction) throws Exception {
             PhysicalCard card = new PhysicalCard();
-            card.setCardId(properties.edition.getEditionId() + Constants.UNDERSCORE + properties.cardNumber);
+            card.setCard(magicCardRepository.getCard(properties.edition, properties.cardNumber));
             card.setCondition(properties.condition);
-            card.setContainerId(properties.container.getId());
+            card.setContainer(properties.container);
             card.setCondition(properties.condition);
             physicalCardRepository.save(transaction, card);
           }
@@ -186,7 +188,7 @@ public final class AddPhysicalCardAction extends AbstractAction{
 
       @Override
       public ListModel initialize(final IPropertyModelContext context) {
-        Collection<Edition> editions = editionRepository.getAllEditions();
+        Collection<Edition> editions = editionRepository.getAll();
         DefaultListModel<Edition> model = new DefaultListModel<>();
         for (Edition edition : editions) {
           model.addElement(edition);

@@ -36,6 +36,7 @@ public final class MainModel {
     tableSelectionModel.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(final ListSelectionEvent e) {
+        if (magicCardTableModel.isEmpty()) return;
         IMagicCard selectedCard = magicCardTableModel.getCard(tableSelectionModel.getLeadSelectionIndex());
         Icon scan = ImageLoader.loadAsIcon(selectedCard.getImageURL());
         scanLabelModel.setIcon(scan);

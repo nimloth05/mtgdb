@@ -1,7 +1,6 @@
 package org.mtgdb.db;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.mtgdb.util.dispose.IDisposable;
 
 /**
  * @author Sandro Orlando
@@ -10,11 +9,9 @@ public interface IDatabaseConnection {
 
   void openDB();
 
-  void executeSql(String s);
-
   void closeDB();
 
-  ResultSet executeQuery(String s) throws SQLException;
-
   void execute(ITransactionRunnable runnable);
+
+  IDisposable addListener(IDatabaseConnectionListener listener);
 }
