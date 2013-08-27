@@ -1,44 +1,33 @@
 package org.mtgdb.db.repository;
 
-import org.mtgdb.db.ITransaction;
-import org.mtgdb.db.sql.Column;
-import org.mtgdb.db.sql.SQLGenerator;
-import org.mtgdb.db.sql.Value;
+import com.google.inject.Inject;
+import org.mtgdb.db.IDatabaseConnection;
+import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Container;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 
 /**
  * @author Sandro Orlando
  */
-public final class ContainerRepository extends AbstractRepository implements IContainerRepository {
+public final class ContainerRepository extends AbstractRepository<Container, Integer> implements IContainerRepository {
 
-  private static final Column[] columns = new Column[] {
-    new Column("NAME"),
-    new Column("DESCRIPTION")
-  };
-
-  public ContainerRepository() {
+  @Inject
+  public ContainerRepository(final IDatabaseConnection connection) {
+    super(connection);
   }
 
   @Override
-  public void save(final ITransaction transaction, final Container container) {
-    Value[][] row = new Value[][] {{new Value(container.getName()), new Value(container.getDescription())}};
-    final String sql = SQLGenerator.insertInto("Container", columns, row);
-    final ResultSet insert = transaction.insert(sql);
+  public void save(final ITransactionToken transaction, final Container container) {
     try {
-      while(insert.next()) {
-        int id = insert.getInt(1);
-        container.setId(id);
-      }
+      dao.create(container);
     } catch (SQLException e) {
-      throw new RuntimeException("Could not read id", e);
+      throw new RuntimeException(e);
     }
   }
 
-  public Collection<Container> getAllContainers() {
-    return null;  //To change body of created methods use File | Settings | File Templates.
+  @Override
+  protected Class getClassLiteral() {
+    return Container.class;
   }
 }

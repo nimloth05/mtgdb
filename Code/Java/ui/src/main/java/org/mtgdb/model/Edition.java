@@ -1,20 +1,30 @@
 package org.mtgdb.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author Sandro Orlando
  */
+@Entity
 public final class Edition {
 
-  private String edition;
-  private String editionId;
+  @Id
+  private String id;
+
+  @Column
+  private String name;
+
+  @Column
   private int numberOfCards;
 
-  public String getEditionId() {
-    return editionId;
+  public String getId() {
+    return id;
   }
 
-  public void setEditionId(final String editionId) {
-    this.editionId = editionId;
+  public void setId(final String id) {
+    this.id = id;
   }
 
   public int getNumberOfCards() {
@@ -25,19 +35,19 @@ public final class Edition {
     this.numberOfCards = numberOfCards;
   }
 
-  public String getEdition() {
-    return edition;
+  public String getName() {
+    return name;
   }
 
-  public void setEdition(final String edition) {
-    this.edition = edition;
+  public void setName(final String name) {
+    this.name = name;
   }
 
   @Override
   public String toString() {
     return "Edition{" +
-      "edition='" + edition + '\'' +
-      ", editionId='" + editionId + '\'' +
+      "edition='" + name + '\'' +
+      ", editionId='" + id + '\'' +
       ", numberOfCards=" + numberOfCards +
       '}';
   }

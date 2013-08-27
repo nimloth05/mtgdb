@@ -1,8 +1,9 @@
 package org.mtgdb.ui.main;
 
 import com.google.inject.Inject;
-import org.mtgdb.db.repository.MagicCardRepository;
+import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.model.IMagicCard;
+import org.mtgdb.model.MagicCard;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class MagicCardTableModel implements TableModel {
 
-  private final List<IMagicCard> cards;
+  private final List<MagicCard> cards;
   private ColumnDescription[] columnDescriptions = new ColumnDescription[]{
     new ColumnDescription("Edition", String.class),
     new ColumnDescription("Name", String.class),
@@ -32,8 +33,8 @@ public class MagicCardTableModel implements TableModel {
   };
 
   @Inject
-  public MagicCardTableModel(MagicCardRepository repository) {
-    cards = repository.getAllCards();
+  public MagicCardTableModel(IMagicCardRepository repository) {
+    cards = repository.getAll();
   }
 
   public int getRowCount() {
@@ -87,6 +88,10 @@ public class MagicCardTableModel implements TableModel {
 
   public IMagicCard getCard(final int index) {
     return cards.get(index);
+  }
+
+  public boolean isEmpty() {
+    return cards.isEmpty();
   }
 
   private static class ColumnDescription {

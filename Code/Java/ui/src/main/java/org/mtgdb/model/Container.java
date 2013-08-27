@@ -1,12 +1,22 @@
 package org.mtgdb.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * @author Sandro Orlando
  */
+@Entity
 public final class Container {
 
+  @Id
   private int id;
+
+  @Column(nullable = false)
   private String name;
+
+  @Column
   private String description;
 
   public String getName() {

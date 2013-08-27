@@ -32,21 +32,21 @@ public final class LibraryCard implements ILibraryCard {
   }
 
   @Override
-  public int getContainerId() {
-    return physicalCard.getContainerId();
+  public Container getContainer() {
+    return physicalCard.getContainer();
   }
 
-  public void setContainerId(final int containerId) {
-    physicalCard.setContainerId(containerId);
+  public void setContainerId(final Container containerId) {
+    physicalCard.setContainer(containerId);
   }
 
   @Override
-  public String getCardId() {
-    return physicalCard.getCardId();
+  public MagicCard getCard() {
+    return physicalCard.getCard();
   }
 
-  public void setCardId(final String cardId) {
-    physicalCard.setCardId(cardId);
+  public void setCardId(final MagicCard cardId) {
+    physicalCard.setCard(cardId);
   }
 
   @Override
@@ -119,7 +119,7 @@ public final class LibraryCard implements ILibraryCard {
   }
 
   @Override
-  public String getEdition() {
+  public Edition getEdition() {
     return card.getEdition();
   }
 

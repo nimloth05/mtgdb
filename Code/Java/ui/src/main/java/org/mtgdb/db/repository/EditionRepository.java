@@ -1,41 +1,43 @@
 package org.mtgdb.db.repository;
 
 import org.mtgdb.db.DBConstants;
-import org.mtgdb.db.ITransaction;
-import org.mtgdb.db.sql.Column;
-import org.mtgdb.db.sql.SQLGenerator;
-import org.mtgdb.db.sql.Value;
+import org.mtgdb.db.DatabaseConnection;
+import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Edition;
 
-import java.util.Collection;
+import javax.inject.Inject;
+import java.sql.SQLException;
 
 /**
  * @author Sandro Orlando
  */
-public final class EditionRepository extends AbstractRepository implements IEditionRepository {
+public final class EditionRepository extends AbstractRepository<Edition, String> implements IEditionRepository {
 
-  private static final Column[] columns = new Column[]{
-    new Column(DBConstants.EDITION_ID),
-    new Column(DBConstants.EDITION_NAME),
-    new Column(DBConstants.EDITION_NUMBER_OF_CARDS)
-  };
-
-  @Override
-  public void save(final ITransaction transaction, final Edition edition) {
-    final String sql = SQLGenerator.insertInto(DBConstants.EDITION_TABLE, columns,
-      new Value[][]{{
-        new Value(edition.getEditionId()),
-        new Value(edition.getEdition()),
-        new Value(edition.getNumberOfCards())}});
-    transaction.insert(sql);
+  @Inject
+  public EditionRepository(final DatabaseConnection connection) {
+    super(connection);
   }
 
   @Override
-  public void deleteAll(final ITransaction transaction) {
-    transaction.execute("truncate table \"" + DBConstants.EDITION_TABLE + "\"");
+  public void save(final ITransactionToken transaction, final Edition edition) {
+    try {
+      dao.create(edition);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  public Collection<Edition> getAllEditions() {
-    return null;  //To change body of created methods use File | Settings | File Templates.
+  @Override
+  public void deleteAll(final ITransactionToken transaction) {
+    try {
+      dao.executeRaw("truncate table \"" + DBConstants.EDITION_TABLE + "\"");
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  protected Class<Edition> getClassLiteral() {
+    return Edition.class;
   }
 }

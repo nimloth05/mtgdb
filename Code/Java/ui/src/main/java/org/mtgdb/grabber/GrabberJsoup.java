@@ -4,9 +4,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.mtgdb.model.IMagicCard;
-import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Edition;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
 
 import java.io.IOException;
@@ -53,27 +52,27 @@ public final class GrabberJsoup {
     Elements even = doc.select("table .even");
     Elements odd = doc.select("table .odd");
 
-    edition.setEdition(doc.title());
-    edition.setEditionId(editionShort);
+    edition.setName(doc.title());
+    edition.setId(editionShort);
     edition.setNumberOfCards(even.size() + odd.size());
     listener.beginEdition(edition);
 
-    grapEditionCards(editionShort, listener, even);
-    grapEditionCards(editionShort, listener, odd);
+    grapEditionCards(edition, listener, even);
+    grapEditionCards(edition, listener, odd);
 
     listener.endEdition();
   }
 
-  private void grapEditionCards(final String editionShort, final IGrabberListener listener, final Elements tables) throws IOException {
+  private void grapEditionCards(final Edition edition, final IGrabberListener listener, final Elements tables) throws IOException {
     for (Element row : tables) {
       final Elements td = row.select("td");
       final String text = td.get(1).text();
-      IMagicCard IMagicCard = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), editionShort, td.get(4).text(), text);
-      listener.grabbed(IMagicCard);
+      MagicCard magicCard = grabCard("" + urlPrefix + td.get(1).child(0).attr("href"), edition, td.get(4).text(), text);
+      listener.grabbed(magicCard);
     }
   }
 
-  private IMagicCard grabCard(final String cardUrl, final String edition, final String rarity, final String name) throws IOException {
+  private MagicCard grabCard(final String cardUrl, final Edition edition, final String rarity, final String name) throws IOException {
     URL urlObject = new URL(cardUrl);
     final java.io.BufferedReader bufferedReader = new java.io.BufferedReader(new java.io.InputStreamReader(urlObject.openConnection().getInputStream(), "utf8"));
     String line;

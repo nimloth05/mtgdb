@@ -10,7 +10,9 @@ import org.mtgdb.db.repository.IContainerRepository;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.repository.IEditionRepository;
 import org.mtgdb.db.repository.IMagicCardRepository;
+import org.mtgdb.db.repository.IPhysicalCardRepository;
 import org.mtgdb.db.repository.MagicCardRepository;
+import org.mtgdb.db.repository.PhysicalCardRepository;
 
 /**
  * @author Sandro Orlando
@@ -28,10 +30,12 @@ public final class ServiceManager {
     this.injector = Guice.createInjector(new AbstractModule() {
       @Override
       protected void configure() {
-        bind(IDatabaseConnection.class).toInstance(new DatabaseConnection());
-        bind(IMagicCardRepository.class).to(MagicCardRepository.class);
-        bind(IEditionRepository.class).to(EditionRepository.class);
-        bind(IContainerRepository.class).to(ContainerRepository.class);
+        final DatabaseConnection connection = new DatabaseConnection();
+        bind(IDatabaseConnection.class).toInstance(connection);
+        bind(IMagicCardRepository.class).toInstance(new MagicCardRepository(connection));
+        bind(IEditionRepository.class).toInstance(new EditionRepository(connection));
+        bind(IContainerRepository.class).toInstance(new ContainerRepository(connection));
+        bind(IPhysicalCardRepository.class).toInstance(new PhysicalCardRepository(connection));
       }
     });
   }

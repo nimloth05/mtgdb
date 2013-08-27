@@ -1,14 +1,14 @@
 package org.mtgdb.db.repository;
 
-import org.mtgdb.db.ITransaction;
+import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Edition;
 
 /**
  * @author Sandro Orlando
  */
-public interface IEditionRepository extends IRepository {
+public interface IEditionRepository extends IRepository<Edition> {
 
-  void save(ITransaction transaction, Edition edition);
+  void save(ITransactionToken transaction, Edition edition);
 
-  void deleteAll(ITransaction transaction);
+  void deleteAll(ITransactionToken transaction);
 }

@@ -1,38 +1,32 @@
 package org.mtgdb.db.repository;
 
-import org.mtgdb.db.ITransaction;
-import org.mtgdb.db.sql.Column;
-import org.mtgdb.db.sql.SQLGenerator;
-import org.mtgdb.db.sql.Value;
+import com.google.inject.Inject;
+import org.mtgdb.db.IDatabaseConnection;
+import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.PhysicalCard;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
  * @author Sandro Orlando
  */
-public final class PhysicalCardRepository extends AbstractRepository{
+public final class PhysicalCardRepository extends AbstractRepository<PhysicalCard, Integer> implements IPhysicalCardRepository {
 
-  private static final Column[] columns = new Column[] {
-    new Column("REF_CARD"),
-    new Column("REF_CONTAINER"),
-    new Column("CONDITION"),
-    new Column("LANG")
-  };
+  @Inject
+  public PhysicalCardRepository(final IDatabaseConnection connection) {
+    super(connection);
+  }
 
-  public void save(final ITransaction transaction, final PhysicalCard card) {
-    final String sql = SQLGenerator.insertInto("PhysicalCard", columns, new Value[][]{
-      {new Value(card.getCardId()), new Value(card.getContainerId()), new Value(card.getCondition().ordinal()), new Value(card.getLanguage())}
-    });
-    ResultSet rs = transaction.insert(sql);
+  public void save(final ITransactionToken transaction, final PhysicalCard card) {
     try {
-      while(rs.next()) {
-        card.setId(rs.getInt(1));
-      }
-      rs.close();
+      dao.create(card);
     } catch (SQLException e) {
-      throw new RuntimeException("cannot set id",e);
+      throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  protected Class<PhysicalCard> getClassLiteral() {
+    return PhysicalCard.class;
   }
 }

@@ -3,129 +3,88 @@ package org.mtgdb.db.repository;
 import com.google.inject.Inject;
 import org.mtgdb.db.DBConstants;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.ITransaction;
-import org.mtgdb.db.sql.Column;
-import org.mtgdb.db.sql.SQLGenerator;
-import org.mtgdb.db.sql.Value;
-import org.mtgdb.model.IMagicCard;
+import org.mtgdb.db.ITransactionToken;
+import org.mtgdb.model.Edition;
 import org.mtgdb.model.MagicCard;
-import org.mtgdb.model.Rarity;
-import org.mtgdb.util.Constants;
-import org.mtgdb.util.assertion.Assert;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author Sandro Orlando
  */
-public final class MagicCardRepository extends AbstractRepository implements IMagicCardRepository {
-
-  private static final Column[] columns = new Column[]{
-    new Column("REF_EDITION"),
-    new Column("cardNumber"),
-    new Column("type"),
-    new Column("subType"),
-    new Column("manaCost"),
-    new Column("convManaCost"),
-    new Column("power"),
-    new Column("toughness"),
-    new Column("imageURL"),
-    new Column("cardText"),
-    new Column("flavorText"),
-    new Column("artist"),
-    new Column("rarity"),
-    new Column("name"),
-    new Column("cardId")
-  };
-  private final IDatabaseConnection connection;
+public final class MagicCardRepository extends AbstractRepository<MagicCard, String> implements IMagicCardRepository {
 
   @Inject
   public MagicCardRepository(final IDatabaseConnection connection) {
-    this.connection = connection;
+    super(connection);
   }
 
   @Override
-  public void saveAll(final ITransaction transaction, final Collection<IMagicCard> cards) {
-    Value[][] rows = new Value[cards.size()][];
-    int index = 0;
-    for (IMagicCard card : cards) {
-      Value[] row = new Value[]{
-        new Value(card.getEdition()),
-        new Value(card.getNumber()),
-        new Value(card.getType()),
-        new Value(card.getSubType()),
-        new Value(card.getManaCost()),
-        new Value(card.getConvertedManaCost()),
-        new Value(card.getPower()),
-        new Value(card.getToughness()),
-        new Value(card.getImageURL()),
-        new Value(card.getText()),
-        new Value(card.getFlavorText()),
-        new Value(card.getArtist()),
-        new Value(card.getRarity().ordinal()),
-        new Value(card.getName()),
-        new Value("")
-      };
-      rows[index++] = row;
-      ((MagicCard)card).setCardId(card.getEdition() + Constants.UNDERSCORE + card.getNumber());
-    }
-    final String sql = SQLGenerator.insertInto(DBConstants.MAGIC_CARD_TABLE, columns, rows);
-    transaction.insert(sql);
+  protected Class<MagicCard> getClassLiteral() {
+    return MagicCard.class;
   }
 
   @Override
-  public void deleteAll(final ITransaction transaction) {
-    transaction.execute("truncate table \"" + DBConstants.MAGIC_CARD_TABLE + "\"");
-  }
-
-  @Override
-  public List<IMagicCard> getAllCards() {
-    List<IMagicCard> cards = new ArrayList<>();
+  public void saveAll(final ITransactionToken transaction, final Collection<MagicCard> cards) {
     try {
-      ResultSet rs = connection.executeQuery("SELECT * FROM \"" + DBConstants.MAGIC_CARD_TABLE + "\";");
-      while (rs.next()) {
-        String edition = rs.getString("REF_EDITION");
-        String cardName = rs.getString("name");
-        String cardType = rs.getString("type");
-        String cardSubtype = rs.getString("subType");
-        int convertedManaCost = rs.getInt("convManaCost");
-        String manaCost = rs.getString("manaCost");
-        int power = rs.getInt("power");
-        int toughness = rs.getInt("toughness");
-        String imgUrl = rs.getString("imageURL");
-        String cardText = rs.getString("cardText");
-        String flavorText = rs.getString("flavorText");
-        String artist = rs.getString("artist");
-        int rarity = rs.getInt("rarity");
-        String cardId = rs.getString("cardId");
-        String cardNum = rs.getString("cardNumber");
-        MagicCard description = new MagicCard();
-        cards.add(description);
-        description.setEdition(edition);
-        description.setNumber(cardNum);
-        description.setType(cardType);
-        description.setSubType(cardSubtype);
-        description.setManaCost(manaCost);
-        description.setConvertedManaCost(convertedManaCost);
-        description.setPower(power);
-        description.setToughness(toughness);
-        description.setImageURL(imgUrl);
-        description.setCardText(cardText);
-        description.setFlavorText(flavorText);
-        description.setArtist(artist);
-        description.setRarity(Rarity.values()[rarity]);
-        description.setName(cardName);
-        description.setCardId(cardId);
-      }
-
-    } catch (SQLException e) {
-      Assert.log(e);
+      dao.callBatchTasks(new Callable<Void>() {
+        @Override
+        public Void call() throws Exception {
+          for (MagicCard card : cards) {
+            card.setId();
+            dao.create(card);
+          }
+          return null;
+        }
+      });
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-    return cards;
+//    Value[][] rows = new Value[cards.size()][];
+//    int index = 0;
+//    for (IMagicCard card : cards) {
+//      Value[] row = new Value[]{
+//        new Value(card.getEdition()),
+//        new Value(card.getNumber()),
+//        new Value(card.getType()),
+//        new Value(card.getSubType()),
+//        new Value(card.getManaCost()),
+//        new Value(card.getConvertedManaCost()),
+//        new Value(card.getPower()),
+//        new Value(card.getToughness()),
+//        new Value(card.getImageURL()),
+//        new Value(card.getText()),
+//        new Value(card.getFlavorText()),
+//        new Value(card.getArtist()),
+//        new Value(card.getRarity().ordinal()),
+//        new Value(card.getName()),
+//        new Value("")
+//      };
+//      rows[index++] = row;
+//      ((MagicCard)card).setCardId(card.getEdition() + Constants.UNDERSCORE + card.getNumber());
+//    }
+//    final String sql = SQLGenerator.insertInto(DBConstants.MAGIC_CARD_TABLE, columns, rows);
+//    transaction.insert(sql);
+  }
+
+  @Override
+  public void deleteAll(final ITransactionToken transaction) {
+    try {
+      dao.executeRaw("truncate table \"" + DBConstants.MAGIC_CARD_TABLE + "\"");
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public MagicCard getCard(final Edition edition, final String cardNumber) {
+    try {
+      return dao.queryForId(MagicCard.constructId(edition, cardNumber));
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

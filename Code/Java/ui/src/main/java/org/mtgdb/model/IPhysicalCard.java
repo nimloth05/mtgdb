@@ -5,9 +5,9 @@ package org.mtgdb.model;
  */
 public interface IPhysicalCard {
 
-  String getCardId();
+  MagicCard getCard();
 
-  int getContainerId();
+  Container getContainer();
 
   CardCondition getCondition();
 
