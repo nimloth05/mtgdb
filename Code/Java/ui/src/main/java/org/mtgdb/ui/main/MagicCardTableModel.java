@@ -1,6 +1,7 @@
 package org.mtgdb.ui.main;
 
 import com.google.inject.Inject;
+import org.mtgdb.db.repository.IEditionRepository;
 import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
@@ -33,7 +34,7 @@ public class MagicCardTableModel implements TableModel {
   };
 
   @Inject
-  public MagicCardTableModel(IMagicCardRepository repository) {
+  public MagicCardTableModel(IMagicCardRepository repository, final IEditionRepository editionRepository) {
     cards = repository.getAll();
   }
 
@@ -60,7 +61,7 @@ public class MagicCardTableModel implements TableModel {
   public Object getValueAt(int rowIndex, int columnIndex) {
     final IMagicCard IMagicCard = cards.get(rowIndex);
     switch (columnIndex) {
-      case 0: return IMagicCard.getEdition();
+      case 0: return IMagicCard.getEdition().getName();
       case 1: return IMagicCard.getName();
       case 2: return IMagicCard.getType();
       case 3: return IMagicCard.getSubType();

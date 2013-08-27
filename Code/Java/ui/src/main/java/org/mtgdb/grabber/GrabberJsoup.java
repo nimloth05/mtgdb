@@ -5,8 +5,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.mtgdb.model.Edition;
+import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
+import org.mtgdb.util.Constants;
 
 import java.io.IOException;
 import java.net.URL;
@@ -132,12 +134,18 @@ public final class GrabberJsoup {
     if (m.matches()) {
       card.setType(m.group(1));
       card.setSubType(m.group(2));
-      card.setPower(Integer.parseInt(m.group(3)));
-      card.setToughness(Integer.parseInt(m.group(4)));
+      card.setPower(getCreatureStat(m.group(3)));
+      card.setToughness(getCreatureStat(m.group(4)));
       card.setManaCost(m.group(5));
       card.setConvertedManaCost(Integer.parseInt(m.group(6)));
     }
   }
+
+  private int getCreatureStat(final String value) {
+    if (value.equals(Constants.ASTERISK)) return IMagicCard.CREATURE_STAT_STAR_VALUE;
+    return Integer.parseInt(value);
+  }
+
   private void extractTypeLinePlaneswalker(MagicCard card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();

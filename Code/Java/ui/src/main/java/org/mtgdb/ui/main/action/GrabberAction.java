@@ -108,6 +108,7 @@ public class GrabberAction extends AbstractAction {
                   @Override
                   public void run(final ITransactionToken transaction) throws Exception {
                     magicCardRepository.saveAll(transaction, allCards);
+                    allCards.clear();
                   }
                 });
               }
