@@ -1,11 +1,11 @@
 package org.mtgdb.model;
 
+import com.j256.ormlite.field.DatabaseField;
 import org.mtgdb.util.Constants;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 /**
  * @author Sandro Orlando
@@ -37,7 +37,7 @@ public final class MagicCard implements IMagicCard {
   private String number;
   @Column
   private String artist;
-  @ManyToOne
+  @DatabaseField(columnName = "edition_id", foreign = true, foreignAutoRefresh = true)
   private Edition edition;
   @Column
   private Rarity rarity;

@@ -5,6 +5,8 @@ package org.mtgdb.model;
  */
 public interface IMagicCard {
 
+  int CREATURE_STAT_STAR_VALUE =1;
+
   String getId();
 
   int getLoyalty();
