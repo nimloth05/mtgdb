@@ -55,6 +55,10 @@ public final class Deck {
     cards.clear();
   }
 
+  public Collection<MagicCard> getCards() {
+    return null;  //To change body of created methods use File | Settings | File Templates.
+  }
+
   private class DeckStats {
     Map<String, Integer> statistics = new HashMap<String, Integer>();
 
