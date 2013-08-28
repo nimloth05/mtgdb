@@ -9,6 +9,7 @@ import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
 import org.mtgdb.util.Constants;
+import org.mtgdb.util.assertion.Assert;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,6 +29,20 @@ public final class GrabberJsoup {
   }
 
   public void grabAllEditions(final IGrabberListener listener) throws IOException {
+    boolean repeat = false;
+    int counter = 0;
+    do {
+      try {
+        doGrab(listener);
+      } catch (IOException e) {
+        Assert.log(e);
+        ++counter;
+        repeat = counter < 3;
+      }
+    } while (repeat);
+  }
+
+  private void doGrab(final IGrabberListener listener) throws IOException {
     final String sitemap = "http://magiccards.info/sitemap.html";
     Document doc = Jsoup.connect(sitemap).get();
     Elements table = doc.select(":containsOwn(" + lang + ") + table");
@@ -44,9 +59,7 @@ public final class GrabberJsoup {
           final String edUrl = edition.attr("href");
           grabEdition(urlPrefix + edUrl, edStr, listener);
         }
-        break;
       }
-      break;
     }
   }
 
