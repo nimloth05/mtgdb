@@ -62,7 +62,7 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
   public void deleteAll() {
     try {
       dao.executeRaw("truncate table \"" + DBConstants.MAGIC_CARD_TABLE + "\"");
-      dao.executeRaw("CALL FT_DROP_INDEX('PUBLIC', '"+DBConstants.MAGIC_CARD_TABLE+"');");
+      dao.executeRaw("CALL FTL_DROP_INDEX('PUBLIC', '"+DBConstants.MAGIC_CARD_TABLE+"');");
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -80,7 +80,7 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
   @Override
   public List<MagicCard> searchFreeText(final String text) {
     try {
-      final GenericRawResults<String[]> strings = dao.queryRaw("SELECT * FROM FT_SEARCH_DATA('"+text+"', 0, 0);");
+      final GenericRawResults<String[]> strings = dao.queryRaw("SELECT * FROM FTL_SEARCH_DATA('"+ text+"', 0, 0);");
       List<MagicCard> result = new LinkedList<>();
       for (String[] string : strings) {
         String id = string[3].substring(1, string[3].length()-1);
@@ -96,7 +96,7 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
   @Override
   public void enableLuceneIndex() {
     try {
-      dao.executeRaw("CALL FT_CREATE_INDEX('PUBLIC', '"+DBConstants.MAGIC_CARD_TABLE+"', NULL);");
+      dao.executeRaw("CALL FTL_CREATE_INDEX('PUBLIC', '"+DBConstants.MAGIC_CARD_TABLE+"', NULL);");
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
