@@ -120,7 +120,7 @@ public final class GrabberJsoup {
   private void extractTypeLineOther(MagicCard card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
-    final Pattern patternTypelineOther = Pattern.compile("(.*)\\s—\\s(.*)");
+    final Pattern patternTypelineOther = Pattern.compile("(.*)\\s—\\s(.*),.*");
     Matcher m = patternTypelineOther.matcher(type);
     if (m.matches()) {
       card.setType(m.group(1));
