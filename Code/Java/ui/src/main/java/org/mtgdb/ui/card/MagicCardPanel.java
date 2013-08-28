@@ -14,7 +14,7 @@ import java.awt.*;
 public final class MagicCardPanel {
 
   private final MagicCardPanelModel model;
-  private JPanel panel = new JPanel(new MigLayout());
+  private JPanel panel = new JPanel(new MigLayout(""));
 
   public MagicCardPanel(final MagicCardPanelModel model) {
     this.model = model;
@@ -22,15 +22,15 @@ public final class MagicCardPanel {
   }
 
   private void createContent() {
-    panel.add(new JLabel("Browser Cards"));
-    panel.add(new JLabel("Filter:"), "split 1");
+    panel.add(new JLabel("Browser Cards"), "");
+    panel.add(new JLabel("Filter:"), "split 2, align right");
     panel.add(new JTextField(new PlainDocument(), Constants.EMPTY, 50), "wrap");
 
     final JTable table = new JTable();
     table.setModel(model.getLibraryModel());
     table.setSelectionModel(model.getTableSelectionModel());
     final JScrollPane pane = new JScrollPane(table);
-    panel.add(pane, "grow, push");
+    panel.add(pane, "grow, push, spanx, split 2");
 
     final JLabel cardImageLabel = createImageLabel();
     cardImageLabel.setAlignmentY(JLabel.TOP);

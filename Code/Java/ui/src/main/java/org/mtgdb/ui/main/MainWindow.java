@@ -32,7 +32,7 @@ public final class MainWindow {
     panel.setLayout(new MigLayout(""));
 
     panel.add(new JLabel("Your Library:"), "wrap");
-    panel.add(new MagicCardPanel(model.getPanelModel()).getPanel());
+    panel.add(new MagicCardPanel(model.getPanelModel()).getPanel(), "grow, push");
     model.getPanelModel().showAll();
 
     frame.getContentPane().add(panel, BorderLayout.CENTER);
