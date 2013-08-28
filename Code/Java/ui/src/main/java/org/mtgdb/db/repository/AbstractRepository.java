@@ -9,7 +9,9 @@ import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.IDatabaseConnectionListener;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author Sandro Orlando
@@ -36,6 +38,28 @@ public abstract class AbstractRepository<T, ID> implements IRepository<T> {
       public void closing(final ConnectionSource connection) {
       }
     });
+  }
+
+  @Override
+  public final void saveAll(final Collection<T> objects) {
+    try {
+      dao.callBatchTasks(new Callable<Void>() {
+        @Override
+        public Void call() throws Exception {
+          for (T card : objects) {
+            setId(card);
+            dao.create(card);
+          }
+          return null;
+        }
+      });
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  protected void setId(final T obj) {
+
   }
 
   protected abstract Class<T> getClassLiteral();

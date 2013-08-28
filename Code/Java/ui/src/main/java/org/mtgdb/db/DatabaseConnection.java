@@ -59,7 +59,7 @@ public final class DatabaseConnection implements IDatabaseConnection {
       TransactionManager.callInTransaction(source, new Callable<Object>() {
         @Override
         public Object call() throws Exception {
-          runnable.run(new TransactionToken());
+          runnable.run();
           return null;
         }
       });

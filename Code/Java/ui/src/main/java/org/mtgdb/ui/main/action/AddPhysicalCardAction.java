@@ -3,7 +3,6 @@ package org.mtgdb.ui.main.action;
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.ITransactionRunnable;
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.db.repository.ContainerRepository;
 import org.mtgdb.db.repository.EditionRepository;
 import org.mtgdb.db.repository.IMagicCardRepository;
@@ -152,13 +151,13 @@ public final class AddPhysicalCardAction extends AbstractAction{
       public void run() {
         connection.execute(new ITransactionRunnable() {
           @Override
-          public void run(final ITransactionToken transaction) throws Exception {
+          public void run() throws Exception {
             PhysicalCard card = new PhysicalCard();
             card.setCard(magicCardRepository.getCard(properties.edition, properties.cardNumber));
             card.setCondition(properties.condition);
             card.setContainer(properties.container);
             card.setCondition(properties.condition);
-            physicalCardRepository.save(transaction, card);
+            physicalCardRepository.save(card);
           }
         });
         showDialogAgain = true;

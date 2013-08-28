@@ -2,7 +2,6 @@ package org.mtgdb.db.repository;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Container;
 
 import java.sql.SQLException;
@@ -18,7 +17,7 @@ public final class ContainerRepository extends AbstractRepository<Container, Int
   }
 
   @Override
-  public void save(final ITransactionToken transaction, final Container container) {
+  public void save(final Container container) {
     try {
       dao.create(container);
     } catch (SQLException e) {

@@ -3,8 +3,6 @@ package org.mtgdb.ui.main.action;
 import com.google.inject.Inject;
 import org.jdesktop.swingx.VerticalLayout;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.ITransactionToken;
-import org.mtgdb.db.ITransactionRunnable;
 import org.mtgdb.db.repository.ContainerRepository;
 import org.mtgdb.model.Container;
 import org.mtgdb.ui.util.dialog.properties.IPropertyModelContext;
@@ -68,12 +66,7 @@ public class AddContainerAction extends AbstractAction {
   }
 
   private void saveContainer() {
-    connection.execute(new ITransactionRunnable() {
-      @Override
-      public void run(final ITransactionToken transaction) throws Exception {
-        containerRepository.save(transaction, container);
-      }
-    });
+    containerRepository.save(container);
   }
 
   private IStringModelBody createDescriptionBody() {

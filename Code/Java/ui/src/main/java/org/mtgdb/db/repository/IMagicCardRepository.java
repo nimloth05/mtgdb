@@ -1,6 +1,5 @@
 package org.mtgdb.db.repository;
 
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Edition;
 import org.mtgdb.model.MagicCard;
 
@@ -11,9 +10,9 @@ import java.util.Collection;
  */
 public interface IMagicCardRepository extends IRepository<MagicCard> {
 
-  void saveAll(ITransactionToken transaction, Collection<MagicCard> cards);
+  void saveAll(Collection<MagicCard> cards);
 
-  void deleteAll(ITransactionToken transaction);
+  void deleteAll();
 
   MagicCard getCard(Edition edition, String cardNumber);
 }

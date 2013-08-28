@@ -2,7 +2,6 @@ package org.mtgdb.db.repository;
 
 import org.mtgdb.db.DBConstants;
 import org.mtgdb.db.DatabaseConnection;
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Edition;
 
 import javax.inject.Inject;
@@ -19,7 +18,7 @@ public final class EditionRepository extends AbstractRepository<Edition, String>
   }
 
   @Override
-  public void save(final ITransactionToken transaction, final Edition edition) {
+  public void save(final Edition edition) {
     try {
       dao.create(edition);
     } catch (SQLException e) {
@@ -28,7 +27,7 @@ public final class EditionRepository extends AbstractRepository<Edition, String>
   }
 
   @Override
-  public void deleteAll(final ITransactionToken transaction) {
+  public void deleteAll() {
     try {
       dao.executeRaw("truncate table \"" + DBConstants.EDITION_TABLE + "\"");
     } catch (SQLException e) {

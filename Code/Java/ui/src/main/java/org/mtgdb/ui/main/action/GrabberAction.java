@@ -3,7 +3,6 @@ package org.mtgdb.ui.main.action;
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.ITransactionRunnable;
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.db.repository.IEditionRepository;
 import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.grabber.GrabberJsoup;
@@ -43,9 +42,9 @@ public class GrabberAction extends AbstractAction {
     connection.execute(new ITransactionRunnable() {
 
       @Override
-      public void run(final ITransactionToken transaction) throws Exception {
-        magicCardRepository.deleteAll(transaction);
-        editionRepository.deleteAll(transaction);
+      public void run() throws Exception {
+        magicCardRepository.deleteAll();
+        editionRepository.deleteAll();
       }
     });
 
@@ -77,8 +76,8 @@ public class GrabberAction extends AbstractAction {
                 Assert.log("Edition grabbed: " + edition);
                 connection.execute(new ITransactionRunnable() {
                   @Override
-                  public void run(final ITransactionToken transaction) throws Exception {
-                    editionRepository.save(transaction, edition);
+                  public void run() throws Exception {
+                    editionRepository.save(edition);
                   }
                 });
               }
@@ -106,8 +105,8 @@ public class GrabberAction extends AbstractAction {
               public void run() {
                 connection.execute(new ITransactionRunnable() {
                   @Override
-                  public void run(final ITransactionToken transaction) throws Exception {
-                    magicCardRepository.saveAll(transaction, allCards);
+                  public void run() throws Exception {
+                    magicCardRepository.saveAll(allCards);
                     allCards.clear();
                   }
                 });

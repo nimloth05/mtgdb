@@ -3,13 +3,10 @@ package org.mtgdb.db.repository;
 import com.google.inject.Inject;
 import org.mtgdb.db.DBConstants;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Edition;
 import org.mtgdb.model.MagicCard;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.concurrent.Callable;
 
 /**
  * @author Sandro Orlando
@@ -26,22 +23,9 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
     return MagicCard.class;
   }
 
-  @Override
-  public void saveAll(final ITransactionToken transaction, final Collection<MagicCard> cards) {
-    try {
-      dao.callBatchTasks(new Callable<Void>() {
-        @Override
-        public Void call() throws Exception {
-          for (MagicCard card : cards) {
-            card.setId();
-            dao.create(card);
-          }
-          return null;
-        }
-      });
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+//  @Override
+//  public void saveAll(final ITransactionToken transaction, final Collection<MagicCard> cards) {
+
 //    Value[][] rows = new Value[cards.size()][];
 //    int index = 0;
 //    for (IMagicCard card : cards) {
@@ -67,10 +51,10 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
 //    }
 //    final String sql = SQLGenerator.insertInto(DBConstants.MAGIC_CARD_TABLE, columns, rows);
 //    transaction.insert(sql);
-  }
+//  }
 
   @Override
-  public void deleteAll(final ITransactionToken transaction) {
+  public void deleteAll() {
     try {
       dao.executeRaw("truncate table \"" + DBConstants.MAGIC_CARD_TABLE + "\"");
     } catch (SQLException e) {

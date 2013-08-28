@@ -1,6 +1,5 @@
 package org.mtgdb.db.repository;
 
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Container;
 
 /**
@@ -8,5 +7,6 @@ import org.mtgdb.model.Container;
  */
 public interface IContainerRepository extends IRepository<Container> {
 
-  void save(ITransactionToken transaction, Container container);
+  void save(Container container);
+
 }

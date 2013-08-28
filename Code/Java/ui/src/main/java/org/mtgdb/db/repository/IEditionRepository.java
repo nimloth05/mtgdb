@@ -1,6 +1,5 @@
 package org.mtgdb.db.repository;
 
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.Edition;
 
 /**
@@ -8,7 +7,7 @@ import org.mtgdb.model.Edition;
  */
 public interface IEditionRepository extends IRepository<Edition> {
 
-  void save(ITransactionToken transaction, Edition edition);
+  void save(Edition edition);
 
-  void deleteAll(ITransactionToken transaction);
+  void deleteAll();
 }

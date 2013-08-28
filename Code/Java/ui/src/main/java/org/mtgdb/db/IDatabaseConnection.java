@@ -11,7 +11,7 @@ public interface IDatabaseConnection {
 
   void closeDB();
 
-  void execute(ITransactionRunnable runnable);
-
   IDisposable addListener(IDatabaseConnectionListener listener);
+
+  void execute(ITransactionRunnable runnable);
 }

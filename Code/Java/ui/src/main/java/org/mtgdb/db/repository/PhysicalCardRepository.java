@@ -2,7 +2,6 @@ package org.mtgdb.db.repository;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.ITransactionToken;
 import org.mtgdb.model.PhysicalCard;
 
 import java.sql.SQLException;
@@ -17,7 +16,7 @@ public final class PhysicalCardRepository extends AbstractRepository<PhysicalCar
     super(connection);
   }
 
-  public void save(final ITransactionToken transaction, final PhysicalCard card) {
+  public void save(final PhysicalCard card) {
     try {
       dao.create(card);
     } catch (SQLException e) {
