@@ -69,7 +69,8 @@ public class MagicCardTableModel extends AbstractTableModel {
     return IMagicCard.getId();
   }
 
-  public IMagicCard getCard(final int index) {
+  public IMagicCard getCard(int index) {
+    if (index < 0) index = 0;
     return cards.get(index);
   }
 

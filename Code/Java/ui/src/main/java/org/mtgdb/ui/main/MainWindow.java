@@ -2,7 +2,7 @@ package org.mtgdb.ui.main;
 
 import net.miginfocom.swing.MigLayout;
 import org.mtgdb.services.ServiceManager;
-import org.mtgdb.ui.util.components.label.LabelModelAdapter;
+import org.mtgdb.ui.card.MagicCardPanel;
 import org.mtgdb.ui.util.frame.FrameFactory;
 
 import javax.swing.*;
@@ -32,24 +32,10 @@ public final class MainWindow {
     panel.setLayout(new MigLayout(""));
 
     panel.add(new JLabel("Your Library:"), "wrap");
-
-    final JTable table = new JTable();
-    table.setModel(model.getLibraryModel());
-    table.setSelectionModel(model.getTableSelectionModel());
-    final JScrollPane pane = new JScrollPane(table);
-    panel.add(pane, "grow, push");
-
-    final JLabel cardImageLabel = createImageLabel();
-    cardImageLabel.setAlignmentY(JLabel.TOP);
-    panel.add(cardImageLabel, "w 320!, aligny top, h 450!");
+    panel.add(new MagicCardPanel(model.getPanelModel()).getPanel());
+    model.getPanelModel().showAll();
 
     frame.getContentPane().add(panel, BorderLayout.CENTER);
-  }
-
-  private JLabel createImageLabel() {
-    final JLabel label = new JLabel();
-    LabelModelAdapter.connect(label, model.getScanLabelModel());
-    return label;
   }
 
   private void createToolbar() {
