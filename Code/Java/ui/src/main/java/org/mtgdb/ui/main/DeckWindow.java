@@ -17,6 +17,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Michael Sacher
@@ -112,7 +114,7 @@ public final class DeckWindow {
       @Override
       public void run() {
         //javaFX operations should go here
-        jfxPanelPie.setScene(new Scene(createPieChart()));
+        jfxPanelPie.setScene(new Scene(createPieChart(deck.getCards())));
         jfxPanelManaCurve.setScene(new Scene(createManaCurveChart(deck.getCards())));
       }
     });
@@ -165,15 +167,58 @@ public final class DeckWindow {
 
   }
 
-  private PieChart createPieChart() {
+  private Map<String, Integer> calcDeckComponents(Collection<MagicCard> magicCards) {
+    Map<String, Integer> components = new HashMap<>();
 
-    ObservableList<PieChart.Data> pieChartData =
-      FXCollections.observableArrayList(
-        new PieChart.Data("Creatures", 13),
-        new PieChart.Data("Instants", 25),
-        new PieChart.Data("Sorceries", 10),
-        new PieChart.Data("Standard Lands", 22),
-        new PieChart.Data("Non Standard Lands", 30));
+    Predicate predicateCreature = new Predicate() {
+      public boolean evaluate(Object object) {
+        return ((MagicCard) object).getType().contains("Creature");
+      }
+    };
+
+    Predicate predicateInstant = new Predicate() {
+      public boolean evaluate(Object object) {
+        return ((MagicCard) object).getType().contains("Instant");
+      }
+    };
+
+    Predicate predicateSorcery = new Predicate() {
+      public boolean evaluate(Object object) {
+        return ((MagicCard) object).getType().contains("Sorcery");
+      }
+    };
+
+    Predicate predicateLand = new Predicate() {
+      public boolean evaluate(Object object) {
+        return ((MagicCard) object).getType().contains("Land");
+      }
+    };
+    Collection filtered;
+
+    filtered = CollectionUtils.select(magicCards, predicateCreature);
+    components.put("Creatures", filtered.size());
+
+    filtered = CollectionUtils.select(magicCards, predicateInstant);
+    components.put("Instants", filtered.size());
+
+    filtered = CollectionUtils.select(magicCards, predicateSorcery);
+    components.put("Sorceries", filtered.size());
+
+    filtered = CollectionUtils.select(magicCards, predicateLand);
+    components.put("Lands", filtered.size());
+
+    return components;
+  }
+
+  private PieChart createPieChart(Collection<MagicCard> magicCards) {
+
+    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+
+    Map<String, Integer> components = calcDeckComponents(magicCards);
+    for (String key : components.keySet()) {
+      pieChartData.add(new PieChart.Data(key, components.get(key)));
+    }
+
     final PieChart chart = new PieChart(pieChartData);
     chart.setTitle("Deck Contents");
     chart.setLegendVisible(false);
