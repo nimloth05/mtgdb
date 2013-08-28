@@ -5,8 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.chart.Chart;
-import javafx.scene.chart.PieChart;
+import javafx.scene.chart.*;
 import net.miginfocom.swing.MigLayout;
 import org.mtgdb.ui.util.frame.FrameFactory;
 
@@ -27,21 +26,23 @@ public final class DeckWindow {
 
   private void createContentArea() throws IOException {
     JPanel panel = new JPanel();
-    final JFXPanel jfxPanel = new JFXPanel();
+    final JFXPanel jfxPanelPie = new JFXPanel();
+    final JFXPanel jfxPanelManaCurve = new JFXPanel();
     panel.setLayout(new MigLayout(""));
 
     panel.add(new JLabel("Your Library:"), "wrap");
 
-           Platform.runLater(new Runnable() {
-             @Override
-             public void run() {
-               //javaFX operations should go here
-               Chart chart = createChart();
-               jfxPanel.setScene(new Scene(chart));
-             }
-           });
+    Platform.runLater(new Runnable() {
+      @Override
+      public void run() {
+        //javaFX operations should go here
+        jfxPanelPie.setScene(new Scene(createPieChart()));
+        jfxPanelManaCurve.setScene(new Scene(createManaCurveChart()));
+      }
+    });
 
-    panel.add(jfxPanel, "");
+    panel.add(jfxPanelPie, "wrap");
+    panel.add(jfxPanelManaCurve, "");
 
 //    final JTable table = new JTable();
 //    table.setModel(model.getLibraryModel());
@@ -51,6 +52,32 @@ public final class DeckWindow {
 
 
     frame.getContentPane().add(panel, BorderLayout.CENTER);
+  }
+
+  private BarChart createManaCurveChart() {
+
+    final CategoryAxis xAxis = new CategoryAxis();
+    final NumberAxis yAxis = new NumberAxis();
+    final BarChart<String, Number> bc = new BarChart<>(xAxis, yAxis);
+
+    bc.setTitle("Mana Curve");
+    xAxis.setLabel("Mana");
+    yAxis.setLabel("Count");
+
+    XYChart.Series series1 = new XYChart.Series();
+    series1.setName("Mana");
+    series1.getData().add(new XYChart.Data("0", 1));
+    series1.getData().add(new XYChart.Data("1", 2));
+    series1.getData().add(new XYChart.Data("2", 4));
+    series1.getData().add(new XYChart.Data("3", 5));
+    series1.getData().add(new XYChart.Data("4", 3));
+    series1.getData().add(new XYChart.Data("5", 3));
+    series1.getData().add(new XYChart.Data("6", 3));
+    series1.getData().add(new XYChart.Data("7", 1));
+
+    bc.getData().add(series1);
+//    Scene scene = new Scene(bc, 800, 600);
+    return bc;
   }
 
   public void show() throws IOException {
@@ -64,7 +91,7 @@ public final class DeckWindow {
 
   }
 
-  private Chart createChart() {
+  private PieChart createPieChart() {
 
     ObservableList<PieChart.Data> pieChartData =
       FXCollections.observableArrayList(
@@ -75,6 +102,7 @@ public final class DeckWindow {
         new PieChart.Data("Non Standard Lands", 30));
     final PieChart chart = new PieChart(pieChartData);
     chart.setTitle("Deck Contents");
+    chart.setLegendVisible(false);
     return chart;
   }
 }
