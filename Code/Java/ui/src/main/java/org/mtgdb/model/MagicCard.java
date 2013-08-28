@@ -29,9 +29,9 @@ public final class MagicCard implements IMagicCard {
   private int toughness;
   @Column
   private String imageURL;
-  @Column(length =  5000)
+  @Column(length =  1000)
   private String cardText;
-  @Column(length =  5000)
+  @Column(length =  1000)
   private String flavorText;
   @Column
   private String number;
