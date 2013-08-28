@@ -1,7 +1,10 @@
 package org.mtgdb.ui.util.dialog.properties.list;
 
+import org.mtgdb.model.Container;
 import org.mtgdb.ui.util.dialog.properties.AbstractProperty;
 import org.mtgdb.ui.util.dialog.properties.IPropertyVisitor;
+
+import javax.swing.*;
 
 /**
  * Property which represents a list.
@@ -10,6 +13,7 @@ public final class ListProperty extends AbstractProperty implements IListPropert
 
   private ListPropertyModel fModel;
   private IDoubleClickHandler fHandler;
+  private ListCellRenderer<Container> cellRenderer;
 
   public ListProperty(final String id, final ListPropertyModel model) {
     super(id);
@@ -33,5 +37,15 @@ public final class ListProperty extends AbstractProperty implements IListPropert
 
   public IDoubleClickHandler getDoubleClickHandler() {
     return fHandler;
+  }
+
+  public ListProperty setCellRenderer(final ListCellRenderer<Container> cellRenderer) {
+    this.cellRenderer = cellRenderer;
+    return this;
+  }
+
+  @Override
+  public ListCellRenderer<Container> getCellRenderer() {
+    return cellRenderer;
   }
 }

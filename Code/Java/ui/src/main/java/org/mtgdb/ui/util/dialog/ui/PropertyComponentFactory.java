@@ -99,6 +99,7 @@ public final class PropertyComponentFactory implements IPropertyVisitor {
     JList list = new JList(property.getModel().getListModel());
     list.addMouseListener(new DoubleClickAdapter(property.getDoubleClickHandler()));
     list.setSelectionModel(property.getModel().getListSelectionModel());
+    list.setCellRenderer(property.getCellRenderer());
     panel.add(new JScrollPane(list), "push, grow, wrap");
     panel.add(new JButton(property.getModel().getAddAction()), "align right, split 2");
     panel.add(new JButton(property.getModel().getRemoveAction()));

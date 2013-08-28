@@ -4,8 +4,9 @@ import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.model.IMagicCard;
 import org.mtgdb.services.ServiceManager;
-import org.mtgdb.ui.main.action.AddContainerAction;
+import org.mtgdb.ui.main.action.ContainerPropertiesDialog;
 import org.mtgdb.ui.main.action.GrabberAction;
+import org.mtgdb.ui.main.action.ShowContainerAction;
 import org.mtgdb.ui.util.ImageLoader;
 import org.mtgdb.ui.util.components.label.DefaultLabelModel;
 
@@ -23,10 +24,12 @@ public final class MainModel {
   @Inject
   private GrabberAction grabberAction;
   @Inject
-  private AddContainerAction addContainerAction;
+  private ContainerPropertiesDialog containerPropertiesDialog;
   private DefaultLabelModel scanLabelModel = new DefaultLabelModel();
   private DefaultListSelectionModel tableSelectionModel = new DefaultListSelectionModel();
   private MagicCardTableModel magicCardTableModel;
+  @Inject
+  private ShowContainerAction containerListAction;
 
   @Inject
   public MainModel(final IDatabaseConnection connection) {
@@ -66,8 +69,8 @@ public final class MainModel {
     return magicCardTableModel;
   }
 
-  public Action getAddContainerAction() {
-    return addContainerAction;
+  public Action getShowContainersAction() {
+    return containerListAction;
   }
 
 }
