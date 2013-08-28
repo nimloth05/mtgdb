@@ -1,11 +1,13 @@
 package org.mtgdb.ui.card;
 
+import ca.odell.glazedlists.matchers.MatcherEditor;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
+import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import net.miginfocom.swing.MigLayout;
+import org.mtgdb.model.MagicCard;
 import org.mtgdb.ui.util.components.label.LabelModelAdapter;
-import org.mtgdb.util.Constants;
 
 import javax.swing.*;
-import javax.swing.text.PlainDocument;
 import java.awt.*;
 
 /**
@@ -24,11 +26,20 @@ public final class MagicCardPanel {
   private void createContent() {
     panel.add(new JLabel("Browser Cards"), "");
     panel.add(new JLabel("Filter:"), "split 2, align right");
-    panel.add(new JTextField(new PlainDocument(), Constants.EMPTY, 50), "wrap");
+
+    JTextField filterComponent = new JTextField(50);
+    MatcherEditor<MagicCard> matcherEditor = new TextComponentMatcherEditor<>(filterComponent, model.getFilterator());
+    model.getFilteredCards().setMatcherEditor(matcherEditor);
+
+    panel.add(filterComponent, "wrap");
 
     final JTable table = new JTable();
+
     table.setModel(model.getLibraryModel());
     table.setSelectionModel(model.getTableSelectionModel());
+        TableComparatorChooser.install(
+          table, model.getSortedList(), TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
+
     final JScrollPane pane = new JScrollPane(table);
     panel.add(pane, "grow, push, spanx, split 2");
 

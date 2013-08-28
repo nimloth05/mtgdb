@@ -1,10 +1,16 @@
 package org.mtgdb.ui.card;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.FilterList;
+import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.swing.AdvancedTableModel;
+import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.google.inject.Inject;
 import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
-import org.mtgdb.ui.main.MagicCardTableModel;
 import org.mtgdb.ui.util.ImageLoader;
 import org.mtgdb.ui.util.components.label.DefaultLabelModel;
 
@@ -12,7 +18,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
-import java.util.LinkedList;
 
 /**
  * @author Sandro Orlando
@@ -20,25 +25,46 @@ import java.util.LinkedList;
 public final class MagicCardPanelModel {
 
   private final IMagicCardRepository magicCardRepository;
+  private final FilterList<MagicCard> filteredList;
   private DefaultLabelModel scanLabelModel = new DefaultLabelModel();
-  private DefaultListSelectionModel tableSelectionModel = new DefaultListSelectionModel();
-  private MagicCardTableModel magicCardTableModel;
+  private DefaultEventSelectionModel<MagicCard> tableSelectionModel;
+  private final SortedList<MagicCard> sortedCards;
+  private final AdvancedTableModel<MagicCard> magicCardTableModel;
 
   @Inject
   public MagicCardPanelModel(final IMagicCardRepository magicCardRepository) {
     this.magicCardRepository = magicCardRepository;
-    magicCardTableModel = new MagicCardTableModel(new LinkedList<MagicCard>());
+
+    EventList<MagicCard> cardList = new BasicEventList<>();
+    sortedCards = new SortedList<>(cardList, new MagicCardComparator());
+
+    filteredList = new FilterList<>(sortedCards);
+
+    magicCardTableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filteredList, new MagicCardTableFormat());
+
+    tableSelectionModel = new DefaultEventSelectionModel<>(filteredList);
     tableSelectionModel.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(final ListSelectionEvent e) {
-        if (magicCardTableModel.isEmpty()) return;
-        IMagicCard selectedCard = magicCardTableModel.getCard(tableSelectionModel.getLeadSelectionIndex());
+
+
+        final EventList<MagicCard> selected = tableSelectionModel.getSelected();
+        if (selected.isEmpty()) return;
+        IMagicCard selectedCard = selected.get(0);
         Icon scan = ImageLoader.loadAsIcon(selectedCard.getImageURL());
         scanLabelModel.setIcon(scan);
       }
     });
     tableSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    tableSelectionModel.setSelectionInterval(0, 0);
+//    tableSelectionModel.setSelectionInterval(0, 0);
+  }
+
+  public MagicCardFilterator getFilterator() {
+    return new MagicCardFilterator();
+  }
+
+  public FilterList<MagicCard> getFilteredCards() {
+    return filteredList;
   }
 
   public DefaultLabelModel getScanLabelModel() {
@@ -54,10 +80,16 @@ public final class MagicCardPanelModel {
   }
 
   public void search(final String search) {
-    magicCardTableModel.updateData(magicCardRepository.searchFreeText(search));
+    sortedCards.clear();
+    sortedCards.addAll(magicCardRepository.searchFreeText(search));
   }
 
   public void showAll() {
-    magicCardTableModel.updateData(magicCardRepository.getAll());
+    sortedCards.clear();
+    sortedCards.addAll(magicCardRepository.getAll());
+  }
+
+  public SortedList<MagicCard> getSortedList() {
+    return sortedCards;
   }
 }

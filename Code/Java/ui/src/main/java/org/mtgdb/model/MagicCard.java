@@ -1,6 +1,7 @@
 package org.mtgdb.model;
 
 import com.j256.ormlite.field.DatabaseField;
+import org.apache.commons.lang.StringUtils;
 import org.mtgdb.util.Constants;
 
 import javax.persistence.Column;
@@ -216,5 +217,10 @@ public final class MagicCard implements IMagicCard {
 
   public void setId() {
     cardId = constructId(edition, number);
+  }
+
+  public int getCardNumberWithoutSplitCard() {
+    if (StringUtils.isNumeric(number)) return Integer.parseInt(number);
+    return Integer.parseInt(number.substring(0, number.length()-1));
   }
 }
