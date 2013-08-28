@@ -2,6 +2,7 @@ package org.mtgdb.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 public final class PhysicalCard implements IPhysicalCard {
 
   @Id
+  @GeneratedValue
   private int id;
   @ManyToOne
   private MagicCard card;

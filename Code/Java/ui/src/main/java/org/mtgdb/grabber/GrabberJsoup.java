@@ -44,7 +44,9 @@ public final class GrabberJsoup {
           final String edUrl = edition.attr("href");
           grabEdition(urlPrefix + edUrl, edStr, listener);
         }
+        break;
       }
+      break;
     }
   }
 

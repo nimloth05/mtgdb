@@ -20,7 +20,6 @@ public final class MainWindow {
 
   public MainWindow(final MainModel model) {
     this.model = model;
-
   }
 
   public static void createAndShow() {
@@ -58,6 +57,7 @@ public final class MainWindow {
     toolBar.setFloatable(false);
     toolBar.add(model.getGrabberAction());
     toolBar.add(model.getShowContainersAction());
+    toolBar.add(model.getShowSearchAction());
     frame.getContentPane().add(toolBar, BorderLayout.NORTH);
   }
 

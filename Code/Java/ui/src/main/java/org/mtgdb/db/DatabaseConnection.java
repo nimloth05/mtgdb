@@ -3,10 +3,13 @@ package org.mtgdb.db;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
+import org.apache.commons.io.IOUtils;
+import org.h2.engine.Constants;
 import org.mtgdb.util.ListenerList;
 import org.mtgdb.util.assertion.Assert;
 import org.mtgdb.util.dispose.IDisposable;
 
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.sql.SQLException;
@@ -17,7 +20,6 @@ import java.util.concurrent.Callable;
  */
 public final class DatabaseConnection implements IDatabaseConnection {
 
-  private Path path;
   private ConnectionSource source;
   private ListenerList<IDatabaseConnectionListener> listeners = new ListenerList<>();
 
@@ -25,13 +27,24 @@ public final class DatabaseConnection implements IDatabaseConnection {
   }
 
   private void open(final Path path) {
-    this.path = path;
     try {
       Class.forName("org.h2.Driver");
       final String url = "jdbc:h2:" + path.toAbsolutePath().toFile();
       source = new JdbcConnectionSource(url);
       notifyDBOpened();
+      createLuceneIndex();
     } catch (SQLException | ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void createLuceneIndex() {
+    try {
+      final String s = IOUtils.toString(getClass().getResource("/CreateTables.sql"), Constants.UTF8);
+      final com.j256.ormlite.support.DatabaseConnection readWriteConnection = source.getReadWriteConnection();
+      readWriteConnection.executeStatement(s, com.j256.ormlite.support.DatabaseConnection.DEFAULT_RESULT_FLAGS);
+      source.releaseConnection(readWriteConnection);
+    } catch (IOException | SQLException e) {
       throw new RuntimeException(e);
     }
   }
@@ -83,7 +96,4 @@ public final class DatabaseConnection implements IDatabaseConnection {
     }
   }
 
-  private class TransactionToken implements ITransactionToken {
-
-  }
 }

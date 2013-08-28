@@ -54,6 +54,7 @@ public class GrabberAction extends AbstractAction {
 
       @Override
       public void done() {
+        magicCardRepository.enableLuceneIndex();
       }
 
       @Override
@@ -100,14 +101,16 @@ public class GrabberAction extends AbstractAction {
 
           @Override
           public void endEdition() {
+            final List<MagicCard> cardsToSave = allCards;
+            allCards = new LinkedList<>();
+
             SwingUtilities.invokeLater(new Runnable() {
               @Override
               public void run() {
                 connection.execute(new ITransactionRunnable() {
                   @Override
                   public void run() throws Exception {
-                    magicCardRepository.saveAll(allCards);
-                    allCards.clear();
+                    magicCardRepository.saveAll(cardsToSave);
                   }
                 });
               }

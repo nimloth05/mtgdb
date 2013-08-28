@@ -2,6 +2,7 @@ package org.mtgdb.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 public final class Container {
 
   @Id
+  @GeneratedValue
   private int id;
 
   @Column(nullable = false)

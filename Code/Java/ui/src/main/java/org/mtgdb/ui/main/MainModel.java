@@ -2,11 +2,14 @@ package org.mtgdb.ui.main;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
+import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.model.IMagicCard;
 import org.mtgdb.services.ServiceManager;
 import org.mtgdb.ui.main.action.ContainerPropertiesDialog;
 import org.mtgdb.ui.main.action.GrabberAction;
 import org.mtgdb.ui.main.action.ShowContainerAction;
+import org.mtgdb.ui.search.SearchModel;
+import org.mtgdb.ui.search.SearchWindow;
 import org.mtgdb.ui.util.ImageLoader;
 import org.mtgdb.ui.util.components.label.DefaultLabelModel;
 
@@ -14,6 +17,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
+import java.awt.event.ActionEvent;
 
 /**
  * @author Sandro Orlando
@@ -31,11 +35,14 @@ public final class MainModel {
   @Inject
   private ShowContainerAction containerListAction;
 
+
+  private Action showSearchAction = new ShowSearchAction();
+
   @Inject
-  public MainModel(final IDatabaseConnection connection) {
+  public MainModel(final IDatabaseConnection connection, final IMagicCardRepository magicCardRepository) {
     this.connection = connection;
     connection.openDB();
-    magicCardTableModel = ServiceManager.get(MagicCardTableModel.class);
+    magicCardTableModel = new MagicCardTableModel(magicCardRepository.getAll());
     tableSelectionModel.addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(final ListSelectionEvent e) {
@@ -73,4 +80,20 @@ public final class MainModel {
     return containerListAction;
   }
 
+  public Action getShowSearchAction() {
+    return showSearchAction;
+  }
+
+  private class ShowSearchAction extends AbstractAction {
+
+    public ShowSearchAction() {
+      putValue(NAME, "Search Card");
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      SearchWindow window = new SearchWindow(ServiceManager.get(SearchModel.class));
+      window.show();
+    }
+  }
 }

@@ -1,21 +1,17 @@
 package org.mtgdb.ui.main;
 
-import com.google.inject.Inject;
-import org.mtgdb.db.repository.IEditionRepository;
-import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 /**
  * @author Michael Sacher
  */
-public class MagicCardTableModel implements TableModel {
+public class MagicCardTableModel extends AbstractTableModel {
 
-  private final List<MagicCard> cards;
+  private List<MagicCard> cards;
   private ColumnDescription[] columnDescriptions = new ColumnDescription[]{
     new ColumnDescription("Edition", String.class),
     new ColumnDescription("Name", String.class),
@@ -33,9 +29,8 @@ public class MagicCardTableModel implements TableModel {
 
   };
 
-  @Inject
-  public MagicCardTableModel(IMagicCardRepository repository, final IEditionRepository editionRepository) {
-    cards = repository.getAll();
+  public MagicCardTableModel(List<MagicCard> cards) {
+    this.cards = cards;
   }
 
   public int getRowCount() {
@@ -52,10 +47,6 @@ public class MagicCardTableModel implements TableModel {
 
   public Class<?> getColumnClass(int columnIndex) {
     return columnDescriptions[columnIndex].type;
-  }
-
-  public boolean isCellEditable(int rowIndex, int columnIndex) {
-    return false;
   }
 
   public Object getValueAt(int rowIndex, int columnIndex) {
@@ -78,21 +69,17 @@ public class MagicCardTableModel implements TableModel {
     return IMagicCard.getId();
   }
 
-  public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-  }
-
-  public void addTableModelListener(TableModelListener l) {
-  }
-
-  public void removeTableModelListener(TableModelListener l) {
-  }
-
   public IMagicCard getCard(final int index) {
     return cards.get(index);
   }
 
   public boolean isEmpty() {
     return cards.isEmpty();
+  }
+
+  public void updateData(final List<MagicCard> magicCards) {
+    this.cards = magicCards;
+    fireTableDataChanged();
   }
 
   private static class ColumnDescription {

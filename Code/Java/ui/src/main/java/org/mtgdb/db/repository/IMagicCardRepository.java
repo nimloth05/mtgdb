@@ -4,6 +4,7 @@ import org.mtgdb.model.Edition;
 import org.mtgdb.model.MagicCard;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Sandro Orlando
@@ -15,4 +16,8 @@ public interface IMagicCardRepository extends IRepository<MagicCard> {
   void deleteAll();
 
   MagicCard getCard(Edition edition, String cardNumber);
+
+  List<MagicCard> searchFreeText(String text);
+
+  public void enableLuceneIndex();
 }
