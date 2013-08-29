@@ -37,6 +37,8 @@ public final class CardGrabber {
 
     final String html = builder.toString();
     MagicCard card = new MagicCard();
+    card.setName(name);
+
     Document document = Jsoup.parse(html);
 
     extractTypeLineSandro(card, document);
@@ -45,7 +47,6 @@ public final class CardGrabber {
     extractImageURL(card, html);
     extractNrArtist(card, document);
     card.setRarity(Rarity.parse(rarity));
-    card.setName(name);
     return card;
   }
 
@@ -88,13 +89,13 @@ public final class CardGrabber {
 
     if (lineParts.length > 1) {
       String manaCost = lineParts[1];
-      Pattern pattern = Pattern.compile("(\\d{1,2}[A-Z]{1,20}) \\((\\d{1,2})\\)");
+      Pattern pattern = Pattern.compile("(\\d{0,2}[A-Z]{0,20}) \\((\\d{1,2})\\)");
       Matcher matcher = pattern.matcher(manaCost);
       if (matcher.find()) {
         card.setManaCost(matcher.group(1));
         card.setConvertedManaCost(Integer.parseInt(matcher.group(2)));
       } else {
-        throw new IllegalArgumentException("could not parse mana cost");
+        throw new IllegalArgumentException("could not parse mana cost " + card.getName());
       }
     }
   }

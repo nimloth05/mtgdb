@@ -12,11 +12,12 @@ public enum Rarity {
   mythicRare;
 
   public static Rarity parse(final String name) {
-    if (name.equals("MythicRare")) return mythicRare;
+    if (StringUtils.containsIgnoreCase(name, "mythic")) return mythicRare;
     return Rarity.valueOf(name.toLowerCase());
   }
 
   public String toDisplayName() {
     return StringUtils.capitalize(name());
+
   }
 }

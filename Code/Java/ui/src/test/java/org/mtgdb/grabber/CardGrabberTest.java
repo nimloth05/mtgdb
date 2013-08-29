@@ -113,6 +113,46 @@ public final class CardGrabberTest {
   }
 
   @Test
+  public void testArtifact() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("Raoul Vitale");
+    expectedCard.setConvertedManaCost(3);
+    expectedCard.setFlavorText("Its three sides represent the Sova, judges and arbitrators; the Jelenn, scribes and elocutors; and the Lyev, lawmages and enforcers.");
+    expectedCard.setImageURL("http://magiccards.info/scans/en/dgm/136.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost("3");
+    expectedCard.setName("Azorius Cluestone");
+    expectedCard.setPower(0);
+    expectedCard.setRarity(Rarity.rare);
+    expectedCard.setSubType(null);
+    expectedCard.setCardText("{T}: Add {W} or {U} to your mana pool. {W}{U}, {T}, Sacrifice Azorius Cluestone: Draw a card.");
+    expectedCard.setToughness(0);
+    expectedCard.setType("Artifact");
+    expectedCard.setNumber("136");
+    assertCard(expectedCard, "http://magiccards.info/dgm/en/136.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
+  }
+
+  @Test
+  public void testEnchantAuraWithNoColorlessMana() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("Anthony Palumbo");
+    expectedCard.setConvertedManaCost(1);
+    expectedCard.setFlavorText("\"You caught something on a cold night's stroll? No, I'd say something caught you.\" —Mezim Magrah, civic healer");
+    expectedCard.setImageURL("http://magiccards.info/scans/en/dgm/29.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost("B");
+    expectedCard.setName("Sinister Possession");
+    expectedCard.setPower(0);
+    expectedCard.setRarity(Rarity.common);
+    expectedCard.setSubType("Aura");
+    expectedCard.setCardText("Enchant creature Whenever enchanted creature attacks or blocks, its controller loses 2 life.");
+    expectedCard.setToughness(0);
+    expectedCard.setType("Enchantment");
+    expectedCard.setNumber("29");
+    assertCard(expectedCard, "http://magiccards.info/dgm/en/29.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
+  }
+
+  @Test
   public void testEnchantAura() {
     MagicCard expectedCard = new MagicCard();
     expectedCard.setArtist("Karl Kopinski");
