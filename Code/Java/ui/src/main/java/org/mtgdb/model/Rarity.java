@@ -1,5 +1,7 @@
 package org.mtgdb.model;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Sandro Orlando
  */
@@ -10,6 +12,11 @@ public enum Rarity {
   mythicRare;
 
   public static Rarity parse(final String name) {
-    return common;
+    if (name.equals("MythicRare")) return mythicRare;
+    return Rarity.valueOf(name.toLowerCase());
+  }
+
+  public String toDisplayName() {
+    return StringUtils.capitalize(name());
   }
 }

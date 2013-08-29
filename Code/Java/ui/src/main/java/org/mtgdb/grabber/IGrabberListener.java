@@ -15,5 +15,4 @@ public interface IGrabberListener {
   void endEdition();
 
 
-
 }
