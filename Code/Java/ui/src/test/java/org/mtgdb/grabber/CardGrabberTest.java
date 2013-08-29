@@ -2,6 +2,7 @@ package org.mtgdb.grabber;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
 import org.mtgdb.util.Constants;
@@ -70,6 +71,7 @@ public final class CardGrabberTest {
     expectedCard.setNumber("1");
     assertCard(expectedCard, "http://magiccards.info/m14/en/1.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
   }
+
   @Test
   public void testSorcery() {
     MagicCard expectedCard = new MagicCard();
@@ -128,6 +130,26 @@ public final class CardGrabberTest {
     expectedCard.setType("Enchantment");
     expectedCard.setNumber("17");
     assertCard(expectedCard, "http://magiccards.info/dgm/en/17.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
+  }
+
+  @Test
+  public void testCreatureWithStarStats() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("Vance Kovacs");
+    expectedCard.setConvertedManaCost(6);
+    expectedCard.setFlavorText("The thunder of its hooves beats dreams into despair.");
+    expectedCard.setImageURL("http://magiccards.info/scans/en/m14/108.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost("5B");
+    expectedCard.setName("Nightmare");
+    expectedCard.setPower(IMagicCard.CREATURE_STAT_STAR_VALUE);
+    expectedCard.setRarity(Rarity.common);
+    expectedCard.setSubType("Nightmare Horse");
+    expectedCard.setCardText("Flying Nightmare's power and toughness are each equal to the number of Swamps you control.");
+    expectedCard.setToughness(IMagicCard.CREATURE_STAT_STAR_VALUE);
+    expectedCard.setType("Creature");
+    expectedCard.setNumber("108");
+    assertCard(expectedCard, "http://magiccards.info/m14/en/108.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
   }
 
   private void assertCard(final MagicCard expectedCard, final String url, final String rariry, final String name) {

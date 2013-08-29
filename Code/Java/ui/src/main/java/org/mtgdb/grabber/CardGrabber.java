@@ -68,17 +68,24 @@ public final class CardGrabber {
       //Possible creature with power/toughness
       Pattern creaturePattern = Pattern.compile("(.*?)(\\d{1,2})/(\\d{1,2})");
       final Matcher creatureMatcher = creaturePattern.matcher(subTypes);
-      Pattern planesWalkerPattern = Pattern.compile("(.*?)\\(\\D*: (\\d{1,2})\\)");
+
+      Pattern createStarPattern = Pattern.compile("(.*?)(\\*)/(\\*)");
+      final Matcher createStarMatcher = createStarPattern.matcher(subTypes);
+
+      final Pattern planesWalkerPattern = Pattern.compile("(.*?)\\(\\D*: (\\d{1,2})\\)");
       Matcher planesWalkerMatcher = planesWalkerPattern.matcher(subTypes);
+
       if (creatureMatcher.find()) {
         card.setSubType(StringUtils.trim(creatureMatcher.group(1)));
         card.setPower(Integer.parseInt(creatureMatcher.group(2)));
         card.setToughness(Integer.parseInt(creatureMatcher.group(3)));
-
+      } else if (createStarMatcher.find()) {
+        card.setSubType(StringUtils.trim(createStarMatcher.group(1)));
+        card.setPower(IMagicCard.CREATURE_STAT_STAR_VALUE);
+        card.setToughness(IMagicCard.CREATURE_STAT_STAR_VALUE);
       } else if (planesWalkerMatcher.find()) {
         card.setSubType(StringUtils.trim(planesWalkerMatcher.group(1)));
         card.setLoyalty(Integer.parseInt(planesWalkerMatcher.group(2)));
-
       } else {
         card.setSubType(StringUtils.trim(subTypes.trim()));
       }
@@ -99,72 +106,9 @@ public final class CardGrabber {
     }
   }
 
-  private void extractTypeLine(MagicCard card, final Document document) {
-    Elements typeline = document.select("table > tbody > tr span + p");
-    String type = typeline.text();
-    final Pattern patternTypeline = Pattern.compile("(.*),\\s\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
-    Matcher m = patternTypeline.matcher(type);
-    if (m.matches()) {
-      card.setType(m.group(1));
-      card.setManaCost(m.group(2));
-      card.setConvertedManaCost(Integer.parseInt(m.group(3)));
-    }
-  }
-
-  private void extractTypeLineLand(MagicCard card, final Document document) {
-    Elements typeline = document.select("table > tbody > tr span + p");
-    String type = typeline.text();
-    final Pattern patternTypelineOther = Pattern.compile("(.*)\\s—\\s(.*).*");
-    Matcher m = patternTypelineOther.matcher(type);
-    if (m.matches()) {
-      card.setType(m.group(1));
-      card.setSubType(m.group(2));
-    }
-  }
-
-  private void extractTypeLineOther(MagicCard card, final Document document) {
-    Elements typeline = document.select("table > tbody > tr span + p");
-    String type = typeline.text();
-    final Pattern patternTypelineOther = Pattern.compile("(.*)\\s—\\s(.*),.*");
-    Matcher m = patternTypelineOther.matcher(type);
-    if (m.matches()) {
-      card.setType(m.group(1));
-      card.setSubType(m.group(2));
-    }
-  }
-
-  private void extractTypeLineCreature(MagicCard card, final Document document) {
-    Elements typeline = document.select("table > tbody > tr span + p");
-    String type = typeline.text();
-    final Pattern patternTypelineCreature = Pattern.compile("(.*)\\s—\\s(.*)\\s(\\d{1,2}|\\*)/(\\d{1,2}|\\*),\\s*([0-9A-Z]+)\\s\\(([0-9]+)\\)");
-    Matcher m = patternTypelineCreature.matcher(type);
-    if (m.matches()) {
-      card.setType(m.group(1));
-      card.setSubType(m.group(2));
-      card.setPower(getCreatureStat(m.group(3)));
-      card.setToughness(getCreatureStat(m.group(4)));
-      card.setManaCost(m.group(5));
-      card.setConvertedManaCost(Integer.parseInt(m.group(6)));
-    }
-  }
-
   private int getCreatureStat(final String value) {
     if (value.equals(Constants.ASTERISK)) return IMagicCard.CREATURE_STAT_STAR_VALUE;
     return Integer.parseInt(value);
-  }
-
-  private void extractTypeLinePlaneswalker(MagicCard card, final Document document) {
-    Elements typeline = document.select("table > tbody > tr span + p");
-    String type = typeline.text();
-    final Pattern patternTypelinePlaneswalker = Pattern.compile("(.*)\\s—\\s(.*)\\s\\([a-zA-z]+:\\s(\\d{1,2})\\),\\s([0-9A-Z]+)\\s\\(([0-9]+)\\)");
-    Matcher m = patternTypelinePlaneswalker.matcher(type);
-    if (m.matches()) {
-      card.setType(m.group(1));
-      card.setSubType(m.group(2));
-      card.setLoyalty(Integer.parseInt(m.group(3)));
-      card.setManaCost(m.group(4));
-      card.setConvertedManaCost(Integer.parseInt(m.group(5)));
-    }
   }
 
   private void extractCardText(MagicCard card, final Document document) {
