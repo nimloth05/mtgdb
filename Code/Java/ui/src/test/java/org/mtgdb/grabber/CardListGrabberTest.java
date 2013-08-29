@@ -12,11 +12,10 @@ public final class CardListGrabberTest {
 
   @Test
   public void testGrab() {
-    CardListGrabber grabber = new CardListGrabber();
     final MutableBoolean beginCalled = new MutableBoolean(false);
     final MutableBoolean endCalled = new MutableBoolean(false);
     final MutableInt counter = new MutableInt(0);
-    grabber.grab("http://magiccards.info/dgm/en.html", "dgm", new ICardListGrabberListener() {
+    CardListGrabber grabber = new CardListGrabber(new ICardListGrabberListener() {
 
       @Override
       public void begin(final String name, final String editionId, final int numberOfCards) {
@@ -26,7 +25,6 @@ public final class CardListGrabberTest {
       @Override
       public void grabCard(final String cardUrl, final String rarity, final String name) {
         counter.increment();
-        System.out.println("cardUrl " + cardUrl + " rarity " + rarity + " name " + name);
       }
 
       @Override
@@ -34,6 +32,9 @@ public final class CardListGrabberTest {
         endCalled.setValue(true);
       }
     });
+
+    grabber.grab("http://magiccards.info/dgm/en.html", "dgm");
+
     Assert.assertTrue(beginCalled.booleanValue());
     Assert.assertTrue(beginCalled.booleanValue());
     Assert.assertEquals(171, counter.intValue());

@@ -12,9 +12,15 @@ import java.util.Collection;
 /**
  * @author Sandro Orlando
  */
-public final class CardListGrabber {
+public final class CardListGrabber implements IEditionGrabberListener {
 
-  public void grab(final String url, final String editionId, final ICardListGrabberListener listener) {
+  private final ICardListGrabberListener listener;
+
+  public CardListGrabber(final ICardListGrabberListener listener) {
+    this.listener = listener;
+  }
+
+  public void grab(final String url, final String editionId) {
     try {
       grabEdition(url, editionId, listener);
     } catch (IOException e) {
@@ -27,11 +33,7 @@ public final class CardListGrabber {
     Elements even = doc.select("table .even");
     Elements odd = doc.select("table .odd");
 
-//    final Edition edition = new Edition();
-//    edition.setName(doc.title());
-//    edition.setId(editionShort);
-//    edition.setNumberOfCards(even.size() + odd.size());
-    listener.begin(doc.title(), editionShort, (even.size() + odd.size()));
+   listener.begin(doc.title(), editionShort, (even.size() + odd.size()));
 
     grabEditionCards(listener, even);
     grabEditionCards(listener, odd);
@@ -44,7 +46,7 @@ public final class CardListGrabber {
       final Elements td = row.select("td");
       final String text = td.get(1).text();
 
-      listener.grabCard(GrabberJsoup.urlPrefix + td.get(1).child(0).attr("href"), td.get(4).text(), text);
+      listener.grabCard(Grabber.urlPrefix + td.get(1).child(0).attr("href"), td.get(4).text(), text);
     }
   }
 

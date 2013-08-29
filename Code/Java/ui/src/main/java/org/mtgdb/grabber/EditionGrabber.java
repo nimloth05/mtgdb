@@ -14,6 +14,7 @@ import java.io.IOException;
 public final class EditionGrabber {
 
   private final String language;
+  private static final String SITEMAP = "http://magiccards.info/sitemap.html";
 
   public EditionGrabber(final String language) {
     this.language = language;
@@ -28,8 +29,7 @@ public final class EditionGrabber {
   }
 
   private void doGrab(final IEditionGrabberListener listener) throws IOException {
-    final String sitemap = "http://magiccards.info/sitemap.html";
-    Document doc = Jsoup.connect(sitemap).get();
+    Document doc = Jsoup.connect(SITEMAP).get();
     Elements table = doc.select(":containsOwn(" + language + ") + table");
     Elements lists = table.select("tr > td > ul");
     for (Element list : lists) {
@@ -40,7 +40,7 @@ public final class EditionGrabber {
         if (edition.tagName().equals("a")) {
           final String editionId = edition.nextElementSibling().text();
           final String urlSuffix = edition.attr("href");
-          listener.grab(GrabberJsoup.urlPrefix + urlSuffix, editionId);
+          listener.grab(Grabber.urlPrefix + urlSuffix, editionId);
         }
       }
     }

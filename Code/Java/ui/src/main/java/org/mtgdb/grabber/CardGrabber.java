@@ -7,7 +7,6 @@ import org.jsoup.select.Elements;
 import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
-import org.mtgdb.util.Constants;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,18 +40,12 @@ public final class CardGrabber {
     Document document = Jsoup.parse(html);
 
     extractTypeLineSandro(card, document);
-//    extractTypeLine(card, document);
-//    extractTypeLineOther(card, document);
-//    extractTypeLineLand(card, document);
-//    extractTypeLineCreature(card, document);
-//    extractTypeLinePlaneswalker(card, document);
     extractCardText(card, document);
     extractFlavourText(card, document);
     extractImageURL(card, html);
     extractNrArtist(card, document);
     card.setRarity(Rarity.parse(rarity));
     card.setName(name);
-
     return card;
   }
 
@@ -104,11 +97,6 @@ public final class CardGrabber {
         throw new IllegalArgumentException("could not parse mana cost");
       }
     }
-  }
-
-  private int getCreatureStat(final String value) {
-    if (value.equals(Constants.ASTERISK)) return IMagicCard.CREATURE_STAT_STAR_VALUE;
-    return Integer.parseInt(value);
   }
 
   private void extractCardText(MagicCard card, final Document document) {

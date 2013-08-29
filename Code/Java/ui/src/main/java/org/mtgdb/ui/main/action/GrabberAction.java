@@ -5,7 +5,7 @@ import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.ITransactionRunnable;
 import org.mtgdb.db.repository.IEditionRepository;
 import org.mtgdb.db.repository.IMagicCardRepository;
-import org.mtgdb.grabber.GrabberJsoup;
+import org.mtgdb.grabber.Grabber;
 import org.mtgdb.grabber.IGrabberListener;
 import org.mtgdb.model.Edition;
 import org.mtgdb.model.MagicCard;
@@ -60,8 +60,8 @@ public class GrabberAction extends AbstractAction {
       @Override
       public void run(final IProgressMonitor monitor) throws Exception {
         monitor.setMessage("Grabbing DB...");
-        GrabberJsoup grabberJsoup = new GrabberJsoup("English");
-        grabberJsoup.grabAllEditions(new IGrabberListener() {
+        Grabber grabber = new Grabber("English");
+        grabber.grabAllEditions(new IGrabberListener() {
 
           int counter = 0;
 
