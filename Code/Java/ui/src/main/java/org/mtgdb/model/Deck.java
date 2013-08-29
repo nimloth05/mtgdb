@@ -11,6 +11,7 @@ import java.util.Map;
 /**
  * A user-created magic deck
  * @author Sandro Orlando
+ * @author Michael Sacher
  */
 public final class Deck {
 
@@ -56,7 +57,7 @@ public final class Deck {
   }
 
   public Collection<MagicCard> getCards() {
-    return null;  //To change body of created methods use File | Settings | File Templates.
+    return cards;
   }
 
   private class DeckStats {
