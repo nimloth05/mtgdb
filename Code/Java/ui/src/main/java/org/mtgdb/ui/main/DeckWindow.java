@@ -16,6 +16,7 @@ import org.mtgdb.ui.util.frame.FrameFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,45 @@ public final class DeckWindow {
     DeckWindow window = new DeckWindow();
     window.show();
 
+  }
+
+  private Collection<MagicCard> genTestCardSet() {
+    Collection<MagicCard> mockCards = new ArrayList<MagicCard>();
+    MagicCard card1 = new MagicCard();
+    card1.setType("Creature");
+    card1.setConvertedManaCost(1);
+    mockCards.add(card1);
+    MagicCard card2 = new MagicCard();
+    card2.setType("Creature");
+    card2.setConvertedManaCost(2);
+    mockCards.add(card2);
+
+
+    MagicCard card3 = new MagicCard();
+    card3.setType("Creature");
+    card3.setConvertedManaCost(2);
+    mockCards.add(card3);
+
+    MagicCard card4 = new MagicCard();
+    card4.setType("Sorcery");
+    card4.setConvertedManaCost(7);
+    mockCards.add(card4);
+
+    MagicCard card5 = new MagicCard();
+    card5.setType("Instant");
+    card5.setConvertedManaCost(3);
+    mockCards.add(card5);
+
+    MagicCard card6 = new MagicCard();
+    card6.setType("Instant");
+    card6.setConvertedManaCost(4);
+    mockCards.add(card6);
+
+    MagicCard card7 = new MagicCard();
+    card7.setType("Land");
+    mockCards.add(card7);
+
+    return mockCards;
   }
 
   private Integer[] calcManaCurve(Collection<MagicCard> magicCards) {
@@ -114,8 +154,8 @@ public final class DeckWindow {
       @Override
       public void run() {
         //javaFX operations should go here
-        jfxPanelPie.setScene(new Scene(createPieChart(deck.getCards())));
-        jfxPanelManaCurve.setScene(new Scene(createManaCurveChart(deck.getCards())));
+        jfxPanelPie.setScene(new Scene(createPieChart(genTestCardSet())));
+        jfxPanelManaCurve.setScene(new Scene(createManaCurveChart(genTestCardSet())));
       }
     });
 
@@ -146,9 +186,10 @@ public final class DeckWindow {
     XYChart.Series series1 = new XYChart.Series();
     series1.setName("Mana");
     Integer[] manaCurve = this.calcManaCurve(magicCards);
-    for (Integer index : manaCurve) {
-
+    for (Integer index = 1; index < manaCurve.length-2; index++) {
       series1.getData().add(new XYChart.Data(index.toString(), manaCurve[index]));
+//      System.out.println("index:"+index.toString());
+
     }
     bc.setLegendVisible(false);
 
