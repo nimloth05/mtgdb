@@ -28,36 +28,6 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
     return MagicCard.class;
   }
 
-//  @Override
-//  public void saveAll(final ITransactionToken transaction, final Collection<MagicCard> cards) {
-
-//    Value[][] rows = new Value[cards.size()][];
-//    int index = 0;
-//    for (IMagicCard card : cards) {
-//      Value[] row = new Value[]{
-//        new Value(card.getEdition()),
-//        new Value(card.getNumber()),
-//        new Value(card.getType()),
-//        new Value(card.getSubType()),
-//        new Value(card.getManaCost()),
-//        new Value(card.getConvertedManaCost()),
-//        new Value(card.getPower()),
-//        new Value(card.getToughness()),
-//        new Value(card.getImageURL()),
-//        new Value(card.getText()),
-//        new Value(card.getFlavorText()),
-//        new Value(card.getArtist()),
-//        new Value(card.getRarity().ordinal()),
-//        new Value(card.getName()),
-//        new Value("")
-//      };
-//      rows[index++] = row;
-//      ((MagicCard)card).setCardId(card.getEdition() + Constants.UNDERSCORE + card.getNumber());
-//    }
-//    final String sql = SQLGenerator.insertInto(DBConstants.MAGIC_CARD_TABLE, columns, rows);
-//    transaction.insert(sql);
-//  }
-
   @Override
   public void deleteAll() {
     try {

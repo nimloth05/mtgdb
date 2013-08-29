@@ -18,15 +18,6 @@ public final class ContainerRepository extends AbstractRepository<Container, Int
   }
 
   @Override
-  public void save(final Container container) {
-    try {
-      dao.create(container);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
   public void removeAll(final List<Container> removeContainers) {
     try {
       dao.delete(removeContainers);

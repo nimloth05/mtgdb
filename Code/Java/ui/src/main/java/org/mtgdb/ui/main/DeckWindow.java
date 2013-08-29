@@ -164,7 +164,7 @@ public final class DeckWindow {
     panel.add(jfxPanelManaCurve, "wrap");
 
 //    final JTable table = new JTable();
-//    table.setModel(model.getLibraryModel());
+//    table.setModel(model.getTableModel());
 //    table.setSelectionModel(model.getTableSelectionModel());
 //    final JScrollPane pane = new JScrollPane(table);
 //    panel.add(pane, "grow, push");

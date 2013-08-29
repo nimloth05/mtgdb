@@ -9,6 +9,7 @@ import org.mtgdb.ui.util.components.label.LabelModelAdapter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
 
 /**
  * @author Sandro Orlando
@@ -35,7 +36,7 @@ public final class MagicCardPanel {
 
     final JTable table = new JTable();
 
-    table.setModel(model.getLibraryModel());
+    table.setModel(model.getTableModel());
     table.setSelectionModel(model.getTableSelectionModel());
         TableComparatorChooser.install(
           table, model.getSortedList(), TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
@@ -46,6 +47,18 @@ public final class MagicCardPanel {
     final JLabel cardImageLabel = createImageLabel();
     cardImageLabel.setAlignmentY(JLabel.TOP);
     panel.add(cardImageLabel, "w 320!, aligny top, h 450!");
+
+    addContextMenu(table);
+  }
+
+  private void addContextMenu(final JTable table) {
+    Collection<Action> contextActions = model.getActions();
+    if (contextActions.isEmpty()) return;
+    JPopupMenu menu = new JPopupMenu();
+    for (Action contextAction : contextActions) {
+      menu.add(contextAction);
+    }
+    table.setComponentPopupMenu(menu);
   }
 
   private JLabel createImageLabel() {

@@ -42,7 +42,9 @@ public final class EditionGrabber {
           final String urlSuffix = edition.attr("href");
           listener.grab(Grabber.urlPrefix + urlSuffix, editionId);
         }
+        break;
       }
+      break;
     }
   }
 }

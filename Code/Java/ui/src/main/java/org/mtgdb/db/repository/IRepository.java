@@ -11,4 +11,6 @@ public interface IRepository<T> {
   public List<T> getAll();
 
   void saveAll(Collection<T> objects);
+
+  void save(T container);
 }

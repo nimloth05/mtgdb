@@ -62,6 +62,15 @@ public abstract class AbstractRepository<T, ID> implements IRepository<T> {
 
   }
 
+  @Override
+  public void save(final T container) {
+    try {
+      dao.create(container);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   protected abstract Class<T> getClassLiteral();
 
   @Override

@@ -1,6 +1,7 @@
 package org.mtgdb.ui.search;
 
 import com.google.inject.Inject;
+import org.mtgdb.services.ServiceManager;
 import org.mtgdb.ui.card.MagicCardPanelModel;
 import org.mtgdb.ui.util.models.DocumentHelper;
 
@@ -8,6 +9,8 @@ import javax.swing.*;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @author Sandro Orlando
@@ -19,9 +22,15 @@ public final class SearchModel {
   private Action searchAction = new SearchAction();
 
   @Inject
-  public SearchModel(MagicCardPanelModel magicCardPanelModel) {
-    panelModel = magicCardPanelModel;
+  public SearchModel() {
+    panelModel = MagicCardPanelModel.create(createContextActions());
     connectListener();
+  }
+
+  private Collection<Action> createContextActions() {
+    Collection<Action> result = new LinkedList<>();
+    result.add(ServiceManager.get(AddToPensieveAction.class));
+    return result;
   }
 
   private void connectListener() {
