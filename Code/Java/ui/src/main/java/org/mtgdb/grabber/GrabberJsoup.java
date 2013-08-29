@@ -105,6 +105,7 @@ public final class GrabberJsoup {
 
     extractTypeLine(card, document);
     extractTypeLineOther(card, document);
+    extractTypeLineLand(card, document);
     extractTypeLineCreature(card, document);
     extractTypeLinePlaneswalker(card, document);
     extractCardText(card, document);
@@ -130,7 +131,16 @@ public final class GrabberJsoup {
     }
   }
 
-  private void extractTypeLineOther(MagicCard card, final Document document) {
+  private void extractTypeLineLand(MagicCard card, final Document document) {
+    Elements typeline = document.select("table > tbody > tr span + p");
+    String type = typeline.text();
+    final Pattern patternTypelineOther = Pattern.compile("(.*)\\s—\\s(.*).*");
+    Matcher m = patternTypelineOther.matcher(type);
+    if (m.matches()) {
+      card.setType(m.group(1));
+      card.setSubType(m.group(2));
+    }
+  }  private void extractTypeLineOther(MagicCard card, final Document document) {
     Elements typeline = document.select("table > tbody > tr span + p");
     String type = typeline.text();
     final Pattern patternTypelineOther = Pattern.compile("(.*)\\s—\\s(.*),.*");
