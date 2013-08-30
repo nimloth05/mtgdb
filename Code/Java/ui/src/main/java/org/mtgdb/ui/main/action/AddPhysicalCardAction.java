@@ -1,12 +1,10 @@
 package org.mtgdb.ui.main.action;
 
 import com.google.inject.Inject;
-import org.mtgdb.db.IDatabaseConnection;
-import org.mtgdb.db.ITransactionRunnable;
-import org.mtgdb.db.repository.ContainerRepository;
-import org.mtgdb.db.repository.EditionRepository;
+import org.mtgdb.db.repository.IContainerRepository;
+import org.mtgdb.db.repository.IEditionRepository;
 import org.mtgdb.db.repository.IMagicCardRepository;
-import org.mtgdb.db.repository.PhysicalCardRepository;
+import org.mtgdb.db.repository.IPhysicalCardRepository;
 import org.mtgdb.model.CardCondition;
 import org.mtgdb.model.Container;
 import org.mtgdb.model.Edition;
@@ -30,30 +28,19 @@ import java.util.Collection;
 /**
  * @author Sandro Orlando
  */
-public final class AddPhysicalCardAction extends AbstractAction{
+public final class AddPhysicalCardAction extends AbstractAction {
 
+  private final IEditionRepository editionRepository;
+  private final IPhysicalCardRepository physicalCardRepository;
+  private final IContainerRepository containerRepository;
+  private final IMagicCardRepository magicCardRepository;
   private boolean showDialogAgain = false;
 
-  private static class PhysicalCardProperties {
-    private Edition edition;
-    private String cardNumber;
-    private CardCondition condition;
-    private String language;
-    private Container container;
-  }
-
-  private final EditionRepository editionRepository;
-  private final PhysicalCardRepository physicalCardRepository;
-  private final IDatabaseConnection connection;
-  private final ContainerRepository containerRepository;
-  private final IMagicCardRepository magicCardRepository;
-
   @Inject
-  public AddPhysicalCardAction(final EditionRepository editionRepository, final PhysicalCardRepository physicalCardRepository, final IDatabaseConnection connection, final ContainerRepository containerRepository, final IMagicCardRepository magicCardRepository) {
+  public AddPhysicalCardAction(final IEditionRepository editionRepository, final IPhysicalCardRepository physicalCardRepository, final IContainerRepository containerRepository, final IMagicCardRepository magicCardRepository) {
     super();
     this.editionRepository = editionRepository;
     this.physicalCardRepository = physicalCardRepository;
-    this.connection = connection;
     this.containerRepository = containerRepository;
     this.magicCardRepository = magicCardRepository;
     putValue(Action.NAME, "Add Card");
@@ -62,6 +49,12 @@ public final class AddPhysicalCardAction extends AbstractAction{
   @Override
   public void actionPerformed(final ActionEvent e) {
     PhysicalCardProperties properties = new PhysicalCardProperties();
+    properties.condition = CardCondition.mint;
+    properties.cardNumber = "1";
+    properties.container = containerRepository.getAll().get(0);
+    properties.language = "English";
+    //TODO: GetDefaultedition or something - this will crash if there are no edition in the db!
+    properties.edition = editionRepository.getAll().get(0);
     showDialogAgain = true;
     while (showDialogAgain) {
       createPropertiesGroup(properties);
@@ -73,11 +66,11 @@ public final class AddPhysicalCardAction extends AbstractAction{
     propertyGroup.setOkRunnable(createOkRunnable(properties));
     propertyGroup.setCancelRunnable(createCancelRunnable());
     PropertyFactory factory = new PropertyFactory();
-    propertyGroup.add(factory.selectionProperty("edition", createEditionSelectionBody(properties)));
-    propertyGroup.add(factory.stringProperty("cardNumber", createNumberBody(properties)));
-    propertyGroup.add(factory.selectionProperty("condition", createConditionBody(properties)));
-    propertyGroup.add(factory.stringProperty("language", createLanguageBody(properties)));
-    propertyGroup.add(factory.selectionProperty("container", createContainerSelectionBody(properties)));
+    propertyGroup.add(factory.selectionProperty("edition", createEditionSelectionBody(properties)))
+      .add(factory.stringProperty("cardNumber", createNumberBody(properties)))
+      .add(factory.selectionProperty("condition", createConditionBody(properties)))
+      .add(factory.stringProperty("language", createLanguageBody(properties)))
+      .add(factory.selectionProperty("container", createContainerSelectionBody(properties)));
     PropertiesDialog dialog = new PropertiesDialog(FrameFactory.getMainFrame(), propertyGroup);
     dialog.show();
   }
@@ -86,7 +79,7 @@ public final class AddPhysicalCardAction extends AbstractAction{
     return new Runnable() {
       @Override
       public void run() {
-       showDialogAgain = false;
+        showDialogAgain = false;
       }
     };
   }
@@ -149,17 +142,13 @@ public final class AddPhysicalCardAction extends AbstractAction{
     return new Runnable() {
       @Override
       public void run() {
-        connection.execute(new ITransactionRunnable() {
-          @Override
-          public void run() throws Exception {
-            PhysicalCard card = new PhysicalCard();
-            card.setCard(magicCardRepository.getCard(properties.edition, properties.cardNumber));
-            card.setCondition(properties.condition);
-            card.setContainer(properties.container);
-            card.setCondition(properties.condition);
-            physicalCardRepository.save(card);
-          }
-        });
+        PhysicalCard card = new PhysicalCard();
+        card.setCard(magicCardRepository.getCard(properties.edition, properties.cardNumber));
+        card.setCondition(properties.condition);
+        card.setContainer(properties.container);
+        card.setCondition(properties.condition);
+        card.setLanguage(properties.language);
+        physicalCardRepository.save(card);
         showDialogAgain = true;
       }
     };
@@ -180,7 +169,6 @@ public final class AddPhysicalCardAction extends AbstractAction{
       }
     };
   }
-
 
   private ISelectionPropertyModelBody<?> createEditionSelectionBody(final PhysicalCardProperties physicalCardProperties) {
     return new ISelectionPropertyModelBody<Edition>() {
@@ -205,5 +193,14 @@ public final class AddPhysicalCardAction extends AbstractAction{
         physicalCardProperties.edition = object;
       }
     };
+  }
+
+  private static class PhysicalCardProperties {
+
+    private Edition edition;
+    private String cardNumber;
+    private CardCondition condition;
+    private String language;
+    private Container container;
   }
 }

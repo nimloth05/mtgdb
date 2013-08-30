@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.services.ServiceManager;
 import org.mtgdb.ui.card.MagicCardPanelModel;
+import org.mtgdb.ui.main.action.AddPhysicalCardAction;
 import org.mtgdb.ui.main.action.ContainerPropertiesDialog;
 import org.mtgdb.ui.main.action.GrabberAction;
 import org.mtgdb.ui.main.action.OpenPensieveDialog;
@@ -41,6 +42,7 @@ public final class MainModel {
     actions.add(ServiceManager.get(ShowContainerAction.class));
     actions.add(ServiceManager.get(ShowSearchAction.class));
     actions.add(ServiceManager.get(OpenPensieveDialog.class));
+    actions.add(ServiceManager.get(AddPhysicalCardAction.class));
     return actions;
   }
 

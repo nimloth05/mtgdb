@@ -1,5 +1,7 @@
 package org.mtgdb.model;
 
+import com.j256.ormlite.field.DatabaseField;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +17,7 @@ public final class PhysicalCard implements IPhysicalCard {
   @Id
   @GeneratedValue
   private int id;
-  @ManyToOne
+  @DatabaseField(columnName = "card_id", foreignAutoRefresh = true, foreign = true)
   private MagicCard card;
   @ManyToOne
   private Container container;
