@@ -9,7 +9,12 @@ public enum Rarity {
   common,
   uncommon,
   rare,
-  mythicRare;
+  mythicRare {
+    @Override
+    public String toDisplayName() {
+      return "Mythic Rare";
+    }
+  };
 
   public static Rarity parse(final String name) {
     if (StringUtils.containsIgnoreCase(name, "mythic")) return mythicRare;
@@ -18,6 +23,10 @@ public enum Rarity {
 
   public String toDisplayName() {
     return StringUtils.capitalize(name());
+  }
 
+  @Override
+  public String toString() {
+    return toDisplayName();
   }
 }
