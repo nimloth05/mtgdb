@@ -13,7 +13,7 @@ import org.mtgdb.util.Constants;
 public final class CardGrabberTest {
 
   @Test
-  public void testLandCard() {
+  public void testGateLandCard() {
     MagicCard expectedCard = new MagicCard();
     expectedCard.setArtist("Howard Lyon");
     expectedCard.setConvertedManaCost(0);
@@ -30,6 +30,106 @@ public final class CardGrabberTest {
     expectedCard.setType("Land");
     expectedCard.setNumber("155");
     assertCard(expectedCard, "http://magiccards.info//dgm/en/155.html", "Common", "Selesnya Guildgate");
+  }
+
+  @Test
+  public void testLandCard() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("John Avon");
+    expectedCard.setConvertedManaCost(0);
+    expectedCard.setFlavorText(Constants.EMPTY);
+    expectedCard.setImageURL("http://magiccards.info/scans/en/m14/230.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost(null);
+    expectedCard.setName("Plains");
+    expectedCard.setPower(0);
+    expectedCard.setRarity(Rarity.land);
+    expectedCard.setSubType("Plains");
+    expectedCard.setCardText("({T}: Add {W} to your mana pool.)");
+    expectedCard.setToughness(0);
+    expectedCard.setType("Basic Land");
+    expectedCard.setNumber("230");
+    assertCard(expectedCard, "http://magiccards.info/m14/en/230.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
+  }
+
+  @Test
+  public void testRelicWithNoManaCost() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("Daniel Ljunggren");
+    expectedCard.setConvertedManaCost(0);
+    expectedCard.setFlavorText("\"It's the last thing we can call our own.\" —Minhu, Mirran resistance");
+    expectedCard.setImageURL("http://magiccards.info/scans/en/nph/134.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost("0");
+    expectedCard.setName("Artifact");
+    expectedCard.setPower(0);
+    expectedCard.setRarity(Rarity.uncommon);
+    expectedCard.setSubType(null);
+    expectedCard.setCardText("Indestructible (Effects that say \"destroy\" don't destroy this artifact.)");
+    expectedCard.setToughness(0);
+    expectedCard.setType("Artifact");
+    expectedCard.setNumber("134");
+    assertCard(expectedCard, "http://magiccards.info/nph/en/134.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
+  }
+
+  @Test
+  public void testArtifactWithXCost() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("David Palumbo");
+    expectedCard.setConvertedManaCost(IMagicCard.CREATURE_STAT_STAR_VALUE);
+    expectedCard.setFlavorText(Constants.EMPTY);
+    expectedCard.setImageURL("http://magiccards.info/scans/en/som/141.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost("X");
+    expectedCard.setName("Artifact");
+    expectedCard.setPower(0);
+    expectedCard.setRarity(Rarity.rare);
+    expectedCard.setSubType(null);
+    expectedCard.setCardText("Chimeric Mass enters the battlefield with X charge counters on it. {1}: Until end of turn, Chimeric Mass becomes a Construct artifact creature with \"This creature's power and toughness are each equal to the number of charge counters on it.\"");
+    expectedCard.setToughness(0);
+    expectedCard.setType("Artifact");
+    expectedCard.setNumber("141");
+    assertCard(expectedCard, "http://magiccards.info/som/en/141.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
+  }
+
+  @Test
+  public void testInstantWithNoManaCost() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("Raymond Swanland");
+    expectedCard.setConvertedManaCost(0);
+    expectedCard.setFlavorText(Constants.EMPTY);
+    expectedCard.setImageURL("http://magiccards.info/scans/en/fut/103.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost("0");
+    expectedCard.setName("Pact of the Titan");
+    expectedCard.setPower(0);
+    expectedCard.setRarity(Rarity.rare);
+    expectedCard.setSubType(null);
+    expectedCard.setCardText("Put a 4/4 red Giant creature token onto the battlefield. At the beginning of your next upkeep, pay {4}{R}. If you don't, you lose the game.");
+    expectedCard.setToughness(0);
+    expectedCard.setType("Instant");
+    expectedCard.setNumber("103");
+    assertCard(expectedCard, "http://magiccards.info/fut/en/103.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
+  }
+
+  @Test
+  public void testCardWithSpecialRarity() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("Ron Spears");
+    expectedCard.setConvertedManaCost(8);
+    expectedCard.setFlavorText("\"No rest. No mercy. No matter what.\"");
+    expectedCard.setImageURL("http://magiccards.info/scans/en/tsts/1.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost("5WWW");
+    expectedCard.setName("Akroma, Angel of Wrath");
+    expectedCard.setPower(6);
+    expectedCard.setRarity(Rarity.special);
+    expectedCard.setSubType("Angel");
+    expectedCard.setCardText("Flying, first strike, vigilance, trample, haste, protection from black and from red");
+    expectedCard.setToughness(6);
+    expectedCard.setType("Legendary Creature");
+    expectedCard.setNumber("1");
+    assertCard(expectedCard, "http://magiccards.info/tsts/en/1.html", "Special", expectedCard.getName());
   }
 
   @Test
