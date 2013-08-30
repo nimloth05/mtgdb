@@ -2,7 +2,7 @@ package org.mtgdb.ui.search;
 
 import com.google.inject.Inject;
 import org.mtgdb.db.repository.ICardMemoryRepository;
-import org.mtgdb.model.IMagicCard;
+import org.mtgdb.model.MagicCard;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 public final class AddToPensieveAction extends AbstractAction implements ISelectionAwareAction{
 
   private final ICardMemoryRepository repository;
-  private IMagicCard currentCard;
+  private MagicCard currentCard;
 
   @Inject
   public AddToPensieveAction(final ICardMemoryRepository repository) {
@@ -28,7 +28,7 @@ public final class AddToPensieveAction extends AbstractAction implements ISelect
   }
 
   @Override
-  public void selected(final IMagicCard magicCard) {
+  public void selected(final MagicCard magicCard) {
     currentCard = magicCard;
   }
 }

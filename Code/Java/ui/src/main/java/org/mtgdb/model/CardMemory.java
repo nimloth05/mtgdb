@@ -1,6 +1,7 @@
 package org.mtgdb.model;
 
-import javax.persistence.Column;
+import com.j256.ormlite.field.DatabaseField;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -13,8 +14,8 @@ public final class CardMemory {
   @GeneratedValue
   private int id;
 
-  @Column
-  private IMagicCard magicCard;
+  @DatabaseField(columnName = "magiccard_id", foreign = true, foreignAutoRefresh = true)
+  private MagicCard magicCard;
 
   public int getId() {
     return id;
@@ -28,7 +29,7 @@ public final class CardMemory {
     return magicCard;
   }
 
-  public void setMagicCard(final IMagicCard magicCard) {
+  public void setMagicCard(final MagicCard magicCard) {
     this.magicCard = magicCard;
   }
 }

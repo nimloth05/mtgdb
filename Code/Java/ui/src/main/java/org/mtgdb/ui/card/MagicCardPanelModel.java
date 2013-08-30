@@ -9,7 +9,6 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.google.inject.Inject;
 import org.mtgdb.db.repository.IMagicCardRepository;
-import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 import org.mtgdb.services.ServiceManager;
 import org.mtgdb.ui.search.ISelectionAwareAction;
@@ -68,7 +67,7 @@ public final class MagicCardPanelModel {
 
         final EventList<MagicCard> selected = tableSelectionModel.getSelected();
         if (selected.isEmpty()) return;
-        IMagicCard selectedCard = selected.get(0);
+        MagicCard selectedCard = selected.get(0);
         Icon scan = ImageLoader.loadAsIcon(selectedCard.getImageURL());
         scanLabelModel.setIcon(scan);
         for (Action action : actions) {

@@ -3,7 +3,7 @@ package org.mtgdb.db.repository;
 import com.google.inject.Inject;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.model.CardMemory;
-import org.mtgdb.model.IMagicCard;
+import org.mtgdb.model.MagicCard;
 
 import java.sql.SQLException;
 
@@ -23,7 +23,7 @@ public final class CardMemoryRepository extends AbstractRepository<CardMemory, I
   }
 
   @Override
-  public void rememberCard(final IMagicCard currentCard) {
+  public void rememberCard(final MagicCard currentCard) {
     try {
       final CardMemory data = new CardMemory();
       data.setMagicCard(currentCard);
