@@ -25,11 +25,9 @@ public final class Deck {
   @Column
   private String name;
   private Collection<MagicCard> cards;
-  private DeckStats stats;
 
   public Deck() {
     cards = new ArrayList<>();
-    stats = new DeckStats();
   }
 
   public int getId() {
@@ -179,33 +177,6 @@ public final class Deck {
     return components;
   }
 
-  private class DeckStats {
-    Map<String, Integer> statistics = new HashMap<String, Integer>();
-
-    public DeckStats() {
-      statistics.put("numCreatures", 0);
-      statistics.put("numSorceries", 0);
-      statistics.put("numInstants", 0);
-      statistics.put("numArtifacts", 0);
-      statistics.put("numLands", 0);
-      statistics.put("0manaSpells", 0);
-      statistics.put("1manaSpells", 0);
-      statistics.put("2manaSpells", 0);
-      statistics.put("3manaSpells", 0);
-      statistics.put("4manaSpells", 0);
-      statistics.put("5manaSpells", 0);
-      statistics.put("6manaSpells", 0);
-      statistics.put("7manaSpells", 0);
-      statistics.put("8manaSpells", 0);
-      statistics.put("9manaSpells", 0);
-      statistics.put("10manaSpells", 0);
-    }
-
-    private void update() {
-      String deckSelectSQL = "SELECT * FROM \"Deck\" INNER JOIN \"CardDescriptionXDeck\" INNER JOIN \"CardDescription\" WHERE \"Deck.Name\"=\"" + name + "\";";
-      String numCreaturesSQL = "SELECT count(*) FROM (" + deckSelectSQL + ") where \"type\" LIKE %Creature% ";
-    }
-  }
 }
 
 
