@@ -7,6 +7,8 @@ import org.jsoup.select.Elements;
 import org.mtgdb.model.IMagicCard;
 import org.mtgdb.model.MagicCard;
 import org.mtgdb.model.Rarity;
+import org.mtgdb.util.Constants;
+import org.mtgdb.util.assertion.Assert;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,11 +21,19 @@ import java.util.regex.Pattern;
 public final class CardGrabber {
 
   public MagicCard grabCard(final String url, final String rarity, final String name) {
-    try {
-      return doGrabCard(url, rarity, name);
-    } catch (IOException e) {
-      return null;
-    }
+    int counter = 0;
+    do {
+      try {
+        return doGrabCard(url, rarity, name);
+      } catch (IOException e) {
+        Assert.log("Problem during card " + name + e);
+        ++counter;
+      } catch (Exception e) {
+        Assert.log(e, "error for card " + name);
+        counter = 3;
+      }
+    } while (counter < 3);
+    return null;
   }
 
   private MagicCard doGrabCard(final String cardUrl, final String rarity, final String name) throws IOException {
@@ -88,14 +98,26 @@ public final class CardGrabber {
     }
 
     if (lineParts.length > 1) {
-      String manaCost = lineParts[1];
+      String manaCost = StringUtils.trim(lineParts[1]);
       Pattern pattern = Pattern.compile("(\\d{0,2}[A-Z]{0,20}) \\((\\d{1,2})\\)");
       Matcher matcher = pattern.matcher(manaCost);
       if (matcher.find()) {
         card.setManaCost(matcher.group(1));
         card.setConvertedManaCost(Integer.parseInt(matcher.group(2)));
       } else {
-        throw new IllegalArgumentException("could not parse mana cost " + card.getName());
+        if (manaCost.contains(Constants.SPACE)) {
+          manaCost = manaCost.substring(0, manaCost.indexOf(Constants.SPACE));
+        }
+        if (StringUtils.isNumeric(manaCost)) {
+          card.setManaCost(manaCost);
+          card.setConvertedManaCost(Integer.parseInt(manaCost));
+        } else if ("X".equals(manaCost)) {
+          card.setManaCost(manaCost);
+          card.setConvertedManaCost(IMagicCard.CREATURE_STAT_STAR_VALUE);
+        }
+        else {
+          throw new IllegalArgumentException("could not parse mana cost " + card.getName());
+        }
       }
     }
   }

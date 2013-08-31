@@ -14,7 +14,9 @@ public enum Rarity {
     public String toDisplayName() {
       return "Mythic Rare";
     }
-  };
+  },
+  land,
+  special;
 
   public static Rarity parse(final String name) {
     if (StringUtils.containsIgnoreCase(name, "mythic")) return mythicRare;

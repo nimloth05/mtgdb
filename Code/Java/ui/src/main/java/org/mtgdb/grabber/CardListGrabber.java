@@ -24,7 +24,7 @@ public final class CardListGrabber implements IEditionGrabberListener {
     try {
       grabEdition(url, editionId, listener);
     } catch (IOException e) {
-      Assert.log(e);
+      Assert.log(e, "error for url " + url);
     }
   }
 
