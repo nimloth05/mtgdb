@@ -111,7 +111,7 @@ public final class CardGrabber {
         if (StringUtils.isNumeric(manaCost)) {
           card.setManaCost(manaCost);
           card.setConvertedManaCost(Integer.parseInt(manaCost));
-        } else if ("X".equals(manaCost)) {
+        } else if (manaCost.startsWith("X")) {
           card.setManaCost(manaCost);
           card.setConvertedManaCost(IMagicCard.CREATURE_STAT_STAR_VALUE);
         }

@@ -273,6 +273,26 @@ public final class CardGrabberTest {
   }
 
   @Test
+  public void testArtifactWithDoubleXX() {
+    MagicCard expectedCard = new MagicCard();
+    expectedCard.setArtist("Alex Horley-Orlandelli");
+    expectedCard.setConvertedManaCost(IMagicCard.CREATURE_STAT_STAR_VALUE);
+    expectedCard.setFlavorText(Constants.EMPTY);
+    expectedCard.setImageURL("http://magiccards.info/scans/en/chk/266.jpg");
+    expectedCard.setLoyalty(0);
+    expectedCard.setManaCost("XX");
+    expectedCard.setName("Orochi Hatchery");
+    expectedCard.setPower(0);
+    expectedCard.setRarity(Rarity.rare);
+    expectedCard.setSubType(null);
+    expectedCard.setCardText("Orochi Hatchery enters the battlefield with X charge counters on it. {5}, {T}: Put a 1/1 green Snake creature token onto the battlefield for each charge counter on Orochi Hatchery.");
+    expectedCard.setToughness(0);
+    expectedCard.setType("Artifact");
+    expectedCard.setNumber("266");
+    assertCard(expectedCard, "http://magiccards.info/chk/en/266.html", expectedCard.getRarity().toDisplayName(), expectedCard.getName());
+  }
+
+  @Test
   public void testCreatureWithStarStats() {
     MagicCard expectedCard = new MagicCard();
     expectedCard.setArtist("Vance Kovacs");
