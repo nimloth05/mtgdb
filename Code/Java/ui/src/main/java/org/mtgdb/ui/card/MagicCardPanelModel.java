@@ -4,6 +4,8 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.FilterList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.event.ListEvent;
+import ca.odell.glazedlists.event.ListEventListener;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
@@ -28,12 +30,15 @@ import java.util.List;
  */
 public final class MagicCardPanelModel {
 
+  private static final String STATUS_LINE_MESSAGE = "%d Cards in list, displaying %d (%d filtered)";
+
   private final IMagicCardRepository magicCardRepository;
   private final FilterList<MagicCard> filteredList;
   private final SortedList<MagicCard> sortedCards;
   private final AdvancedTableModel<MagicCard> magicCardTableModel;
   private DefaultLabelModel scanLabelModel = new DefaultLabelModel();
   private DefaultEventSelectionModel<MagicCard> tableSelectionModel;
+  private DefaultLabelModel statusLineModel = new DefaultLabelModel();
 
   private Collection<Action> actions = Collections.emptyList();
 
@@ -64,7 +69,6 @@ public final class MagicCardPanelModel {
       @Override
       public void valueChanged(final ListSelectionEvent e) {
 
-
         final EventList<MagicCard> selected = tableSelectionModel.getSelected();
         if (selected.isEmpty()) return;
         MagicCard selectedCard = selected.get(0);
@@ -78,7 +82,18 @@ public final class MagicCardPanelModel {
       }
     });
     tableSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//    tableSelectionModel.setSelectionInterval(0, 0);
+
+    statusLineModel = new DefaultLabelModel();
+    filteredList.addListEventListener(new ListEventListener<MagicCard>() {
+      @Override
+      public void listChanged(final ListEvent<MagicCard> listChanges) {
+        statusLineModel.setText(String.format(STATUS_LINE_MESSAGE, sortedCards.size(), filteredList.size(), sortedCards.size()-filteredList.size()));
+      }
+    });
+  }
+
+  public DefaultLabelModel getStatusLineModel() {
+    return statusLineModel;
   }
 
   public MagicCardFilterator getFilterator() {

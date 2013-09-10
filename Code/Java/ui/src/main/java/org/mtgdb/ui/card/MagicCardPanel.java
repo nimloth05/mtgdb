@@ -48,6 +48,11 @@ public final class MagicCardPanel {
     cardImageLabel.setAlignmentY(JLabel.TOP);
     panel.add(cardImageLabel, "w 320!, aligny top, h 450!");
 
+    final JLabel statusLine = new JLabel();
+    LabelModelAdapter.connect(statusLine, model.getStatusLineModel());
+    panel.add(statusLine, "newline");
+
+
     addContextMenu(table);
   }
 
