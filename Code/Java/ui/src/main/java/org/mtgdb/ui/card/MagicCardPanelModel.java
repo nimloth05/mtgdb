@@ -31,7 +31,6 @@ import java.util.List;
 public final class MagicCardPanelModel {
 
   private static final String STATUS_LINE_MESSAGE = "%d Cards in list, displaying %d (%d filtered)";
-
   private final IMagicCardRepository magicCardRepository;
   private final FilterList<MagicCard> filteredList;
   private final SortedList<MagicCard> sortedCards;
@@ -39,19 +38,7 @@ public final class MagicCardPanelModel {
   private DefaultLabelModel scanLabelModel = new DefaultLabelModel();
   private DefaultEventSelectionModel<MagicCard> tableSelectionModel;
   private DefaultLabelModel statusLineModel = new DefaultLabelModel();
-
   private Collection<Action> actions = Collections.emptyList();
-
-  public static MagicCardPanelModel create(Collection<Action> actions) {
-    MagicCardPanelModel model = ServiceManager.get(MagicCardPanelModel.class);
-    model.init(actions);
-    return model;
-  }
-
-  private void init(final Collection<Action> actions) {
-    if (actions.isEmpty()) return;
-    this.actions = actions;
-  }
 
   @Inject
   private MagicCardPanelModel(final IMagicCardRepository magicCardRepository) {
@@ -61,6 +48,13 @@ public final class MagicCardPanelModel {
     sortedCards = new SortedList<>(cardList, new MagicCardComparator());
 
     filteredList = new FilterList<>(sortedCards);
+    statusLineModel = new DefaultLabelModel();
+    filteredList.addListEventListener(new ListEventListener<MagicCard>() {
+      @Override
+      public void listChanged(final ListEvent<MagicCard> listChanges) {
+        statusLineModel.setText(String.format(STATUS_LINE_MESSAGE, sortedCards.size(), filteredList.size(), sortedCards.size() - filteredList.size()));
+      }
+    });
 
     magicCardTableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filteredList, new MagicCardTableFormat());
 
@@ -83,13 +77,18 @@ public final class MagicCardPanelModel {
     });
     tableSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-    statusLineModel = new DefaultLabelModel();
-    filteredList.addListEventListener(new ListEventListener<MagicCard>() {
-      @Override
-      public void listChanged(final ListEvent<MagicCard> listChanges) {
-        statusLineModel.setText(String.format(STATUS_LINE_MESSAGE, sortedCards.size(), filteredList.size(), sortedCards.size()-filteredList.size()));
-      }
-    });
+
+  }
+
+  public static MagicCardPanelModel create(Collection<Action> actions) {
+    MagicCardPanelModel model = ServiceManager.get(MagicCardPanelModel.class);
+    model.init(actions);
+    return model;
+  }
+
+  private void init(final Collection<Action> actions) {
+    if (actions.isEmpty()) return;
+    this.actions = actions;
   }
 
   public DefaultLabelModel getStatusLineModel() {

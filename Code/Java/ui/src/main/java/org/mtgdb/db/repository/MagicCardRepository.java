@@ -50,7 +50,7 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
   @Override
   public List<MagicCard> searchFreeText(final String text) {
     try {
-      final GenericRawResults<String[]> strings = dao.queryRaw("SELECT * FROM FTL_SEARCH_DATA('"+ text+"', 0, 0);");
+      final GenericRawResults<String[]> strings = dao.queryRaw("SELECT * FROM FTL_SEARCH_DATA('"+ text+"', 300, 0);");
       List<MagicCard> result = new LinkedList<>();
       for (String[] string : strings) {
         String id = string[3].substring(1, string[3].length()-1);

@@ -52,7 +52,6 @@ public final class MagicCardPanel {
     LabelModelAdapter.connect(statusLine, model.getStatusLineModel());
     panel.add(statusLine, "newline");
 
-
     addContextMenu(table);
   }
 
