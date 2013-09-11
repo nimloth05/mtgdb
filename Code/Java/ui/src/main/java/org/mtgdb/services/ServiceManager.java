@@ -7,9 +7,11 @@ import org.mtgdb.db.DatabaseConnection;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.repository.CardMemoryRepository;
 import org.mtgdb.db.repository.ContainerRepository;
+import org.mtgdb.db.repository.DeckMagicCardRepository;
 import org.mtgdb.db.repository.EditionRepository;
 import org.mtgdb.db.repository.ICardMemoryRepository;
 import org.mtgdb.db.repository.IContainerRepository;
+import org.mtgdb.db.repository.IDeckMagicCardRepository;
 import org.mtgdb.db.repository.IEditionRepository;
 import org.mtgdb.db.repository.IMagicCardRepository;
 import org.mtgdb.db.repository.IPhysicalCardRepository;
@@ -43,6 +45,7 @@ public final class ServiceManager {
         bind(IContainerRepository.class).toInstance(new ContainerRepository(connection));
         bind(IPhysicalCardRepository.class).toInstance(new PhysicalCardRepository(connection));
         bind(ICardMemoryRepository.class).toInstance(new CardMemoryRepository(connection));
+        bind(IDeckMagicCardRepository.class).toInstance(new DeckMagicCardRepository(connection));
       }
     });
   }

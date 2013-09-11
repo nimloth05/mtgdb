@@ -1,12 +1,12 @@
 package org.mtgdb.model;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.sun.istack.internal.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,10 +24,11 @@ public final class Deck {
   private int id;
   @Column
   private String name;
-  private Collection<MagicCard> cards;
+
+  private DeckCardCollection cards;
 
   public Deck() {
-    cards = new ArrayList<>();
+    cards = DeckCardCollection.create();
   }
 
   public int getId() {
@@ -47,133 +48,61 @@ public final class Deck {
   }
 
   public void addCard(MagicCard card) {
-    cards.add(card);
+    cards.add(this, card);
   }
 
   public void removeCard(MagicCard card) {
-    cards.remove(card);
+    cards.remove(this, card);
   }
 
   public void addCards(Collection<MagicCard> cardsToAdd) {
-    cards.addAll(cardsToAdd);
+    cards.addAll(this, cardsToAdd);
   }
 
   public void clear() {
-    cards.clear();
+    cards.clear(this);
   }
 
   public Collection<MagicCard> getCards() {
-    return cards;
+    return cards.toCollection(this);
   }
 
-  public Integer[] calcManaCurve() {
-    Predicate predicateManaCost1 = new Predicate() {
-      public boolean evaluate(Object object) {
-        return ((MagicCard) object).getConvertedManaCost() == 1;
+  public int[] calcManaCurve() {
+    final int curveCount = 7;
+    int[] manaCurve = new int[curveCount];
+    for (int i = 0; i < curveCount; i++) {
+      Predicate<MagicCard> predicate = createManaCurvePredicate(i + 1);
+      manaCurve[i] = Collections2.filter(getCards(), predicate).size();
+    }
+    return manaCurve;
+  }
+
+  private Predicate<MagicCard> createManaCurvePredicate(final int convertedManaCost) {
+    return new Predicate<MagicCard>() {
+      @Override
+      public boolean apply(@Nullable final MagicCard input) {
+        return input.getConvertedManaCost() == convertedManaCost;
       }
     };
-    Predicate predicateManaCost2 = new
+  }
 
-      Predicate() {
-        public boolean evaluate(Object object) {
-          return ((MagicCard) object).getConvertedManaCost() == 2;
-        }
-      };
-    Predicate predicateManaCost3 = new
+  private Predicate<MagicCard> createCardTypePredicate(final String type) {
+    return new Predicate<MagicCard>() {
 
-      Predicate() {
-        public boolean evaluate(Object object) {
-          return ((MagicCard) object).getConvertedManaCost() == 3;
-        }
-      };
-    Predicate predicateManaCost4 = new
-
-      Predicate() {
-        public boolean evaluate(Object object) {
-          return ((MagicCard) object).getConvertedManaCost() == 4;
-        }
-      };
-    Predicate predicateManaCost5 = new
-
-      Predicate() {
-        public boolean evaluate(Object object) {
-          return ((MagicCard) object).getConvertedManaCost() == 5;
-        }
-      };
-    Predicate predicateManaCost6 = new
-
-      Predicate() {
-        public boolean evaluate(Object object) {
-          return ((MagicCard) object).getConvertedManaCost() == 6;
-        }
-      };
-    Predicate predicateManaCost7 = new
-
-      Predicate() {
-        public boolean evaluate(Object object) {
-          return ((MagicCard) object).getConvertedManaCost() == 7;
-        }
-      };
-    Integer[] manaCurve = {0,0,0,0,0,0,0,0,0,0,0};
-
-    Collection filtered;
-    filtered = CollectionUtils.select(cards, predicateManaCost1);
-    manaCurve[1] = filtered.size();
-    filtered = CollectionUtils.select(cards, predicateManaCost2);
-    manaCurve[2] = filtered.size();
-    filtered = CollectionUtils.select(cards, predicateManaCost3);
-    manaCurve[3] = filtered.size();
-    filtered = CollectionUtils.select(cards, predicateManaCost4);
-    manaCurve[4] = filtered.size();
-    filtered = CollectionUtils.select(cards, predicateManaCost5);
-    manaCurve[5] = filtered.size();
-    filtered = CollectionUtils.select(cards, predicateManaCost6);
-    manaCurve[6] = filtered.size();
-    filtered = CollectionUtils.select(cards, predicateManaCost7);
-    manaCurve[7] = filtered.size();
-    return manaCurve;
+      @Override
+      public boolean apply(@Nullable final MagicCard input) {
+        return input.getType().contains(type);
+      }
+    };
   }
 
   public Map<String, Integer> calcDeckComponents() {
     Map<String, Integer> components = new HashMap<>();
-
-    Predicate predicateCreature = new Predicate() {
-      public boolean evaluate(Object object) {
-        return ((MagicCard) object).getType().contains("Creature");
-      }
-    };
-
-    Predicate predicateInstant = new Predicate() {
-      public boolean evaluate(Object object) {
-        return ((MagicCard) object).getType().contains("Instant");
-      }
-    };
-
-    Predicate predicateSorcery = new Predicate() {
-      public boolean evaluate(Object object) {
-        return ((MagicCard) object).getType().contains("Sorcery");
-      }
-    };
-
-    Predicate predicateLand = new Predicate() {
-      public boolean evaluate(Object object) {
-        return ((MagicCard) object).getType().contains("Land");
-      }
-    };
-    Collection filtered;
-
-    filtered = CollectionUtils.select(cards, predicateCreature);
-    components.put("Creatures", filtered.size());
-
-    filtered = CollectionUtils.select(cards, predicateInstant);
-    components.put("Instants", filtered.size());
-
-    filtered = CollectionUtils.select(cards, predicateSorcery);
-    components.put("Sorceries", filtered.size());
-
-    filtered = CollectionUtils.select(cards, predicateLand);
-    components.put("Lands", filtered.size());
-
+    final String[] types = {"Creature", "Instant", "Sorcery", "Land"};
+    for (String type : types) {
+      final Predicate<MagicCard> predicate = createCardTypePredicate(type);
+      components.put(type, Collections2.filter(getCards(), predicate).size());
+    }
     return components;
   }
 

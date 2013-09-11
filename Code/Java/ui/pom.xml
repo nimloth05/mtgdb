@@ -82,11 +82,11 @@
       <version>1.9.0</version>
     </dependency>
 
-      <dependency>
-          <groupId>commons-collections</groupId>
-          <artifactId>commons-collections</artifactId>
-          <version>3.2.1</version>
-      </dependency>
+    <dependency>
+    	<groupId>com.google.guava</groupId>
+    	<artifactId>guava</artifactId>
+    	<version>r05</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

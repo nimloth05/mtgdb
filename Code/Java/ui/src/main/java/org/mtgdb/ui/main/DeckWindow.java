@@ -72,7 +72,7 @@ public final class DeckWindow {
 
     XYChart.Series series1 = new XYChart.Series();
     series1.setName("Mana");
-    Integer[] manaCurve = deck.calcManaCurve();
+    int[] manaCurve = deck.calcManaCurve();
     for (Integer index = 1; index < manaCurve.length - 2; index++) {
       series1.getData().add(new XYChart.Data(index.toString(), manaCurve[index]));
 //      System.out.println("index:"+index.toString());
