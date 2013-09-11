@@ -1,32 +1,30 @@
-package org.mtgdb.ui.main;
+package org.mtgdb.ui.deck;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.chart.*;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
 import net.miginfocom.swing.MigLayout;
-import org.mtgdb.model.Deck;
 import org.mtgdb.ui.util.frame.FrameFactory;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author Michael Sacher
  */
 public final class DeckWindow {
   private JFrame frame;
-  private Deck deck;
+  private DeckWindowModel model;
 
-  public static void main(String[] args) throws IOException {
-    DeckWindow window = new DeckWindow();
-    window.show();
+  public DeckWindow(final DeckWindowModel model) {
 
   }
+
 
   private void createContentArea() throws IOException {
     JPanel panel = new JPanel();
@@ -46,16 +44,8 @@ public final class DeckWindow {
       }
     });
 
-//Predicate<T> predicate = new Predicate<>();
     panel.add(jfxPanelPie, "wrap");
     panel.add(jfxPanelManaCurve, "wrap");
-
-//    final JTable table = new JTable();
-//    table.setModel(model.getTableModel());
-//    table.setSelectionModel(model.getTableSelectionModel());
-//    final JScrollPane pane = new JScrollPane(table);
-//    panel.add(pane, "grow, push");
-
 
     frame.getContentPane().add(panel, BorderLayout.CENTER);
   }
@@ -70,17 +60,8 @@ public final class DeckWindow {
     xAxis.setLabel("Mana");
     yAxis.setLabel("Count");
 
-    XYChart.Series series1 = new XYChart.Series();
-    series1.setName("Mana");
-    int[] manaCurve = deck.calcManaCurve();
-    for (Integer index = 1; index < manaCurve.length - 2; index++) {
-      series1.getData().add(new XYChart.Data(index.toString(), manaCurve[index]));
-//      System.out.println("index:"+index.toString());
-
-    }
     bc.setLegendVisible(false);
-
-    bc.getData().add(series1);
+    bc.setData(model.getChartModel().getManaCurveChartData());
     return bc;
   }
 
@@ -96,15 +77,7 @@ public final class DeckWindow {
   }
 
   private PieChart createPieChart() {
-
-    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-    Map<String, Integer> components = deck.calcDeckComponents();
-
-    for (String key : components.keySet()) {
-      pieChartData.add(new PieChart.Data(key, components.get(key)));
-    }
-
-    final PieChart chart = new PieChart(pieChartData);
+    final PieChart chart = new PieChart(model.getChartModel().getTypeChartData());
     chart.setTitle("Deck Contents");
     chart.setLegendVisible(false);
     return chart;

@@ -2,7 +2,11 @@ package org.mtgdb.model;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import com.sun.istack.internal.Nullable;
+import org.mtgdb.model.events.CardAddedToDeckEvent;
+import org.mtgdb.model.events.CardRemovedFroMDeck;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -19,6 +23,7 @@ import java.util.Map;
  */
 public final class Deck {
 
+  private EventBus bus;
   @Id
   @GeneratedValue
   private int id;
@@ -27,8 +32,12 @@ public final class Deck {
 
   private DeckCardCollection cards;
 
-  public Deck() {
-    cards = DeckCardCollection.create();
+  public Deck() {}
+
+  @Inject
+  public Deck(final DeckCardCollection collection, final EventBus bus) {
+    this.bus = bus;
+    this.cards = collection;
   }
 
   public int getId() {
@@ -49,10 +58,12 @@ public final class Deck {
 
   public void addCard(MagicCard card) {
     cards.add(this, card);
+    bus.post(new CardAddedToDeckEvent(card));
   }
 
   public void removeCard(MagicCard card) {
     cards.remove(this, card);
+    bus.post(new CardRemovedFroMDeck(card));
   }
 
   public void addCards(Collection<MagicCard> cardsToAdd) {

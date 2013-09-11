@@ -1,5 +1,6 @@
 package org.mtgdb.services;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -46,6 +47,7 @@ public final class ServiceManager {
         bind(IPhysicalCardRepository.class).toInstance(new PhysicalCardRepository(connection));
         bind(ICardMemoryRepository.class).toInstance(new CardMemoryRepository(connection));
         bind(IDeckMagicCardRepository.class).toInstance(new DeckMagicCardRepository(connection));
+        bind(EventBus.class).toInstance(new EventBus());
       }
     });
   }

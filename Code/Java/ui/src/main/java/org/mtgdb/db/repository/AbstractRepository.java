@@ -4,10 +4,13 @@ import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.ObjectFactory;
 import com.j256.ormlite.table.TableUtils;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.db.IDatabaseConnectionListener;
+import org.mtgdb.services.ServiceManager;
 
+import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
@@ -28,10 +31,20 @@ public abstract class AbstractRepository<T, ID> implements IRepository<T> {
         try {
           TableUtils.createTableIfNotExists(connection, getClassLiteral());
           dao = DaoManager.createDao(connection, getClassLiteral());
+          dao.setObjectFactory(createGuiceObjectFactory());
           dao.setObjectCache(true);
         } catch (SQLException e) {
           throw new RuntimeException(e);
         }
+      }
+
+      private ObjectFactory<T> createGuiceObjectFactory() {
+        return new ObjectFactory<T>() {
+          @Override
+          public T createObject(final Constructor<T> construcor, final Class<T> dataClass) throws SQLException {
+            return ServiceManager.get(dataClass);
+          }
+        };
       }
 
       @Override
