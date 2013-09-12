@@ -27,6 +27,11 @@ public final class EditionRepository extends AbstractRepository<Edition, String>
   }
 
   @Override
+  protected void setId(final Edition obj) {
+    if (obj.getId() == null) throw new RuntimeException("id is not set for edition " + obj.getName());
+  }
+
+  @Override
   public void deleteAll() {
     try {
       dao.executeRaw("truncate table \"" + DBConstants.EDITION_TABLE + "\"");
