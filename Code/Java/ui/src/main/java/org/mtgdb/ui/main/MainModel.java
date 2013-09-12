@@ -9,6 +9,7 @@ import org.mtgdb.ui.main.action.ContainerPropertiesDialog;
 import org.mtgdb.ui.main.action.GrabberAction;
 import org.mtgdb.ui.main.action.OpenPensieveDialog;
 import org.mtgdb.ui.main.action.ShowContainerAction;
+import org.mtgdb.ui.main.action.ShowDeckWindow;
 import org.mtgdb.ui.main.action.ShowSearchAction;
 
 import javax.swing.*;
@@ -43,6 +44,7 @@ public final class MainModel {
     actions.add(ServiceManager.get(ShowSearchAction.class));
     actions.add(ServiceManager.get(OpenPensieveDialog.class));
     actions.add(ServiceManager.get(AddPhysicalCardAction.class));
+    actions.add(new ShowDeckWindow());
     return actions;
   }
 

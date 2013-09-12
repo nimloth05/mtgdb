@@ -58,12 +58,12 @@ public final class Deck {
 
   public void addCard(MagicCard card) {
     cards.add(this, card);
-    bus.post(new CardAddedToDeckEvent(card));
+    bus.post(new CardAddedToDeckEvent(card, this));
   }
 
   public void removeCard(MagicCard card) {
     cards.remove(this, card);
-    bus.post(new CardRemovedFroMDeck(card));
+    bus.post(new CardRemovedFroMDeck(card, this));
   }
 
   public void addCards(Collection<MagicCard> cardsToAdd) {

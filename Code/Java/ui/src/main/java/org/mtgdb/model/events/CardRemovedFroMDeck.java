@@ -1,5 +1,6 @@
 package org.mtgdb.model.events;
 
+import org.mtgdb.model.Deck;
 import org.mtgdb.model.MagicCard;
 
 /**
@@ -8,9 +9,16 @@ import org.mtgdb.model.MagicCard;
 public final class CardRemovedFroMDeck {
 
   private final MagicCard card;
+  private final Deck deck;
 
-  public CardRemovedFroMDeck(final MagicCard card) {
+  public CardRemovedFroMDeck(final MagicCard card, final Deck deck) {
     this.card = card;
+    this.deck = deck;
+
+  }
+
+  public Deck getDeck() {
+    return deck;
   }
 
   public MagicCard getCard() {

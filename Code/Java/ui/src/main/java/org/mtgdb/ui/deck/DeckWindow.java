@@ -8,31 +8,51 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
 import net.miginfocom.swing.MigLayout;
+import org.mtgdb.ui.card.MagicCardPanel;
 import org.mtgdb.ui.util.frame.FrameFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 
 /**
  * @author Michael Sacher
+ * @author Sandro Orlando
  */
 public final class DeckWindow {
-  private JFrame frame;
-  private DeckWindowModel model;
+
+  private final JFrame frame;
+  private final DeckWindowModel model;
 
   public DeckWindow(final DeckWindowModel model) {
-
+    frame = FrameFactory.createCenteredFrame("Deck Administration", 1000, 700);
+    this.model = model;
+    createContentArea();
   }
 
 
-  private void createContentArea() throws IOException {
+  private void createContentArea() {
+    frame.getContentPane().setLayout(new BorderLayout());
+
+    JTabbedPane tabbedPane = new JTabbedPane();
+    tabbedPane.add("Cards", createCardPanel());
+    tabbedPane.add("Charts", createChartPanel());
+
+    frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+  }
+
+  private Component createCardPanel() {
+    MagicCardPanel deckCardPanel = new MagicCardPanel(model.getDeckCardModel().getDeckCardsModel());
+    MagicCardPanel cardDatabasePanel = new MagicCardPanel(model.getDeckCardModel().getCardDatabaseModel());
+    JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, deckCardPanel.getPanel(), cardDatabasePanel.getPanel());
+    splitPane.setDividerLocation(0.5);
+    return splitPane;
+  }
+
+  private JPanel createChartPanel() {
     JPanel panel = new JPanel();
     final JFXPanel jfxPanelPie = new JFXPanel();
     final JFXPanel jfxPanelManaCurve = new JFXPanel();
     panel.setLayout(new MigLayout(""));
-
-    panel.add(new JLabel("Your Library:"), "wrap");
 
     //give control to javafx thread
     Platform.runLater(new Runnable() {
@@ -46,12 +66,10 @@ public final class DeckWindow {
 
     panel.add(jfxPanelPie, "wrap");
     panel.add(jfxPanelManaCurve, "wrap");
-
-    frame.getContentPane().add(panel, BorderLayout.CENTER);
+    return panel;
   }
 
   private BarChart createManaCurveChart() {
-
     final CategoryAxis xAxis = new CategoryAxis();
     final NumberAxis yAxis = new NumberAxis();
     final BarChart<String, Number> bc = new BarChart<>(xAxis, yAxis);
@@ -65,13 +83,7 @@ public final class DeckWindow {
     return bc;
   }
 
-  public void show() throws IOException {
-    frame = FrameFactory.createCenteredFrame("MTG Administration", 1000, 700);
-    FrameFactory.setMainFrame(frame);
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-    frame.getContentPane().setLayout(new BorderLayout());
-    createContentArea();
+  public void show() {
     frame.setVisible(true);
 
   }

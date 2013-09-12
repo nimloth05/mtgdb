@@ -76,8 +76,6 @@ public final class MagicCardPanelModel {
       }
     });
     tableSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-
   }
 
   public static MagicCardPanelModel create(Collection<Action> actions) {
@@ -134,5 +132,13 @@ public final class MagicCardPanelModel {
 
   public Collection<Action> getActions() {
     return actions;
+  }
+
+  public void addCard(final MagicCard magicCard) {
+    sortedCards.add(magicCard);
+  }
+
+  public void removeCard(final MagicCard card) {
+    sortedCards.remove(card);
   }
 }

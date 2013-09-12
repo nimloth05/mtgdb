@@ -15,6 +15,10 @@ public final class ChartModel {
 
   private Deck deck;
 
+  public ChartModel(final Deck deck) {
+    this.deck = deck;
+  }
+
   public ObservableList<XYChart.Series<String, Number>> getManaCurveChartData() {
     ObservableList<XYChart.Series<String, Number>> result = FXCollections.observableArrayList();
     XYChart.Series<String, Number> series1 = new XYChart.Series<>();
