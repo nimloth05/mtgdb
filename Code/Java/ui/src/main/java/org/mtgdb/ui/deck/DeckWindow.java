@@ -1,18 +1,22 @@
 package org.mtgdb.ui.deck;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import net.miginfocom.swing.MigLayout;
 import org.mtgdb.ui.card.MagicCardPanel;
 import org.mtgdb.ui.util.frame.FrameFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Michael Sacher
@@ -28,7 +32,6 @@ public final class DeckWindow {
     this.model = model;
     createContentArea();
   }
-
 
   private void createContentArea() {
     frame.getContentPane().setLayout(new BorderLayout());
@@ -79,7 +82,20 @@ public final class DeckWindow {
     yAxis.setLabel("Count");
 
     bc.setLegendVisible(false);
-    bc.setData(model.getChartModel().getManaCurveChartData());
+    final AtomicReference<ObservableList<XYChart.Series<String, Number>>> holder = new AtomicReference<>();
+    try {
+      SwingUtilities.invokeAndWait(new Runnable() {
+        @Override
+        public void run() {
+          holder.set(model.getChartModel().getManaCurveData());
+        }
+      });
+    } catch (InterruptedException e) {
+      Thread.interrupted();
+    } catch (InvocationTargetException e) {
+      throw new RuntimeException(e);
+    }
+    bc.setData(holder.get());
     return bc;
   }
 

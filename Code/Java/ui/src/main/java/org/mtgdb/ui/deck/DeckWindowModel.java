@@ -12,7 +12,7 @@ public final class DeckWindowModel {
 
   public DeckWindowModel(final Deck deck) {
     this.deckCardModel = DeckCardModel.create(deck);
-    this.chartModel = new ChartModel(deck);
+    this.chartModel = ChartModel.create(deck);
   }
 
   public DeckCardModel getDeckCardModel() {
