@@ -16,8 +16,10 @@ import org.mtgdb.util.assertion.Assert;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Sandro Orlando
@@ -39,12 +41,12 @@ public class GrabberAction extends AbstractAction {
 
   @Override
   public void actionPerformed(final ActionEvent e) {
+    final Map<String, Integer> editionToNumberOfCards = new HashMap<>();
     connection.execute(new ITransactionRunnable() {
 
       @Override
       public void run() throws Exception {
-        magicCardRepository.deleteAll();
-        editionRepository.deleteAll();
+        editionRepository.gatherEditionInformation(editionToNumberOfCards);
       }
     });
 
@@ -54,7 +56,7 @@ public class GrabberAction extends AbstractAction {
 
       @Override
       public void done() {
-        magicCardRepository.enableLuceneIndex();
+        magicCardRepository.updateLuceneIndex();
       }
 
       @Override
@@ -66,11 +68,15 @@ public class GrabberAction extends AbstractAction {
           int counter = 0;
 
           @Override
-          public void beginEdition(final Edition edition) {
-            saveEdition(edition);
+          public boolean beginEdition(final Edition edition) {
+            if (Integer.valueOf(edition.getNumberOfCards()).equals(editionToNumberOfCards.get(edition.getId()))) {
+              return true;
+            }
+            updateEdition(edition);
+            return false;
           }
 
-          private void saveEdition(final Edition edition) {
+          private void updateEdition(final Edition edition) {
             SwingUtilities.invokeLater(new Runnable() {
               @Override
               public void run() {
@@ -78,6 +84,10 @@ public class GrabberAction extends AbstractAction {
                 connection.execute(new ITransactionRunnable() {
                   @Override
                   public void run() throws Exception {
+                    //We delete the edition here to guarantee an update to view of the data
+                    editionRepository.delete(edition);
+                    magicCardRepository.deleteCardsForEdition(edition);
+
                     editionRepository.save(edition);
                   }
                 });
@@ -88,13 +98,6 @@ public class GrabberAction extends AbstractAction {
           @Override
           public void grabbed(final MagicCard description) {
             allCards.add(description);
-//              SwingUtilities.invokeLater(new Runnable() {
-//                @Override
-//                public void run() {
-//                  System.out.println("saving card " + description);
-//                  dbAccess.saveAllCardDescription(Arrays.asList(description));
-//                }
-//              });
             monitor.setMessage("Grabbed card " + description.getName());
             monitor.step(counter++);
           }
@@ -116,7 +119,6 @@ public class GrabberAction extends AbstractAction {
               }
             });
           }
-
         });
       }
     });

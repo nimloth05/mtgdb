@@ -18,8 +18,9 @@ public final class CardListGrabberTest {
     CardListGrabber grabber = new CardListGrabber(new ICardListGrabberListener() {
 
       @Override
-      public void begin(final String name, final String editionId, final int numberOfCards) {
+      public boolean setup(final String name, final String editionId, final int numberOfCards) {
         beginCalled.setValue(true);
+        return false;
       }
 
       @Override
@@ -28,7 +29,7 @@ public final class CardListGrabberTest {
       }
 
       @Override
-      public void end() {
+      public void complete() {
         endCalled.setValue(true);
       }
     });

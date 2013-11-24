@@ -6,6 +6,7 @@ import org.mtgdb.model.Edition;
 
 import javax.inject.Inject;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * @author Sandro Orlando
@@ -37,6 +38,22 @@ public final class EditionRepository extends AbstractRepository<Edition, String>
       dao.executeRaw("truncate table \"" + DBConstants.EDITION_TABLE + "\"");
     } catch (SQLException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void delete(final Edition edition) {
+    try {
+      dao.delete(edition);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void gatherEditionInformation(final Map<String, Integer> editionToNumberOfCards) {
+    for (Edition edition : getAll()) {
+      editionToNumberOfCards.put(edition.getId(), edition.getNumberOfCards());
     }
   }
 

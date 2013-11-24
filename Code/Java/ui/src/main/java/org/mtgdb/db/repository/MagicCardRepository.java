@@ -2,6 +2,7 @@ package org.mtgdb.db.repository;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import org.mtgdb.db.DBConstants;
 import org.mtgdb.db.IDatabaseConnection;
 import org.mtgdb.model.Edition;
@@ -26,16 +27,6 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
   @Override
   protected Class<MagicCard> getClassLiteral() {
     return MagicCard.class;
-  }
-
-  @Override
-  public void deleteAll() {
-    try {
-      dao.executeRaw("truncate table \"" + DBConstants.MAGIC_CARD_TABLE + "\"");
-      dao.executeRaw("CALL FTL_DROP_INDEX('PUBLIC', '"+DBConstants.MAGIC_CARD_TABLE+"');");
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @Override
@@ -64,13 +55,26 @@ public final class MagicCardRepository extends AbstractRepository<MagicCard, Str
   }
 
   @Override
-  public void enableLuceneIndex() {
+  public void updateLuceneIndex() {
     try {
+      dao.executeRaw("CALL FTL_DROP_INDEX('PUBLIC', '"+DBConstants.MAGIC_CARD_TABLE+"');");
       dao.executeRaw("CALL FTL_CREATE_INDEX('PUBLIC', '"+DBConstants.MAGIC_CARD_TABLE+"', NULL);");
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public void deleteCardsForEdition(final Edition edition) {
+    try {
+      final DeleteBuilder<MagicCard,String> builder = dao.deleteBuilder();
+      builder.where().eq("edition_id", edition.getId()).prepare();
+      dao.delete(builder.prepare());
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   @Override
   protected void setId(final MagicCard obj) {

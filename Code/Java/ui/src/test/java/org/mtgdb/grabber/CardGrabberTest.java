@@ -85,7 +85,7 @@ public final class CardGrabberTest {
     expectedCard.setPower(0);
     expectedCard.setRarity(Rarity.rare);
     expectedCard.setSubType(null);
-    expectedCard.setCardText("Chimeric Mass enters the battlefield with X charge counters on it. {1}: Until end of turn, Chimeric Mass becomes a Construct artifact creature with \"This creature's power and toughness are each equal to the number of charge counters on it.\"");
+    expectedCard.setCardText("Chimeric Mass enters the battlefield with X charge counters on it. {1}: Until complete of turn, Chimeric Mass becomes a Construct artifact creature with \"This creature's power and toughness are each equal to the number of charge counters on it.\"");
     expectedCard.setToughness(0);
     expectedCard.setType("Artifact");
     expectedCard.setNumber("141");
@@ -145,7 +145,7 @@ public final class CardGrabberTest {
     expectedCard.setPower(2);
     expectedCard.setRarity(Rarity.common);
     expectedCard.setSubType("Hound");
-    expectedCard.setCardText("Battalion — Whenever Boros Mastiff and at least two other creatures attack, Boros Mastiff gains lifelink until end of turn. (Damage dealt by a creature with lifelink also causes its controller to gain that much life.)");
+    expectedCard.setCardText("Battalion — Whenever Boros Mastiff and at least two other creatures attack, Boros Mastiff gains lifelink until complete of turn. (Damage dealt by a creature with lifelink also causes its controller to gain that much life.)");
     expectedCard.setToughness(2);
     expectedCard.setType("Creature");
     expectedCard.setNumber("1");
@@ -165,7 +165,7 @@ public final class CardGrabberTest {
     expectedCard.setPower(0);
     expectedCard.setRarity(Rarity.mythicRare);
     expectedCard.setSubType("Ajani");
-    expectedCard.setCardText("+1: Put a +1/+1 counter on up to one target creature. -3: Target creature gains flying and double strike until end of turn. -8: Put X 2/2 white Cat creature tokens onto the battlefield, where X is your life total.");
+    expectedCard.setCardText("+1: Put a +1/+1 counter on up to one target creature. -3: Target creature gains flying and double strike until complete of turn. -8: Put X 2/2 white Cat creature tokens onto the battlefield, where X is your life total.");
     expectedCard.setToughness(0);
     expectedCard.setType("Planeswalker");
     expectedCard.setNumber("1");

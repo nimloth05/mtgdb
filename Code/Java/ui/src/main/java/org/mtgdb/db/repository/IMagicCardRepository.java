@@ -13,11 +13,16 @@ public interface IMagicCardRepository extends IRepository<MagicCard> {
 
   void saveAll(Collection<MagicCard> cards);
 
-  void deleteAll();
-
   MagicCard getCard(Edition edition, String cardNumber);
 
   List<MagicCard> searchFreeText(String text);
 
-  public void enableLuceneIndex();
+  public void updateLuceneIndex();
+
+  /**
+   * Deletes all cards from a specific edition
+   * @param edition Edition of the cards to delete
+   */
+  void deleteCardsForEdition(Edition edition);
+
 }
