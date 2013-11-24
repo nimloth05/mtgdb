@@ -20,6 +20,7 @@ public final class CardListGrabber implements IEditionGrabberListener {
     this.listener = listener;
   }
 
+  @Override
   public void grab(final String url, final String editionId) {
     try {
       grabEdition(url, editionId, listener);
@@ -33,12 +34,14 @@ public final class CardListGrabber implements IEditionGrabberListener {
     Elements even = doc.select("table .even");
     Elements odd = doc.select("table .odd");
 
-   listener.begin(doc.title(), editionShort, (even.size() + odd.size()));
+    final boolean skipEdition = listener.setup(doc.title(), editionShort, (even.size() + odd.size()));
 
-    grabEditionCards(listener, even);
-    grabEditionCards(listener, odd);
+    if (!skipEdition) {
+      grabEditionCards(listener, even);
+      grabEditionCards(listener, odd);
+      listener.complete();
+    }
 
-    listener.end();
   }
 
   private void grabEditionCards(final ICardListGrabberListener listener, final Collection<Element> tables) throws IOException {

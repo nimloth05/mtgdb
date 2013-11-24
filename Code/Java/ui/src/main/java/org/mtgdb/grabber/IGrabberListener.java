@@ -8,7 +8,7 @@ import org.mtgdb.model.MagicCard;
  */
 public interface IGrabberListener {
 
-  void beginEdition(final Edition edition);
+  boolean beginEdition(final Edition edition);
 
   void grabbed(final MagicCard description);
 

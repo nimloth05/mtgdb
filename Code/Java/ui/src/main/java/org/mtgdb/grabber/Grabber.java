@@ -29,12 +29,12 @@ public final class Grabber {
       private CardGrabber cardGrabber = new CardGrabber();
 
       @Override
-      public void begin(final String name, final String editionId, final int numberOfCards) {
+      public boolean setup(final String name, final String editionId, final int numberOfCards) {
         edition = new Edition();
         edition.setName(name);
         edition.setId(editionId);
         edition.setNumberOfCards(numberOfCards);
-        listener.beginEdition(edition);
+        return listener.beginEdition(edition);
       }
 
       @Override
@@ -46,7 +46,7 @@ public final class Grabber {
       }
 
       @Override
-      public void end() {
+      public void complete() {
         listener.endEdition();
       }
     }));
