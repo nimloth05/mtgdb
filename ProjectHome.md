@@ -1,0 +1,1 @@
+Magic: The Gathering card administration
